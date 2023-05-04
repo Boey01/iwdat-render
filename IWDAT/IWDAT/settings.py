@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    #Below are apps that are outside from default built-in app
+    'data_connect',
 ]
 
 MIDDLEWARE = [
