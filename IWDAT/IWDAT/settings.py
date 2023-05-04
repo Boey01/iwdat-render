@@ -38,8 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #Below are apps that are outside from default built-in app
-    'data_connect',
+    #Below are apps that are outside from default built-in app  
+    'frontend',
+    'backend',
 ]
 
 MIDDLEWARE = [
