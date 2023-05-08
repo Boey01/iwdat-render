@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ExcelImport } from "./ExcelImportData";
+import { ExcelImport } from "./ExcelFileUploadHandler";
 import { Input, Card, CardBody, Row, Col, Table, Label } from "reactstrap";
 
 export const ExcelRender = () => {
@@ -44,7 +44,7 @@ export const ExcelRender = () => {
             <Row>
               <Col md={12}>
                 {sheetNames.map((s) => (
-                  <div>
+                  <>
                     <input type="radio" 
                     name="sheetName" 
                     checked= {s === sheet}
@@ -52,7 +52,7 @@ export const ExcelRender = () => {
                     value={s} 
                     key={s} />
                     <label>{s}</label>
-                  </div>
+                  </>
                 ))}
               </Col>
             </Row>
