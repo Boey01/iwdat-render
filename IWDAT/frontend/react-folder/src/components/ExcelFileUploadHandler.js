@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Row, Col, Label } from "reactstrap";
 import loadExcelData from "./ExcelDataReader";
+import { AiFillDelete } from "react-icons/ai";
 
 export const ExcelImport = (props) => {
     const [file, setFile] = useState(null);
@@ -51,8 +52,8 @@ export const ExcelImport = (props) => {
                     />
 
                     {fileName && (
-                        <i onClick={handleRemove}>
-                            <p>remove file</p>
+                        <i onClick={handleRemove} class="icon">
+                            <AiFillDelete/>
                         </i>
                     )}
                 </div>
