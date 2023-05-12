@@ -1,14 +1,22 @@
-.page_nav {
-    display: "flex";
-    /* justifyContent: "center"; */
+.content {
+  width: 70%;
+  max-height: 80%;
+  margin: 5%;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1%;
+}
+
+.table-content {
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .icon {
-    color: rgb(255, 145, 131);
-    padding: 0.5em;
-  }
+  color: rgb(255, 145, 131);
+  padding: 0.5em;
+}
 
-
-  .icon :hover{
-    cursor: pointer;
-  }
+.icon:hover {
+  cursor: pointer;
+}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ExcelImport } from "./ExcelFileUploadHandler";
-import { Input, Card, CardBody, Row, Col, Table, Label, Pagination, PaginationItem, PaginationLink } from "reactstrap";
+import { Table, Pagination, PaginationItem, PaginationLink } from "reactstrap";
 
 export const ExcelRender = () => {
   const [sheetData, setsheetData] = useState(null);
@@ -32,6 +32,9 @@ export const ExcelRender = () => {
   };
 
   const renderPageLinks = () => {
+    if (!sheetData || !sheetData[sheet]) {
+      return null;
+    }
     const numPages = Math.ceil(sheetData[sheet].length / PAGE_SIZE);
     const links = [];
 
@@ -49,11 +52,17 @@ export const ExcelRender = () => {
   };
 
   const renderTable = () => {
+      if (!sheetData || !sheetData[sheet]) {
+    return null;
+  }
     const start = currentPage * PAGE_SIZE;
     const end = start + PAGE_SIZE;
     const rows = sheetData[sheet].slice(1).slice(start, end);
+
+  const tableHeight = rows.length > 10 ? "80vh" : "auto";
   
     return (
+      <div class="table-content" style={{ maxHeight: tableHeight, overflowY: "auto" }}>
       <Table bordered hover>
         <thead>
           <tr>
@@ -72,30 +81,21 @@ export const ExcelRender = () => {
           ))}
         </tbody>
       </Table>
+      </div>
     );
   };
 
   return (
-    <div className="content">
+    <div class="content">
       <h2>Excel Table</h2>
-      <>
-        <Row>
-          <Col md={12}>
-            <Card>
-              <CardBody>
+      <div class="file-upload">   
                 <ExcelImport onFileUploaded={(e) => handleFileUploaded(e)} />
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </>
-      <div className="tables">
+      </div>
+      
         {sheetData && (
           <>
-            <Row>
-              <Col md={12}>
                 {sheetNames.map((s) => (
-                  <div className="page_nav">
+                  <div class="change-sheet">
                     <input type="radio" 
                     name="sheetName" 
                     checked= {s === sheet}
@@ -105,18 +105,15 @@ export const ExcelRender = () => {
                     <label>{s}</label>
                   </div>
                 ))}
-              </Col>
-            </Row>
-            <Row>
-              <Label>{sheet}</Label>
-              <Col md={12}>
+
+            <div class="table-wrap">
                 {renderTable()}
                 {renderPageLinks()}
-              </Col>
-            </Row>
+              </div> 
+            
           </>
         )}
-      </div>
+      
     </div>
   );
 };

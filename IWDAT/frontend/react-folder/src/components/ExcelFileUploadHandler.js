@@ -28,21 +28,22 @@ export const ExcelImport = (props) => {
 
     const handleReadData = async () => {
         const sheetData = await loadExcelData(file);
-
-        setSheetData(sheetData);
-
-        props.onFileUploaded(sheetData);
-    }
+      
+        if(sheetData) {
+          setSheetData(sheetData);
+          props.onFileUploaded(sheetData);
+        }
+      }
 
     return (
         <Row>
             <Col>
-                <div className="mb-2">
+                <>
                     {fileName && <Label>{fileName}</Label>}
                     {!fileName && <Label>Please Upload a File</Label>}
-                </div>
+                </>
 
-                <div>
+                <>
                     <input
                         type="file"
                         accept="xlsx, xls"
@@ -56,7 +57,7 @@ export const ExcelImport = (props) => {
                             <AiFillDelete/>
                         </i>
                     )}
-                </div>
+                </>
 
                 {file && (
                     <div>
