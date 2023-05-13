@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Row, Col, Label } from "reactstrap";
-import loadExcelData from "./ExcelDataReader";
+import loadFileData from "./ExcelDataReader";
 import { AiFillDelete } from "react-icons/ai";
 
 export const ExcelImport = (props) => {
@@ -27,7 +27,7 @@ export const ExcelImport = (props) => {
     }
 
     const handleReadData = async () => {
-        const sheetData = await loadExcelData(file);
+        const sheetData = await loadFileData(file);
       
         if(sheetData) {
           setSheetData(sheetData);
@@ -36,35 +36,40 @@ export const ExcelImport = (props) => {
       }
 
     return (
-        <Row>
+        <><Row>
             <Col>
-                <>
-                    {fileName && <Label>{fileName}</Label>}
-                    {!fileName && <Label>Please Upload a File</Label>}
-                </>
-
-                <>
+                <h2>Excel Table</h2>
+            </Col>
+        </Row>
+        <Row>
+                <Col>
+                    <div className="file-upload-section">
+                        {fileName ? <Label>{fileName}</Label> : <Label>Please Upload a File</Label>}
+                    </div>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
                     <input
                         type="file"
                         accept="xlsx, xls"
                         multiple={false}
                         onChange={(e) => handleFile(e)}
-                        ref={fileRef}
-                    />
+                        ref={fileRef} />
 
                     {fileName && (
-                        <i onClick={handleRemove} class="icon">
-                            <AiFillDelete/>
+                        <i onClick={handleRemove} className="icon">
+                            <AiFillDelete />
                         </i>
                     )}
-                </>
 
-                {file && (
-                    <div>
-                        <button onClick={handleReadData}>Read Excel Data</button>
-                    </div>
-                )}
-            </Col>
-        </Row>
+                    {file && (
+                        <div>
+                            <button onClick={handleReadData}>Read Excel Data</button>
+                        </div>
+                    )}
+                </Col>
+            </Row>
+            </>
     );
 };

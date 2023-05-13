@@ -1,15 +1,40 @@
+.test{
+  margin:0;
+  width:90vw;
+}
+
 .content {
-  width: 70%;
   max-height: 80%;
+  width:100%;
   margin: 5%;
   align-items: center;
   justify-content: center;
   margin-top: 1%;
+  /* font-family: 'Wix Madefor Display', sans-serif; */
+}
+
+.file-upload-section input{
+  border: 1px solid #000000;
+  border-radius: 10px;
 }
 
 .table-content {
   overflow-x: auto;
   max-width: 100%;
+  box-shadow: 5px 5px 20px rgb(194, 194, 194);
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.page-info {
+  display: flex;
+  align-items: center;
+  padding: 0 5px 0 5px;
+}
+
+.page-info input{
+  margin: 0 5px 0 5px;
+  border-radius: 10px;
 }
 
 .icon {

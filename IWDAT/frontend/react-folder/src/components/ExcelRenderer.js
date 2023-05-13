@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ExcelImport } from "./ExcelFileUploadHandler";
-import { Table, Pagination, PaginationItem, PaginationLink } from "reactstrap";
+import { Table, Pagination, PaginationItem, PaginationLink, Container, Row, Col } from "reactstrap";
 
 export const ExcelRender = () => {
   const [sheetData, setsheetData] = useState(null);
@@ -35,20 +35,51 @@ export const ExcelRender = () => {
     if (!sheetData || !sheetData[sheet]) {
       return null;
     }
+  
     const numPages = Math.ceil(sheetData[sheet].length / PAGE_SIZE);
-    const links = [];
 
-    for (let i = 0; i < numPages; i++) {
-      links.push(
-        <PaginationItem key={i} active={i === currentPage}>
-          <PaginationLink onClick={() => handlePageChange(i)}>
-            {i + 1}
-          </PaginationLink>
+    const handleJumpToPage = (e) => {
+      const enteredPage = parseInt(e.target.value, 10) - 1; // Subtract 1 to convert to zero-based index
+      if (!isNaN(enteredPage) && enteredPage >= 0 && enteredPage < numPages) {
+        setCurrentPage(enteredPage);
+      }
+    };
+  
+    // << < [currentpage] > >> Page [currentpage] of [MaxPage]
+    return (
+      <Pagination>
+        <PaginationItem disabled={currentPage === 0}>
+          <PaginationLink onClick={() => handlePageChange(0)}>&laquo;</PaginationLink>
         </PaginationItem>
-      );
-    }
+        <PaginationItem disabled={currentPage === 0}>
+          <PaginationLink onClick={() => handlePageChange(currentPage - 1)}>&lt;</PaginationLink>
+        </PaginationItem>
+        <PaginationItem active>
+          <PaginationLink>{currentPage + 1}</PaginationLink>
+        </PaginationItem>
+        <PaginationItem disabled={currentPage === numPages - 1}>
+          <PaginationLink onClick={() => handlePageChange(currentPage + 1)}>&gt;</PaginationLink>
+        </PaginationItem>
+        <PaginationItem disabled={currentPage === numPages - 1}>
+          <PaginationLink onClick={() => handlePageChange(numPages - 1)}>&raquo;</PaginationLink>
+        </PaginationItem>
 
-    return <Pagination>{links}</Pagination>;
+        <PaginationItem className="page-info">
+        <div>
+        Page
+        <input
+          type="number"
+          min="1"
+          max={numPages}
+          value={currentPage + 1}
+          onChange={handleJumpToPage}
+        />
+         of {numPages}
+      </div>
+      </PaginationItem>
+      
+      </Pagination>
+    );
   };
 
   const renderTable = () => {
@@ -86,12 +117,18 @@ export const ExcelRender = () => {
   };
 
   return (
+    <div class="test">
+    <Container>
     <div class="content">
-      <h2>Excel Table</h2>
+      <Row>
+        <Col>
       <div class="file-upload">   
                 <ExcelImport onFileUploaded={(e) => handleFileUploaded(e)} />
       </div>
-      
+      </Col>
+      </Row>
+      <Row>
+        <Col>
         {sheetData && (
           <>
                 {sheetNames.map((s) => (
@@ -113,7 +150,10 @@ export const ExcelRender = () => {
             
           </>
         )}
-      
+        </Col>
+      </Row>
+    </div>
+    </Container>
     </div>
   );
 };
