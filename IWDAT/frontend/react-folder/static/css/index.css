@@ -1,11 +1,5 @@
-.test{
-  margin:0;
-  width:90vw;
-}
-
 .content {
   max-height: 80%;
-  width:100%;
   margin: 5%;
   align-items: center;
   justify-content: center;
@@ -13,10 +7,39 @@
   /* font-family: 'Wix Madefor Display', sans-serif; */
 }
 
-.file-upload-section input{
-  border: 1px solid #000000;
-  border-radius: 10px;
+/* File uploading section --------------------------------------- */
+.file-upload-section {
+  justify-content: center;
+  text-align: center;
 }
+
+.file-upload-section input[type="file"] {
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  margin-bottom: 2px;
+}
+
+.file-upload-section input[type="file"]:hover {
+  border-color: grey;
+}
+
+.file-upload-section input[type="file"]:active {
+  border-color: darkgrey;
+  background-color: #f7f7f7;
+}
+/* ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*/
+
+/* sheet select sections --------------------------------------- */
+.change-sheet Button{
+  margin-bottom: 5px;
+}
+.change-sheet Button.active {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+/* ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*/
 
 .table-content {
   overflow-x: auto;

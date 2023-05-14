@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import { ExcelImport } from "./ExcelFileUploadHandler";
-import { Table, Pagination, PaginationItem, PaginationLink, Container, Row, Col } from "reactstrap";
+import {
+  Table,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  Container,
+  Row,
+  Col,
+  ButtonGroup, 
+  Button
+} from "reactstrap";
 
 export const ExcelRender = () => {
   const [sheetData, setsheetData] = useState(null);
@@ -12,19 +22,19 @@ export const ExcelRender = () => {
 
   const handleFileUploaded = (e) => {
     console.log("File Uploaded", e);
-    if(e){ 
-        let sheetNames = Object.keys(e);
-        setsheetNames(sheetNames);
-        setsheet(sheetNames[0])
-    }else{
-        setsheetNames(null);
-    };
+    if (e) {
+      let sheetNames = Object.keys(e);
+      setsheetNames(sheetNames);
+      setsheet(sheetNames[0]);
+    } else {
+      setsheetNames(null);
+    }
 
     setsheetData(e);
   };
 
-  const handleSheetChange = (e) => {
-    setsheet(e.target.value);
+  const handleSheetChange = (s) => {
+    setsheet(s);
   }
 
   const handlePageChange = (page) => {
@@ -35,7 +45,7 @@ export const ExcelRender = () => {
     if (!sheetData || !sheetData[sheet]) {
       return null;
     }
-  
+
     const numPages = Math.ceil(sheetData[sheet].length / PAGE_SIZE);
 
     const handleJumpToPage = (e) => {
@@ -44,116 +54,127 @@ export const ExcelRender = () => {
         setCurrentPage(enteredPage);
       }
     };
-  
+
     // << < [currentpage] > >> Page [currentpage] of [MaxPage]
     return (
       <Pagination>
         <PaginationItem disabled={currentPage === 0}>
-          <PaginationLink onClick={() => handlePageChange(0)}>&laquo;</PaginationLink>
+          <PaginationLink onClick={() => handlePageChange(0)}>
+            &laquo;
+          </PaginationLink>
         </PaginationItem>
         <PaginationItem disabled={currentPage === 0}>
-          <PaginationLink onClick={() => handlePageChange(currentPage - 1)}>&lt;</PaginationLink>
+          <PaginationLink onClick={() => handlePageChange(currentPage - 1)}>
+            &lt;
+          </PaginationLink>
         </PaginationItem>
         <PaginationItem active>
           <PaginationLink>{currentPage + 1}</PaginationLink>
         </PaginationItem>
         <PaginationItem disabled={currentPage === numPages - 1}>
-          <PaginationLink onClick={() => handlePageChange(currentPage + 1)}>&gt;</PaginationLink>
+          <PaginationLink onClick={() => handlePageChange(currentPage + 1)}>
+            &gt;
+          </PaginationLink>
         </PaginationItem>
         <PaginationItem disabled={currentPage === numPages - 1}>
-          <PaginationLink onClick={() => handlePageChange(numPages - 1)}>&raquo;</PaginationLink>
+          <PaginationLink onClick={() => handlePageChange(numPages - 1)}>
+            &raquo;
+          </PaginationLink>
         </PaginationItem>
 
         <PaginationItem className="page-info">
-        <div>
-        Page
-        <input
-          type="number"
-          min="1"
-          max={numPages}
-          value={currentPage + 1}
-          onChange={handleJumpToPage}
-        />
-         of {numPages}
-      </div>
-      </PaginationItem>
-      
+          <div>
+            Page
+            <input
+              type="number"
+              min="1"
+              max={numPages}
+              value={currentPage + 1}
+              onChange={handleJumpToPage}
+            />
+            of {numPages}
+          </div>
+        </PaginationItem>
       </Pagination>
     );
   };
 
   const renderTable = () => {
-      if (!sheetData || !sheetData[sheet]) {
-    return null;
-  }
+    if (!sheetData || !sheetData[sheet]) {
+      return null;
+    }
     const start = currentPage * PAGE_SIZE;
     const end = start + PAGE_SIZE;
     const rows = sheetData[sheet].slice(1).slice(start, end);
 
-  const tableHeight = rows.length > 10 ? "80vh" : "auto";
-  
+    const tableHeight = rows.length > 10 ? "80vh" : "auto";
+
     return (
-      <div class="table-content" style={{ maxHeight: tableHeight, overflowY: "auto" }}>
-      <Table bordered hover>
-        <thead>
-          <tr>
-            {sheetData[sheet][0].map((h, index) => (
-              <th key={`header-${index}`}>{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, rowIndex) => (
-            <tr key={`row-${rowIndex}`}>
-              {row.map((c, colIndex) => (
-                <td key={`cell-${colIndex}`}>{c}</td>
+      <>
+      <Row>
+  <Col className="change-sheet">
+    <ButtonGroup>
+      {sheetNames.map((s) => (
+        <Button
+          key={s}
+          color={s === sheet ? 'primary' : 'outline-secondary'}
+          onClick={() => handleSheetChange(s)}
+          active={s === sheet}
+        >
+          {s}
+        </Button>
+      ))}
+    </ButtonGroup>
+  </Col>
+</Row>
+
+      <div
+        class="table-content"
+        style={{ maxHeight: tableHeight, overflowY: "auto" }}
+      >
+        <Table bordered hover>
+          <thead>
+            <tr>
+              {sheetData[sheet][0].map((h, index) => (
+                <th key={`header-${index}`}>{h}</th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {rows.map((row, rowIndex) => (
+              <tr key={`row-${rowIndex}`}>
+                {row.map((c, colIndex) => (
+                  <td key={`cell-${colIndex}`}>{c}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </div>
+      </>
     );
   };
 
   return (
-    <div class="test">
-    <Container>
-    <div class="content">
-      <Row>
+    <Container className="content">
+      <Row className="file-upload-section">
         <Col>
-      <div class="file-upload">   
-                <ExcelImport onFileUploaded={(e) => handleFileUploaded(e)} />
-      </div>
-      </Col>
-      </Row>
-      <Row>
-        <Col>
-        {sheetData && (
-          <>
-                {sheetNames.map((s) => (
-                  <div class="change-sheet">
-                    <input type="radio" 
-                    name="sheetName" 
-                    checked= {s === sheet}
-                    onChange={(e) => handleSheetChange(e)}
-                    value={s} 
-                    key={s} />
-                    <label>{s}</label>
-                  </div>
-                ))}
-
-            <div class="table-wrap">
-                {renderTable()}
-                {renderPageLinks()}
-              </div> 
-            
-          </>
-        )}
+          <ExcelImport onFileUploaded={(e) => handleFileUploaded(e)} />
         </Col>
       </Row>
-    </div>
+
+      {sheetData && (        
+
+          <div className="table-wrap">
+            <Row>
+              <Col>{renderTable()}</Col>
+            </Row>
+
+            <Row>
+              <Col>{renderPageLinks()}</Col>
+            </Row>
+          </div>
+      )}
     </Container>
-    </div>
   );
 };

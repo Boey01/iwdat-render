@@ -38,4 +38,13 @@ module.exports = {
   stats: {
     errorDetails: true,
   },
+
+  resolve: {
+    fallback: {
+      "string_decoder": require.resolve("string_decoder"),
+      "timers": require.resolve("timers-browserify"),
+      "buffer": require.resolve("buffer/"),
+      "stream": require.resolve("stream-browserify")
+    }
+  }
 };

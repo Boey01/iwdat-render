@@ -1,75 +1,87 @@
 import React, { useState, useRef } from "react";
-import { Row, Col, Label } from "reactstrap";
+import { Row, Col, Label, Button } from "reactstrap";
 import loadFileData from "./ExcelDataReader";
 import { AiFillDelete } from "react-icons/ai";
 
 export const ExcelImport = (props) => {
-    const [file, setFile] = useState(null);
-    const [fileName, setFileName] = useState(null);
-    const [sheetData, setSheetData] = useState(null);
+  const [file, setFile] = useState(null);
+  const [fileName, setFileName] = useState(null);
+  const [sheetData, setSheetData] = useState(null);
 
-    const fileRef = useRef();
+  const fileRef = useRef();
 
-    const handleFile = (e) => {
-        const myFile = e.target.files[0];
-        if(!myFile) return;
+  const handleFile = (e) => {
+    const myFile = e.target.files[0];
+    if (!myFile) return;
 
-        setFile(myFile);
-        setFileName(myFile.name);
+    setFile(myFile);
+    setFileName(myFile.name);
+  };
+
+  const handleRemove = () => {
+    setFile(null);
+    setFileName(null);
+    setSheetData(null);
+
+    fileRef.current.value = "";
+  };
+
+  const handleReadData = async () => {
+    const sheetData = await loadFileData(file);
+
+    if (sheetData) {
+      setSheetData(sheetData);
+      props.onFileUploaded(sheetData);
     }
+  };
 
-    const handleRemove = () => {
-        setFile(null);
-        setFileName(null);
-        setSheetData(null);
+  return (
+    <>
+    {/* Title */}
+      <Row>
+        <Col>
+          <h2>Excel Table</h2>
+        </Col>
+      </Row>
 
-        fileRef.current.value = "";           
-    }
+    {/* The labelk for displaying file name */}
+      <Row>
+        <Col>
+          {fileName ? (
+            <Label>{fileName}</Label>
+          ) : (
+            <Label>Please Upload a File</Label>
+          )}
+        </Col>
+      </Row>
 
-    const handleReadData = async () => {
-        const sheetData = await loadFileData(file);
-      
-        if(sheetData) {
-          setSheetData(sheetData);
-          props.onFileUploaded(sheetData);
-        }
-      }
+    {/* Place for uploading file(input) */}
+      <Row>
+        <Col>
+          <input    
+            type="file"
+            accept="xlsx, xls, csv, json, xml"
+            multiple={false}
+            onChange={(e) => handleFile(e)}
+            ref={fileRef}
+          />
 
-    return (
-        <><Row>
-            <Col>
-                <h2>Excel Table</h2>
-            </Col>
-        </Row>
-        <Row>
-                <Col>
-                    <div className="file-upload-section">
-                        {fileName ? <Label>{fileName}</Label> : <Label>Please Upload a File</Label>}
-                    </div>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <input
-                        type="file"
-                        accept="xlsx, xls"
-                        multiple={false}
-                        onChange={(e) => handleFile(e)}
-                        ref={fileRef} />
+          {/* The 'remove file' button */}
+          {fileName && (
+            <i onClick={handleRemove} className="icon">
+              <AiFillDelete />
+            </i>
+          )}
 
-                    {fileName && (
-                        <i onClick={handleRemove} className="icon">
-                            <AiFillDelete />
-                        </i>
-                    )}
-
-                    {file && (
-                        <div>
-                            <button onClick={handleReadData}>Read Excel Data</button>
-                        </div>
-                    )}
-                </Col>
-            </Row>
-            </>
-    );
+            {/* Read data button */}
+          {file && (
+                <div>
+                  <Button onClick={handleReadData}  
+                  color="primary">Read Excel Data</Button>
+                </div>
+          )}
+        </Col>
+      </Row>
+    </>
+  );
 };

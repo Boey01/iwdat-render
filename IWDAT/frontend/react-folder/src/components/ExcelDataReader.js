@@ -1,5 +1,6 @@
 import XLSX from "xlsx";
 import Papa from "papaparse";
+import xml2js from 'xml2js';
 
 
 const checkFileName = (name) => {
@@ -13,7 +14,7 @@ const checkFileName = (name) => {
       return readCSVData;
     case "json":
       return readJSONData;
-    case "xml":
+    case "xml": 
       return readXMLData;
     default:
       return null;
@@ -34,8 +35,6 @@ const readXLSXData = async (file) => {
       blankrows: "",
       header: 1,
     });
-
-    
 
     sheetData[sheet_name] = jsonData;
   }
@@ -68,14 +67,37 @@ const readJSONData = (data) => {
   return null;
 };
 
-const readXMLData = (data) => {
-  // Logic to read XML file format
-  // Modify this function according to the XML file reading logic
-  // Example:
-  // const xmlData = parseXML(data);
-  // const sheetData = extractDataFromXML(xmlData);
-  // return sheetData;
-  return null;
+const readXMLData = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const xmlString = event.target.result;
+      xml2js.parseString(xmlString, (err, result) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+          return;
+        }
+        console.log(result);
+
+        const arrayName = Object.keys(result)[0];
+
+        const headers = Object.keys(result[arrayName][0]);
+
+        // Transforming the JSON data into the desired pattern
+        const transformedData = {};
+        transformedData["Data"] = [headers].concat(
+          result[arrayName].map((arrayName) => Object.values(arrayName))
+        );
+
+        resolve(transformedData);
+      });
+    };
+    reader.onerror = (event) => {
+      reject(event.target.error);
+    };
+    reader.readAsText(file);
+  });
 };
 
 const loadFileData = (file) => {
