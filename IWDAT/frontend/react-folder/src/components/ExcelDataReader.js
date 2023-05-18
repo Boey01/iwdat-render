@@ -22,26 +22,28 @@ const checkFileName = (name) => {
 };
 
 const readXLSXData = async (file) => {
-  const data = await file.arrayBuffer();
-  const wb = XLSX.read(data);
-  const sheetNames = wb.SheetNames;
-  var sheetData = {};
+  try {
+    const data = await file.arrayBuffer();
+    const wb = XLSX.read(data);
+    const sheetNames = wb.SheetNames;
+    const sheetData = {};
 
-  for (var i = 0; i < sheetNames.length; i++) {
-    let sheet_name = sheetNames[i];
-
-    const worksheet = wb.Sheets[sheet_name];
+    sheetNames.forEach((sheet_name) => {
+      const worksheet = wb.Sheets[sheet_name];
     const jsonData = XLSX.utils.sheet_to_json(worksheet, {
       blankrows: "",
       header: 1,
     });
+      sheetData[sheet_name] = jsonData;
+    });
 
-    sheetData[sheet_name] = jsonData;
+    return sheetData;
+  } catch (error) {
+    // Handle any errors that occur during file reading
+    console.error('Error reading XLSX file:', error);
+    throw error; // Rethrow the error or handle it gracefully
   }
-
-  return sheetData;
 };
-
 const readCSVData = (file) => {
     return new Promise((resolve, reject) => {
         var jsonData = {};
@@ -78,19 +80,31 @@ const readXMLData = (file) => {
           reject(err);
           return;
         }
-        console.log(result);
 
-        const arrayName = Object.keys(result)[0];
+        const topLevelElement = Object.keys(result)[0];
+        const tableName = Object.keys(result[topLevelElement])[0];
+        let headers = Object.keys(result[topLevelElement][tableName][0]);
+        let entries =  result[topLevelElement][tableName];
 
-        const headers = Object.keys(result[arrayName][0]);
+        if (headers.includes("$")) {
+          const { modifiedHeaders, modifiedEntries } = removeAndReplaceKey(headers, entries);
+          headers = modifiedHeaders;
+          entries = modifiedEntries;
+        }
 
         // Transforming the JSON data into the desired pattern
-        const transformedData = {};
-        transformedData["Data"] = [headers].concat(
-          result[arrayName].map((arrayName) => Object.values(arrayName))
-        );
+       
+        console.log("headers", headers);
+        console.log("entries",entries);
 
-        resolve(transformedData);
+        const mergedData = { Data: [headers] };
+
+        entries.forEach(item => {
+        const values = headers.map(key => item[key] ? item[key][0] : "");
+        mergedData.Data.push(values);
+});
+
+        resolve(mergedData);
       });
     };
     reader.onerror = (event) => {
@@ -98,6 +112,30 @@ const readXMLData = (file) => {
     };
     reader.readAsText(file);
   });
+};
+
+const removeAndReplaceKey = (headers, entries) => {
+  let newHeader = "";
+  const modifiedEntries = entries.map((obj) => {
+    const modifiedObj = {};
+
+    for (const key in obj) {
+      if (key === "$") {
+        const dollarSignProp = obj["$"];
+        for (const innerKey in dollarSignProp) {
+          modifiedObj[innerKey] = [dollarSignProp[innerKey]];
+          newHeader = newHeader || innerKey;
+        }
+      } else {
+        modifiedObj[key] = obj[key];
+      }
+    }
+
+    return modifiedObj;
+  });
+  const modifiedHeaders = headers.map((key) => key.replace("$", newHeader))
+  ;
+  return { modifiedHeaders, modifiedEntries };
 };
 
 const loadFileData = (file) => {
