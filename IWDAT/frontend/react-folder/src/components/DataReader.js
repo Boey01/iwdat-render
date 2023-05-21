@@ -46,6 +46,8 @@ const readCSVData = (file) => {
         var jsonData = {};
       Papa.parse(file, {
         complete: function(results) {
+          console.log("results", results)
+          console.log("results.data", results.data)
          jsonData["Data"] = results.data;
           resolve(jsonData);
         },
