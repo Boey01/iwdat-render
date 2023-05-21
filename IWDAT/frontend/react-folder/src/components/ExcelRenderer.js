@@ -12,6 +12,8 @@ import {
   Button
 } from "reactstrap";
 
+import Grid from '@mui/material/Unstable_Grid2'; 
+
 export const ExcelRender = () => {
   const [sheetData, setsheetData] = useState(null);
   const [sheet, setsheet] = useState(null);
@@ -111,8 +113,8 @@ export const ExcelRender = () => {
 
     return (
       <>
-      <Row>
-  <Col className="change-sheet">
+      <Grid xs={12}>
+  <Grid item className="change-sheet">
     <ButtonGroup>
       {sheetNames.map((s) => (
         <Button
@@ -125,8 +127,8 @@ export const ExcelRender = () => {
         </Button>
       ))}
     </ButtonGroup>
-  </Col>
-</Row>
+  </Grid>
+</Grid>
 
       <div
         class="table-content"
@@ -156,25 +158,25 @@ export const ExcelRender = () => {
   };
 
   return (
-    <Container className="content">
-      <Row className="file-upload-section">
-        <Col>
+    <Grid container spacing={1} className="content">
+      <Grid xs={12} className="file-upload-section">
+        <Grid item>
           <ExcelImport onFileUploaded={(e) => handleFileUploaded(e)} />
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
 
       {sheetData && (        
 
           <div className="table-wrap">
-            <Row>
-              <Col>{renderTable()}</Col>
-            </Row>
+            <Grid xs={12}>
+              <Grid item>{renderTable()}</Grid>
+            </Grid>
 
-            <Row>
-              <Col>{renderPageLinks()}</Col>
-            </Row>
+            <Grid xs={12}>
+            <Grid item>{renderPageLinks()}</Grid>
+            </Grid>
           </div>
       )}
-    </Container>
+    </Grid>
   );
 };
