@@ -1,12 +1,12 @@
 import React from "react";
 // import { render } from "react-dom";
 import ReactDOM from 'react-dom/client'
-import { ExcelRender } from "./components/ExcelRenderer";
+import { RendererMain } from "./components/DataRenderMain";
 
 
 export default function App(){
     return (
-     <ExcelRender/>
+     <RendererMain/>
     );
 }
 
