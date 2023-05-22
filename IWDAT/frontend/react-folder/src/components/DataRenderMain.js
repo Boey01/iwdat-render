@@ -20,9 +20,11 @@ export const RendererMain = () => {
       </Grid>
 
       {sheetData && (
-        <Grid item xs={12}>
+        <div className="table-wrap">
+        <Grid xs={12}>
           <TableRenderer sheetData={sheetData} />
         </Grid>
+        </div>
       )}
     </Grid>
   );

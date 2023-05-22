@@ -8,6 +8,12 @@
   /* font-family: 'Wix Madefor Display', sans-serif; */
 }
 
+/* .table-wrap {
+  height: 60vh;
+  overflow-y: auto;
+} */
+
+
 /* File uploading section --------------------------------------- */
 .file-upload-section {
   justify-content: center;
@@ -40,27 +46,7 @@
   border-color: #007bff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
 }
-/* ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*/
-
-.table-content {
-  overflow-x: auto;
-  max-width: 100%;
-  box-shadow: 5px 5px 20px rgb(194, 194, 194);
-  margin-bottom: 10px;
-  border-radius: 10px;
-}
-
-.page-info {
-  display: flex;
-  align-items: center;
-  padding: 0 5px 0 5px;
-}
-
-.page-info input{
-  margin: 0 5px 0 5px;
-  border-radius: 10px;
-}
-
+/* ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*/  
 .icon {
   color: rgb(255, 145, 131);
   padding: 0.5em;
