@@ -33,6 +33,7 @@
     "bootstrap": "^5.2.3",
     "buffer": "^6.0.3",
     "papaparse": "^5.4.1",
+    "react-beautiful-dnd": "^13.1.1",
     "react-icons": "^4.8.0",
     "reactstrap": "^9.1.9",
     "stream-browserify": "^3.0.0",

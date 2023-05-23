@@ -20,7 +20,7 @@ export const RendererMain = () => {
       </Grid>
 
       {sheetData && (
-        <div className="table-wrap">
+        <div className="table-workspace">
         <Grid xs={12}>
           <TableRenderer sheetData={sheetData} />
         </Grid>

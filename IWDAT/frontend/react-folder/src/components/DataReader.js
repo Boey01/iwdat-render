@@ -47,8 +47,6 @@ const readCSVData = (file) => {
       Papa.parse(file, {
         header: true,
         complete: function(results) {
-          console.log("results", results)
-          console.log("results.data", results.data)
          jsonData["Data"] = results.data;
           resolve(jsonData);
         },
@@ -87,24 +85,16 @@ const readXMLData = (file) => {
         let entries =  result[topLevelElement][tableName];
 
         if (headers.includes("$")) {
-          const { modifiedHeaders, modifiedEntries } = removeAndReplaceKey(headers, entries);
-          headers = modifiedHeaders;
+          const { modifiedEntries } = removeAndReplaceKey(entries);
           entries = modifiedEntries;
         }
 
         // Transforming the JSON data into the desired pattern
-       
-        console.log("headers", headers);
-        console.log("entries",entries);
 
-        const mergedData = { Data: [headers] };
+        let jsonData = {};
+        jsonData["Data"] = entries;
 
-        entries.forEach(item => {
-        const values = headers.map(key => item[key] ? item[key][0] : "");
-        mergedData.Data.push(values);
-});
-
-        resolve(mergedData);
+        resolve(jsonData);
       });
     };
     reader.onerror = (event) => {
@@ -114,8 +104,7 @@ const readXMLData = (file) => {
   });
 };
 
-const removeAndReplaceKey = (headers, entries) => {
-  let newHeader = "";
+const removeAndReplaceKey = (entries) => {
   const modifiedEntries = entries.map((obj) => {
     const modifiedObj = {};
 
@@ -124,7 +113,6 @@ const removeAndReplaceKey = (headers, entries) => {
         const dollarSignProp = obj["$"];
         for (const innerKey in dollarSignProp) {
           modifiedObj[innerKey] = [dollarSignProp[innerKey]];
-          newHeader = newHeader || innerKey;
         }
       } else {
         modifiedObj[key] = obj[key];
@@ -133,9 +121,7 @@ const removeAndReplaceKey = (headers, entries) => {
 
     return modifiedObj;
   });
-  const modifiedHeaders = headers.map((key) => key.replace("$", newHeader))
-  ;
-  return { modifiedHeaders, modifiedEntries };
+  return {modifiedEntries };
 };
 
 const loadFileData = (file) => {

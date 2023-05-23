@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -23,24 +23,30 @@ const CustomTableContainer = styled(TableContainer)({
 });
 
 export const TableRenderer = ({ sheetData }) => {
-  let sheetName = [];
-  Object.keys(sheetData).forEach((key) => {
-    sheetName.push(key);
-  });
-
-  const firstRow = sheetData[sheetName[0]][0];
-
-  const columns = [];
-  Object.keys(firstRow).forEach((key) => {
-    columns.push({
-      field: key,
-      headerName: key
+    const [rows, setRows] = useState([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+  
+    let sheetName = [];
+    Object.keys(sheetData).forEach((key) => {
+      sheetName.push(key);
     });
-  });
-
-  const [rows, setRows] = useState(sheetData[sheetName[0]]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  
+    const firstRow = sheetData[sheetName[0]][0];
+  
+    const columns = [];
+    Object.keys(firstRow).forEach((key) => {
+      columns.push({
+        field: key,
+        headerName: key
+      });
+    });
+  
+    useEffect(() => {
+      setRows(sheetData[sheetName[0]]);
+      setPage(0);
+    }, [sheetData, sheetName]);
+  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
