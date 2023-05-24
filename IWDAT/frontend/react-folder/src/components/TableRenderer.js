@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -23,30 +23,24 @@ const CustomTableContainer = styled(TableContainer)({
 });
 
 export const TableRenderer = ({ sheetData }) => {
-    const [rows, setRows] = useState([]);
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-  
-    let sheetName = [];
-    Object.keys(sheetData).forEach((key) => {
-      sheetName.push(key);
+  let sheetName = [];
+  Object.keys(sheetData).forEach((key) => {
+    sheetName.push(key);
+  });
+
+  const firstRow = sheetData[sheetName[0]][0];
+
+  const columns = [];
+  Object.keys(firstRow).forEach((key) => {
+    columns.push({
+      field: key,
+      headerName: key
     });
-  
-    const firstRow = sheetData[sheetName[0]][0];
-  
-    const columns = [];
-    Object.keys(firstRow).forEach((key) => {
-      columns.push({
-        field: key,
-        headerName: key
-      });
-    });
-  
-    useEffect(() => {
-      setRows(sheetData[sheetName[0]]);
-      setPage(0);
-    }, [sheetData, sheetName]);
-  
+  });
+
+  const [rows, setRows] = useState(sheetData[sheetName[0]]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -135,6 +129,12 @@ function EditableTableCell({ value, rowIndex, field, onCellValueChange }) {
     }
   };
 
+  const handleKeyDown = (event) => {
+  if (event.key === 'Enter') {
+    handleBlur();
+  }
+}
+
   const handleChange = (event) => {
     setCellValue(event.target.value);
   };
@@ -147,6 +147,7 @@ function EditableTableCell({ value, rowIndex, field, onCellValueChange }) {
           value={cellValue}
           onChange={handleChange}
           onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
           autoFocus
         />
       ) : (
