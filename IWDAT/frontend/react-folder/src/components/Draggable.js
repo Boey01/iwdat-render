@@ -1,25 +1,24 @@
-import React, { useState} from 'react';
+import React, { useContext, useState } from 'react';
 import Draggable from 'react-draggable';
+import { ZIndexContext } from './ZIndexContext';
 
 const MakeDraggable = ({ children }) => {
+  const { globalZIndex, updateGlobalZIndex } = useContext(ZIndexContext);
+  const [localZIndex, setLocalZIndex] = useState(globalZIndex);
 
-  const onStart = (event) => {
-    if (!event.ctrlKey || event.button !== 0) {
-      return false; // Prevent dragging
-    }
+  const onStart = () => {
+    updateGlobalZIndex();
+    setLocalZIndex(globalZIndex + 1);
   };
 
-
-  const dragHandlers = { onStart };
-  
   const draggableStyle = {
-    zIndex: 0,
+    zIndex: localZIndex,
     position: 'absolute',
   };
 
   return (
-    <Draggable {...dragHandlers}>
-        <div style={draggableStyle}>{children}</div>
+    <Draggable onStart={onStart}>
+      <div style={draggableStyle}>{children}</div>
     </Draggable>
   );
 };

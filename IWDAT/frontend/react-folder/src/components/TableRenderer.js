@@ -15,7 +15,6 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
-import MakeDraggable from './Draggable';
 
 const CustomTableContainer = styled(TableContainer)({
   maxHeight: "60vh",
@@ -65,7 +64,6 @@ export const TableRenderer = ({ sheetData }) => {
 
   return (
     <>
-    <MakeDraggable>
     <div>
       <CustomTableContainer component={Paper}>
         <Table stickyHeader>
@@ -114,12 +112,6 @@ export const TableRenderer = ({ sheetData }) => {
         ActionsComponent={TablePaginationActions}
       />
     </div>
-    </MakeDraggable>
-    <MakeDraggable>
-  <div style={{ width: '100px', height: '100px', backgroundColor: 'black' }}>
-    <p>test</p>
-  </div>
-</MakeDraggable>
     </>
   );
 };
