@@ -8,6 +8,14 @@
   /* font-family: 'Wix Madefor Display', sans-serif; */
 }
 
+.table-workspace{
+  margin-top: 30vh;
+  position:relative;
+  display: flex;
+  align-items: center; /* Vertically center the centered element */
+  justify-content: center; 
+
+}
 /* File uploading section --------------------------------------- */
 .file-upload-section {
   justify-content: center;

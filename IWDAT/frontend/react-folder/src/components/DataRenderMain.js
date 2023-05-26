@@ -23,10 +23,9 @@ export const RendererMain = () => {
         <Grid item xs={12} className="file-upload-section">
           <FileImport onFileUploaded={(e) => handleFileUploaded(e)} />
         </Grid>
-
+        </Grid>
         {sheetData && (
           <div className="table-workspace">
-            <Grid xs={12}>
               <MakeDraggable>
                 <TableRenderer sheetData={sheetData} />
               </MakeDraggable>
@@ -44,10 +43,8 @@ export const RendererMain = () => {
               </MakeDraggable>
 
               {/* Add more <MakeDraggable> components dynamically */}
-            </Grid>
           </div>
         )}
-      </Grid>
     </ZIndexProvider>
   );
 };
