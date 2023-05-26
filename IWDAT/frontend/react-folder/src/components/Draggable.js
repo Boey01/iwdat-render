@@ -6,7 +6,10 @@ const MakeDraggable = ({ children }) => {
   const { globalZIndex, updateGlobalZIndex } = useContext(ZIndexContext);
   const [localZIndex, setLocalZIndex] = useState(globalZIndex);
 
-  const onStart = () => {
+  const onStart = (event) => {
+    if (!event.ctrlKey || event.button !== 0) {
+      return false; // Prevent dragging
+    }
     updateGlobalZIndex();
     setLocalZIndex(globalZIndex + 1);
   };
