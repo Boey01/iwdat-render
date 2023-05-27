@@ -2,11 +2,14 @@ import React, { createContext, useState } from 'react';
 
 export const ZIndexContext = createContext();
 
-export const ZIndexProvider = ({ children }) => {
+export default function ZIndexProvider ({ children }) {
   const [globalZIndex, setGlobalZIndex] = useState(0);
 
   const updateGlobalZIndex = () => {
-    setGlobalZIndex((prevZIndex) => prevZIndex + 1);
+    setGlobalZIndex((prevZIndex) => {
+      const newIndex = prevZIndex + 1;
+      return newIndex > 100 ? 0 : newIndex;
+    });
   };
 
   return (

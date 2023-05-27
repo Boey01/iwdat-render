@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { FileImport } from './FileUploadHandler';
-import { TableRenderer } from './TableRenderer';
+import FileImport from './Tables/FileUploadHandler';
+import TableRenderer from './Tables/TableRenderer';
 import Grid from '@mui/material/Grid';
 import MiniDrawer from './SideBar';
 import MakeDraggable from './Draggable';
-import { ZIndexProvider } from './ZIndexContext';
+import ZIndexProvider from './ZIndexContext';
+import TableManager from './Tables/TableManager';
 
 export const RendererMain = () => {
   const [sheetData, setSheetData] = useState(null);
@@ -19,7 +20,9 @@ export const RendererMain = () => {
   return (
     <ZIndexProvider>
       <MiniDrawer />
-      <Grid container spacing={1} className="content">
+      <TableManager/>
+      <div class= "content">
+      <Grid container spacing={1}>
         <Grid item xs={12} className="file-upload-section">
           <FileImport onFileUploaded={(e) => handleFileUploaded(e)} />
         </Grid>
@@ -45,6 +48,7 @@ export const RendererMain = () => {
               {/* Add more <MakeDraggable> components dynamically */}
           </div>
         )}
+        </div>
     </ZIndexProvider>
   );
 };
