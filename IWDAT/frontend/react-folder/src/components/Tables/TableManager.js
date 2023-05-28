@@ -1,54 +1,87 @@
-import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
-import MakeDraggable from '../Draggable';
-import Modal from '@mui/material/Modal';
-import FileImport from './FileUploadHandler';
-import Grid from '@mui/material/Grid';
-import TableRenderer from './TableRenderer';
+import React, { useState } from "react";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+import MakeDraggable from "../Draggable";
+import Modal from "@mui/material/Modal";
+import FileImport from "./FileUploadHandler";
+import Grid from "@mui/material/Grid";
+import TableRenderer from "./TableRenderer";
+import Popover from "@mui/material/Popover";
 
 const TableManagerButton = styled(Button)({
-  left: '10vw',
+  left: "10vw",
 });
 
-const ModalContent = styled('div')({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  backgroundColor: 'white',
-  padding: '16px',
+const ModalContent = styled("div")({
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  backgroundColor: "white",
+  padding: "16px",
 });
 
 export default function TableManager() {
-  const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleOpen = () => {
-    setOpen(true);
+  const handleOpenModal = () => {
+    setModalOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseModal = () => {
+    setModalOpen(false);
   };
 
   const handleFileUploaded = (fileData) => {
-    const newFiles = [...uploadedFiles, fileData];
-    setUploadedFiles(newFiles);
-    handleClose();
+    setUploadedFiles(uploadedFiles => [...uploadedFiles, fileData]);
+    handleCloseModal();
+  };
+
+  const handleOpenPopover = (event) => {
+    setAnchorEl(event.currentTarget);
+    setPopoverOpen(true);
+  };
+
+  const handleClosePopover = () => {
+    setPopoverOpen(false);
   };
 
   return (
     <>
       <MakeDraggable>
-        <TableManagerButton variant="contained" onClick={handleOpen}>
-          Add new table
+        <TableManagerButton variant="contained" onClick={handleOpenPopover}>
+          Table Manager
         </TableManagerButton>
       </MakeDraggable>
 
-      <Modal open={open} onClose={handleClose}>
+      <Popover
+        anchorEl={anchorEl}
+        open={popoverOpen}
+        onClose={handleClosePopover}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+      >
+        {/* --------- The content of table manager ------- */}
+        <Button variant="contained" onClick={handleOpenModal}>
+          Add new table
+        </Button>
+      </Popover>
+
+      <Modal open={modalOpen} onClose={handleCloseModal}>
         <ModalContent>
-          <Button onClick={handleClose} style={{ position: 'absolute', top: '8px', right: '8px' }}>
+          <Button
+            onClick={handleCloseModal}
+            style={{ position: "absolute", top: "8px", right: "8px" }}
+          >
             X
           </Button>
           <Grid container spacing={1}>
@@ -59,7 +92,6 @@ export default function TableManager() {
         </ModalContent>
       </Modal>
 
-      
       {uploadedFiles.map((fileData, index) => (
         <div key={index} className="table-workspace">
           <MakeDraggable>
