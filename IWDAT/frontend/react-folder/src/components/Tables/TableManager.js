@@ -7,6 +7,12 @@ import FileImport from "./FileUploadHandler";
 import Grid from "@mui/material/Grid";
 import TableRenderer from "./TableRenderer";
 import Popover from "@mui/material/Popover";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import Checkbox from "@mui/material/Checkbox";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
 
 const TableManagerButton = styled(Button)({
   left: "10vw",
@@ -36,7 +42,8 @@ export default function TableManager() {
   };
 
   const handleFileUploaded = (fileData) => {
-    setUploadedFiles(uploadedFiles => [...uploadedFiles, fileData]);
+    const newFiles = [...uploadedFiles, fileData];
+    setUploadedFiles(newFiles);
     handleCloseModal();
   };
 
@@ -47,6 +54,12 @@ export default function TableManager() {
 
   const handleClosePopover = () => {
     setPopoverOpen(false);
+  };
+
+  const handleDeleteTable = (index) => {
+    const updatedFiles = [...uploadedFiles];
+    updatedFiles.splice(index, 1);
+    setUploadedFiles(updatedFiles);
   };
 
   return (
@@ -71,9 +84,28 @@ export default function TableManager() {
         }}
       >
         {/* --------- The content of table manager ------- */}
-        <Button variant="contained" onClick={handleOpenModal}>
+        <List>
+          <ListItem>
+          <Button variant="contained" onClick={handleOpenModal} sx={{px: 2}}>
           Add new table
         </Button>
+          </ListItem>
+          {uploadedFiles.map((fileData, index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton>
+                <Checkbox />
+                TableName
+                <IconButton
+                  onClick={() => handleDeleteTable(index)}
+                  edge="end"
+                  aria-label="delete"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
       </Popover>
 
       <Modal open={modalOpen} onClose={handleCloseModal}>
@@ -92,13 +124,15 @@ export default function TableManager() {
         </ModalContent>
       </Modal>
 
+      <div className="table-workspace">
       {uploadedFiles.map((fileData, index) => (
-        <div key={index} className="table-workspace">
+        <div key={index}>
           <MakeDraggable>
             <TableRenderer sheetData={fileData} />
           </MakeDraggable>
         </div>
       ))}
+      </div>
     </>
   );
 }

@@ -21,7 +21,7 @@ const MakeDraggable = ({ children }) => {
   };
 
   return (
-    <Draggable onStart={onStart}>
+    <Draggable onStart={onStart} >
       <div style={draggableStyle}>
         {children}
         </div>

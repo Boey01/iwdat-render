@@ -18,8 +18,6 @@ export const RendererMain = () => {
       <MiniDrawer />
       <TableManager/>
       <div class= "content">
-          <div className="table-workspace">
-          </div>
         </div>
     </ZIndexProvider>
   );

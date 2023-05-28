@@ -15,6 +15,7 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 const CustomTableContainer = styled(TableContainer)({
   maxHeight: "60vh",
@@ -64,8 +65,9 @@ export default function TableRenderer ({ sheetData }){
 
   return (
     <>
-    <div>
-      <CustomTableContainer component={Paper}>
+    <div class="table-wrapper">
+      <div class="table-title-bar"> <Typography variant="h6" >Table name</Typography></div>
+      <CustomTableContainer component={Paper} elevation={0} variant="outlined" square>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
