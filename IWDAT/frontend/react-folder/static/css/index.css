@@ -9,13 +9,24 @@
 }
 
 .table-workspace{
-  margin-top: 30vh;
-  position:relative;
-  display: flex;
-  align-items: center; /* Vertically center the centered element */
-  justify-content: center; 
-
+  margin-top: 300px;
+  margin-left: 300px;
 }
+
+.table-wrapper{
+  box-shadow: 3px 3px 21px -6px;    
+  border-radius: 5  px;
+  /* border: solid 1px rgba(114, 114, 114, 0.842); */
+  background-color: white;
+}
+
+.table-title-bar{
+  background-color: rgba(116, 109, 248, 0.856);
+  padding: 10px;
+  color: white; 
+  border-radius: 5px 5px 0 0 ;
+}
+
 /* File uploading section --------------------------------------- */
 .file-upload-section {
   justify-content: center;
