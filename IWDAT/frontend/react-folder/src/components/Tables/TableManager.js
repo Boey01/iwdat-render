@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import MakeDraggable from "../Draggable";
 import Modal from "@mui/material/Modal";
-import FileImport from "./FileUploadHandler";
+import FileImport from "../DataImporting/FileUploadHandler";
 import Grid from "@mui/material/Grid";
 import TableRenderer from "./TableRenderer";
 import Popover from "@mui/material/Popover";

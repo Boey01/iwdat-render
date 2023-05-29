@@ -15,7 +15,11 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import Popover from "@mui/material/Popover";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Button from "@mui/material/Button";
 
 const CustomTableContainer = styled(TableContainer)({
   maxHeight: "60vh",
@@ -23,7 +27,8 @@ const CustomTableContainer = styled(TableContainer)({
   width: "70vw",
 });
 
-export default function TableRenderer ({ sheetData }){
+export default function TableRenderer({ sheetData }) {
+  //process sheet data ---------------
   let sheetName = [];
   Object.keys(sheetData).forEach((key) => {
     sheetName.push(key);
@@ -35,13 +40,18 @@ export default function TableRenderer ({ sheetData }){
   Object.keys(firstRow).forEach((key) => {
     columns.push({
       field: key,
-      headerName: key
+      headerName: key,
     });
   });
+  //------------------- ---------------
 
   const [rows, setRows] = useState(sheetData[sheetName[0]]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedColumns, setSelectedColumns] = useState(
+    columns.map((column) => column.field)
+  );
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -60,63 +70,141 @@ export default function TableRenderer ({ sheetData }){
     });
   };
 
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
+  function renderColumnsManager() {
+    return (
+      <>
+        <Button
+          variant="contained"
+          onClick={handlePopoverOpen}
+          disableElevation
+        >
+          Select Columns
+        </Button>
+        <Popover
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handlePopoverClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+        >
+          <FormGroup>
+            {columns.map((column) => (
+              <FormControlLabel
+                key={column.field}
+                control={
+                  <Checkbox
+                    checked={selectedColumns.includes(column.field)}
+                    onChange={(event) => {
+                      const checked = event.target.checked;
+                      setSelectedColumns((prevSelectedColumns) => {
+                        if (checked) {
+                          return [...prevSelectedColumns, column.field];
+                        } else {
+                          return prevSelectedColumns.filter(
+                            (field) => field !== column.field
+                          );
+                        }
+                      });
+                    }}
+                  />
+                }
+                label={column.headerName}
+              />
+            ))}
+          </FormGroup>
+        </Popover>
+      </>
+    );
+  }
+
   return (
     <>
-    <div class="table-wrapper">
-      <div class="table-title-bar"> <Typography variant="h6" >Table name</Typography></div>
-      <CustomTableContainer component={Paper} elevation={0} variant="outlined" square>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell key={column.field}>{column.headerName}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(rowsPerPage > 0
-              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : rows
-            ).map((row, rowIndex) => (
-              <TableRow key={rowIndex}>
-                {columns.map((column) => (
-                  <EditableTableCell
-                    key={column.field}
-                    value={row[column.field]}
-                    rowIndex={rowIndex}
-                    field={column.field}
-                    onCellValueChange={handleCellValueChange}
-                  />
-                ))}
-              </TableRow>
-            ))}
-
-            {emptyRows > 0 && (
+      <div className="table-wrapper">
+        <div className="table-title-bar">
+          <span>Table name </span> {renderColumnsManager()}
+        </div>
+        <CustomTableContainer
+          component={Paper}
+          elevation={0}
+          variant="outlined"
+          square
+        >
+          <Table stickyHeader>
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={columns.length} />
+                {columns
+                  .filter((column) => selectedColumns.includes(column.field))
+                  .map((column) => (
+                    <TableCell key={column.field}>
+                      {column.headerName}
+                    </TableCell>
+                  ))}
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </CustomTableContainer>
+            </TableHead>
+            <TableBody>
+              {(rowsPerPage > 0
+                ? rows.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  )
+                : rows
+              ).map((row, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  {columns
+                    .filter((column) => selectedColumns.includes(column.field))
+                    .map((column) => (
+                      <EditableTableCell
+                        key={column.field}
+                        value={row[column.field]}
+                        rowIndex={rowIndex}
+                        field={column.field}
+                        onCellValueChange={handleCellValueChange}
+                      />
+                    ))}
+                </TableRow>
+              ))}
+              {emptyRows > 0 && (
+                <TableRow>
+                  <TableCell colSpan={selectedColumns.length} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CustomTableContainer>
 
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25, 50, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        ActionsComponent={TablePaginationActions}
-      />
-    </div>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25, 50, 100]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          ActionsComponent={TablePaginationActions}
+        />
+      </div>
     </>
   );
-};
+}
 
 function EditableTableCell({ value, rowIndex, field, onCellValueChange }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -134,10 +222,10 @@ function EditableTableCell({ value, rowIndex, field, onCellValueChange }) {
   };
 
   const handleKeyDown = (event) => {
-  if (event.key === 'Enter') {
-    handleBlur();
-  }
-}
+    if (event.key === "Enter") {
+      handleBlur();
+    }
+  };
 
   const handleChange = (event) => {
     setCellValue(event.target.value);
@@ -165,7 +253,7 @@ EditableTableCell.propTypes = {
   value: PropTypes.any.isRequired,
   rowIndex: PropTypes.number.isRequired,
   field: PropTypes.string.isRequired,
-  onCellValueChange: PropTypes.func.isRequired
+  onCellValueChange: PropTypes.func.isRequired,
 };
 
 function TablePaginationActions(props) {
@@ -234,5 +322,5 @@ TablePaginationActions.propTypes = {
   count: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired
+  rowsPerPage: PropTypes.number.isRequired,
 };

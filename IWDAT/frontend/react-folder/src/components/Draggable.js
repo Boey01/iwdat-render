@@ -7,9 +7,13 @@ const MakeDraggable = ({ children }) => {
   const [localZIndex, setLocalZIndex] = useState(globalZIndex);
 
   const onStart = (event) => {
+    const isHandleClicked = event.target.classList.contains('table-title-bar');
+
+    if (!isHandleClicked) {
       if (!event.ctrlKey || event.button !== 0) {
         return false; // Prevent dragging
       }
+    }
 
     updateGlobalZIndex();
     setLocalZIndex(globalZIndex + 1);
@@ -21,10 +25,10 @@ const MakeDraggable = ({ children }) => {
   };
 
   return (
-    <Draggable onStart={onStart} >
+    <Draggable onStart={onStart}>
       <div style={draggableStyle}>
         {children}
-        </div>
+      </div>
     </Draggable>
   );
 };
