@@ -6,16 +6,17 @@ import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
+import { styled} from "@mui/material/styles";
 import TablePagination from "@mui/material/TablePagination";
 import Popover from "@mui/material/Popover";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
-import EditableTableCell from "./EditableTableCell";
-import TablePaginationActions from "./TablePaginationActions";
+import EditableTableCell from "./EditableTableCell"
+import TablePaginationActions from "./TablePaginationActions"
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+
 
 const CustomTableContainer = styled(TableContainer)({
   maxHeight: "60vh",
@@ -24,31 +25,31 @@ const CustomTableContainer = styled(TableContainer)({
 });
 
 export default function TableRenderer({ sheetData }) {
-  // process sheet data ---------------
-  let sheetName = [];
-  Object.keys(sheetData).forEach((key) => sheetName.push(key));
+   // process sheet data ---------------
+   let sheetName = [];
+   Object.keys(sheetData).forEach((key) => sheetName.push(key));
+ 
+   const firstRow = sheetData[sheetName[0]][0];
+ 
+   const initialColumns = [];
+   Object.keys(firstRow).forEach((key) => {
+     initialColumns.push({
+       field: key,
+       headerName: key,
+     });
+   });
+   //------------------- ---------------
+ 
+   const [columns, setColumns] = useState(initialColumns);
+   const [rows, setRows] = useState(sheetData[sheetName[0]]);
+   const [page, setPage] = useState(0);
+   const [rowsPerPage, setRowsPerPage] = useState(5);
+   const [anchorEl, setAnchorEl] = useState(null);
+   const [selectedColumns, setSelectedColumns] = useState(
+     initialColumns.map((column) => column.field)
+   );
 
-  const firstRow = sheetData[sheetName[0]][0];
-
-  const initialColumns = [];
-  Object.keys(firstRow).forEach((key) => {
-    initialColumns.push({
-      field: key,
-      headerName: key,
-    });
-  });
-  //------------------- ---------------
-
-  const [columns, setColumns] = useState(initialColumns);
-  const [rows, setRows] = useState(sheetData[sheetName[0]]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedColumns, setSelectedColumns] = useState(
-    initialColumns.map((column) => column.field)
-  );
-
-  const handleChangePage = (event, newPage) => setPage(newPage);
+   const handleChangePage = (event, newPage) => setPage(newPage);
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -79,13 +80,16 @@ export default function TableRenderer({ sheetData }) {
 
   const open = Boolean(anchorEl);
 
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   function renderColumnsManager() {
     return (
       <>
-        <Button variant="contained" onClick={handlePopoverOpen} disableElevation>
+        <Button
+          variant="contained"
+          onClick={handlePopoverOpen}
+          disableElevation
+        >
           Select Columns
         </Button>
         <Popover
@@ -101,8 +105,17 @@ export default function TableRenderer({ sheetData }) {
             horizontal: "center",
           }}
         >
-          <FormGroup>
+           <DragDropContext onDragEnd={handleColumnReorder}>
+           <Droppable droppableId="columns" direction="vertical">
+        {(provided) => (
+          <FormGroup  {...provided.droppableProps} ref={provided.innerRef}>
             {columns.map((column, index) => (
+              <Draggable
+              key={column.field}
+              draggableId={column.field}
+              index={index}
+            >
+              {(provided) => (
               <FormControlLabel
                 key={column.field}
                 control={
@@ -123,9 +136,18 @@ export default function TableRenderer({ sheetData }) {
                   />
                 }
                 label={column.headerName}
+                {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              ref={provided.innerRef}
               />
+              )}
+              </Draggable>
             ))}
+            {provided.placeholder}
           </FormGroup>
+           )}
+          </Droppable>
+          </DragDropContext>
         </Popover>
       </>
     );
@@ -137,64 +159,55 @@ export default function TableRenderer({ sheetData }) {
         <div className="table-title-bar">
           <span>Table name </span> {renderColumnsManager()}
         </div>
-        <CustomTableContainer component={Paper} elevation={0} variant="outlined" square>
-          <DragDropContext onDragEnd={handleColumnReorder}>
-            <Table stickyHeader>
-              <TableHead>
-                <Droppable droppableId="columns" direction="horizontal">
-                  {(provided) => (
-                    <TableRow {...provided.droppableProps} ref={provided.innerRef}>
-                      {columns.map((column, index) => (
-                        <Draggable
-                          key={column.field}
-                          draggableId={column.field}
-                          index={index}
-                        >
-                          {(provided) => (
-                            <TableCell
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              ref={provided.innerRef}
-                            >
-                              {column.headerName}
-                            </TableCell>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </TableRow>
-                  )}
-                </Droppable>
-              </TableHead>
-              <TableBody>
-                {(rowsPerPage > 0
-                  ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  : rows
-                ).map((row, rowIndex) => (
-                  <TableRow key={rowIndex}>
-                    {columns
-                      .filter((column) => selectedColumns.includes(column.field))
-                      .map((column) => (
-                        <EditableTableCell
-                          key={column.field}
-                          value={row[column.field]}
-                          rowIndex={rowIndex}
-                          field={column.field}
-                          onCellValueChange={handleCellValueChange}
-                          page={page}
-                          rowsPerPage={rowsPerPage}
-                        />
-                      ))}
-                  </TableRow>
-                ))}
-                {emptyRows > 0 && (
-                  <TableRow>
-                    <TableCell colSpan={selectedColumns.length} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </DragDropContext>
+        <CustomTableContainer
+          component={Paper}
+          elevation={0}
+          variant="outlined"
+          square
+        >
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                {columns
+                  .filter((column) => selectedColumns.includes(column.field))
+                  .map((column) => (
+                    <TableCell key={column.field}>
+                      {column.headerName}
+                    </TableCell>
+                  ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {(rowsPerPage > 0
+                ? rows.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  )
+                : rows
+              ).map((row, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  {columns
+                    .filter((column) => selectedColumns.includes(column.field))
+                    .map((column) => (
+                      <EditableTableCell
+                        key={column.field}
+                        value={row[column.field]}
+                        rowIndex={rowIndex}
+                        field={column.field}
+                        onCellValueChange={handleCellValueChange}
+                        page = {page}
+                        rowsPerPage={rowsPerPage}
+                      />
+                    ))}
+                </TableRow>
+              ))}
+              {emptyRows > 0 && (
+                <TableRow>
+                  <TableCell colSpan={selectedColumns.length} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </CustomTableContainer>
 
         <TablePagination
@@ -211,3 +224,4 @@ export default function TableRenderer({ sheetData }) {
     </>
   );
 }
+
