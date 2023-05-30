@@ -8,14 +8,9 @@ import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 import { styled} from "@mui/material/styles";
 import TablePagination from "@mui/material/TablePagination";
-import Popover from "@mui/material/Popover";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Button from "@mui/material/Button";
 import EditableTableCell from "./EditableTableCell"
 import TablePaginationActions from "./TablePaginationActions"
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import ColumnsManager from "./ColumnsManager";
 
 
 const CustomTableContainer = styled(TableContainer)({
@@ -44,7 +39,6 @@ export default function TableRenderer({ sheetData }) {
    const [rows, setRows] = useState(sheetData[sheetName[0]]);
    const [page, setPage] = useState(0);
    const [rowsPerPage, setRowsPerPage] = useState(5);
-   const [anchorEl, setAnchorEl] = useState(null);
    const [selectedColumns, setSelectedColumns] = useState(
      initialColumns.map((column) => column.field)
    );
@@ -64,10 +58,6 @@ export default function TableRenderer({ sheetData }) {
     });
   };
 
-  const handlePopoverOpen = (event) => setAnchorEl(event.currentTarget);
-
-  const handlePopoverClose = () => setAnchorEl(null);
-
   const handleColumnReorder = (result) => {
     if (!result.destination) return;
 
@@ -78,86 +68,18 @@ export default function TableRenderer({ sheetData }) {
     setColumns(reorderedColumns);
   };
 
-  const open = Boolean(anchorEl);
-
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
-  function renderColumnsManager() {
-    return (
-      <>
-        <Button
-          variant="contained"
-          onClick={handlePopoverOpen}
-          disableElevation
-        >
-          Select Columns
-        </Button>
-        <Popover
-          open={open}
-          anchorEl={anchorEl}
-          onClose={handlePopoverClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-        >
-           <DragDropContext onDragEnd={handleColumnReorder}>
-           <Droppable droppableId="columns" direction="vertical">
-        {(provided) => (
-          <FormGroup  {...provided.droppableProps} ref={provided.innerRef}>
-            {columns.map((column, index) => (
-              <Draggable
-              key={column.field}
-              draggableId={column.field}
-              index={index}
-            >
-              {(provided) => (
-              <FormControlLabel
-                key={column.field}
-                control={
-                  <Checkbox
-                    checked={selectedColumns.includes(column.field)}
-                    onChange={(event) => {
-                      const checked = event.target.checked;
-                      setSelectedColumns((prevSelectedColumns) => {
-                        if (checked) {
-                          return [...prevSelectedColumns, column.field];
-                        } else {
-                          return prevSelectedColumns.filter(
-                            (field) => field !== column.field
-                          );
-                        }
-                      });
-                    }}
-                  />
-                }
-                label={column.headerName}
-                {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              ref={provided.innerRef}
-              />
-              )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </FormGroup>
-           )}
-          </Droppable>
-          </DragDropContext>
-        </Popover>
-      </>
-    );
-  }
 
   return (
     <>
       <div className="table-wrapper">
         <div className="table-title-bar">
-          <span>Table name </span> {renderColumnsManager()}
+          <span>Table name </span>  
+          <ColumnsManager
+            columns={columns}
+            selectedColumns={selectedColumns}
+            handleColumnReorder={handleColumnReorder}
+          />
         </div>
         <CustomTableContainer
           component={Paper}
