@@ -6,7 +6,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
-export default function ColumnsManager({ columns, selectedColumns, handleColumnReorder }) {
+export default function ColumnsManager({ 
+  columns, 
+  selectedColumns, 
+  handleColumnReorder,
+   setSelectedColumns }) 
+   {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handlePopoverOpen = (event) => setAnchorEl(event.currentTarget);

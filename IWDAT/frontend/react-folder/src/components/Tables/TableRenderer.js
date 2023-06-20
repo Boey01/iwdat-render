@@ -56,7 +56,7 @@ export default function TableRenderer({ sheetData }) {
       updatedRows[rowIndex][field] = newValue;
       return updatedRows;
     });
-  };
+  }; 
 
   const handleColumnReorder = (result) => {
     if (!result.destination) return;
@@ -79,6 +79,7 @@ export default function TableRenderer({ sheetData }) {
             columns={columns}
             selectedColumns={selectedColumns}
             handleColumnReorder={handleColumnReorder}
+            setSelectedColumns={setSelectedColumns} 
           />
         </div>
         <CustomTableContainer
