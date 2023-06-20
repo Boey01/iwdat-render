@@ -8,6 +8,13 @@
   position:relative;
 }
 
+.make-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
 .table-workspace{
   margin-top: 300px;
   margin-left: 300px;
