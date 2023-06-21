@@ -14,11 +14,21 @@ class UserAccountManager(BaseUserManager):
         user.save()
 
         return user
+    
+    def create_superuser(self, email, name, password, **kwargs):
+       user = self.create_user(email, name, password=password)
+       user.is_superuser = True
+       user.is_staff = True
+
+       user.save()
+       return user
 
 class UserAccount(AbstractBaseUser, PermissionsMixin, models.Model):
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default = True)
+    is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
 
     objects = UserAccountManager()
 
