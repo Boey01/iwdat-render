@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     #Below are apps that are outside from default built-in app  
     'frontend',
     'backend',
+    'rest_framework',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -96,7 +98,42 @@ DATABASES = {
     }
 }
 
+#lpcyycfzqtkmjspn
+EMAIL_BACKEND =  'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587 
+EMAIL_HOST_USER = 'boeyphoto01@gmail.com'
+EMAIL_HOST_PASSWORD = 'lpcyycfzqtkmjspn'
+EMAIL_USE_TLS = True
 
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'USERNAME_CHANGED_EMAIL_CONFIRMATION':True,
+    'USERNAME_CHANGED_PASSWORD_CONFIRMATION':True,
+    'SEND_CONFIRMATION_EMAIL':True,
+    'SET_USERNAME_RETYPE': True,
+    'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'activate/{uid}/token',
+    'SEND_ACTIVATION_EMAIL':True,
+    'SERIALIZERS':{
+        'user_create': 'backend.serializers.UserCreateSerializer',
+        'user': 'backend.serializers.UserCreateSerializer',
+        'user_delete': 'djoser.serializers.UserDeleteSerializer',
+    }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -141,3 +178,5 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'backend.UserAccount'
