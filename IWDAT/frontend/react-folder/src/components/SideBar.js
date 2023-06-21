@@ -18,6 +18,7 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from '@mui/icons-material/Logout';
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 const closedDrawerWidth = 7*8 +1; //`calc(${theme.spacing(7)} + 1px)`
@@ -160,7 +161,9 @@ export default function MiniDrawer() {
           {renderSideBarItem({ text: "Dashboard", icon: <DashboardIcon /> })}
           <div style={{ flexGrow: 1 }}></div> {/* Empty div to push the last item to the bottom */}
           <Divider />
+          <Link to="/login">
           {renderSideBarItem({ text: "Logout", icon: <LogoutIcon /> })}
+          </Link>
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
