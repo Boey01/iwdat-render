@@ -4,17 +4,15 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
+import { reset_password_req } from "../../redux/actions/auth_actions";
+import { connect } from "react-redux";
   
-export const ResetPassReq = () =>{
+export const ResetPassReq = ({reset_password_req}) =>{
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-          email: data.get("email"),
-
-        });
+        reset_password_req(data.get("email"));
       };
-
 
   return (
     <div className="make-center">
@@ -57,4 +55,5 @@ export const ResetPassReq = () =>{
     </div>
   );
 };
-  
+
+export default connect(null, { reset_password_req })(ResetPassReq);

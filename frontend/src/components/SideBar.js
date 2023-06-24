@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -19,6 +19,8 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Link } from "react-router-dom";
+import {connect } from 'react-redux';
+import { logout } from "../redux/actions/auth_actions";
 
 const drawerWidth = 240;
 const closedDrawerWidth = 7 * 8 + 1; //`calc(${theme.spacing(7)} + 1px)`
@@ -92,8 +94,8 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MiniDrawer() {
-  const [open, setOpen] = React.useState(false);
+export function MiniDrawer({isAuthenticated, user, logout}) {
+  const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(!open);
@@ -139,15 +141,17 @@ export default function MiniDrawer() {
           <button className="menu-icon" onClick={handleDrawerOpen}>
             <MenuIcon fontSize="small" />
           </button>
-          {/* {user ? (
-            <ListItemText
-              primary={user.name}
-              secondary={user.email}
-              sx={{
-                opacity: open ? 1 : 0,
-                transition: "opacity 0.3s",
-              }}
-            />
+          {isAuthenticated ? (
+            user && user.name ? (
+              <ListItemText
+                primary={user.name}
+                secondary={user.email}
+                sx={{
+                  opacity: open ? 1 : 0,
+                  transition: "opacity 0.3s",
+                }}
+              />
+            ) : null
           ) : (
             <Link to="/login">
               <ListItemText
@@ -158,8 +162,8 @@ export default function MiniDrawer() {
                   transition: "opacity 0.3s",
                 }}
               />
-            </Link>
-          )} */}
+              </Link>
+          )}
           <IconButton onClick={handleDrawerOpen}>
             <ChevronLeftIcon />
           </IconButton>
@@ -186,11 +190,11 @@ export default function MiniDrawer() {
           <div style={{ flexGrow: 1 }}></div>{" "}
           {/* Empty div to push the last item to the bottom */}
           <Divider />
-
-            <div>
+          { isAuthenticated &&
+            <div onClick={logout}>
               {renderSideBarItem({ text: "Logout", icon: <LogoutIcon /> })}
             </div>
-
+          }
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -199,3 +203,10 @@ export default function MiniDrawer() {
     </Box>
   );
 }
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.authReducer.isAuthenticated,
+  user: state.authReducer.user,
+});
+
+export default connect(mapStateToProps, {logout})(MiniDrawer);

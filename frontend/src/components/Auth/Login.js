@@ -10,8 +10,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { connect } from 'react-redux';
 import { redux_login } from "../../redux/actions/auth_actions";
+import {Navigate} from 'react-router-dom';
 
-const Login = ({redux_login}) => {
+const Login = ({redux_login, isAuthenticated}) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -20,6 +21,10 @@ const Login = ({redux_login}) => {
     const password = data.get("password");
     redux_login(email,password);
   };
+
+  if(isAuthenticated){
+    return <Navigate to="/"/>
+  }
 
   return (
     <div className="make-center">
@@ -86,4 +91,8 @@ const Login = ({redux_login}) => {
   );
 }
 
-export default connect(null, {redux_login})(Login);
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.authReducer.isAuthenticated,
+});
+
+export default connect(mapStateToProps, {redux_login})(Login);
