@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -17,12 +17,12 @@ import ListItemText from "@mui/material/ListItemText";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
 import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
-const closedDrawerWidth = 7*8 +1; //`calc(${theme.spacing(7)} + 1px)`
-const closedDrawerWidth_sm = 8*8 +1;
+const closedDrawerWidth = 7 * 8 + 1; //`calc(${theme.spacing(7)} + 1px)`
+const closedDrawerWidth_sm = 8 * 8 + 1;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -41,7 +41,7 @@ const closedMixin = (theme) => ({
   overflowX: "hidden",
   width: `${closedDrawerWidth}px`,
   [theme.breakpoints.up("sm")]: {
-    width: `${closedDrawerWidth_sm}px` ,
+    width: `${closedDrawerWidth_sm}px`,
   },
 });
 
@@ -67,7 +67,7 @@ const AppBar = styled(MuiAppBar, {
   ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -99,31 +99,30 @@ export default function MiniDrawer() {
     setOpen(!open);
   };
 
-  
-const renderSideBarItem = ({ text, icon }) => {
-  return (
-    <ListItem key={text} disablePadding sx={{ display: "block" }}>
-      <ListItemButton
-        sx={{
-          minHeight: 48,
-          justifyContent: open ? "initial" : "center",
-          px: 2.5,
-        }}
-      >
-        <ListItemIcon
+  const renderSideBarItem = ({ text, icon }) => {
+    return (
+      <ListItem key={text} disablePadding sx={{ display: "block" }}>
+        <ListItemButton
           sx={{
-            minWidth: 0,
-            mr: open ? 3 : "auto",
-            justifyContent: "center",
+            minHeight: 48,
+            justifyContent: open ? "initial" : "center",
+            px: 2.5,
           }}
         >
-          {icon}
-        </ListItemIcon>
-        <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-      </ListItemButton>
-    </ListItem>
-  );
-};
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : "auto",
+              justifyContent: "center",
+            }}
+          >
+            {icon}
+          </ListItemIcon>
+          <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+        </ListItemButton>
+      </ListItem>
+    );
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -140,30 +139,58 @@ const renderSideBarItem = ({ text, icon }) => {
           <button className="menu-icon" onClick={handleDrawerOpen}>
             <MenuIcon fontSize="small" />
           </button>
-          <ListItemText
-            primary="IWDAT"
-            secondary="user@email.com"
-            sx={{
-              opacity: open ? 1 : 0,
-              transition: "opacity 0.3s",
-            }}
-          />
+          {/* {user ? (
+            <ListItemText
+              primary={user.name}
+              secondary={user.email}
+              sx={{
+                opacity: open ? 1 : 0,
+                transition: "opacity 0.3s",
+              }}
+            />
+          ) : (
+            <Link to="/login">
+              <ListItemText
+                primary="You're not logged in"
+                secondary=""
+                sx={{
+                  opacity: open ? 1 : 0,
+                  transition: "opacity 0.3s",
+                }}
+              />
+            </Link>
+          )} */}
           <IconButton onClick={handleDrawerOpen}>
-              <ChevronLeftIcon/>
+            <ChevronLeftIcon />
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <Typography variant="overline" display="block" className="drawer-description">
+        <Typography
+          variant="overline"
+          display="block"
+          className="drawer-description"
+        >
           PAGES
         </Typography>
-        <List sx={{ padding: "0", flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+        <List
+          sx={{
+            padding: "0",
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+          }}
+        >
           {renderSideBarItem({ text: "Workspace", icon: <SelectAllIcon /> })}
           {renderSideBarItem({ text: "Dashboard", icon: <DashboardIcon /> })}
-          <div style={{ flexGrow: 1 }}></div> {/* Empty div to push the last item to the bottom */}
+          <div style={{ flexGrow: 1 }}></div>{" "}
+          {/* Empty div to push the last item to the bottom */}
           <Divider />
-          <Link to="/login">
-          {renderSideBarItem({ text: "Logout", icon: <LogoutIcon /> })}
-          </Link>
+
+            <div>
+              {renderSideBarItem({ text: "Logout", icon: <LogoutIcon /> })}
+            </div>
+
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
