@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {Provider} from 'react-redux';
-import store from './components/store';
+import store from './redux/store';
 
 import { RendererMain } from "./components/Workspace";
-import { Login } from "./components/Auth/Login";
+import  Login  from "./components/Auth/Login";
 import { PageNotFound } from "./components/PageNotFound";
 import { Signup } from "./components/Auth/Signup";
 import { ActivateAccount } from "./components/Auth/Activate";
@@ -13,6 +13,7 @@ import { ChangePassword } from "./components/Auth/ChangePass";
 
 export default function App() {
   return (
+    <Provider store={store}>
     <Router>
         <Routes>
           <Route path="/" element={<RendererMain/>}/>
@@ -24,5 +25,6 @@ export default function App() {
           <Route path="*" element={<PageNotFound/>} />
         </Routes>
     </Router>
+   </Provider>
   );
 }

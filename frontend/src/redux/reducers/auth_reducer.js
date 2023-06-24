@@ -1,9 +1,9 @@
 import {
 LOGIN_SUCCESS,
 LOGIN_FAIL,
-USER_LOADED_SUCCESSS,
+USER_LOADED_SUCCESS,
 USER_LOADED_FAIL
-} from '../types'
+} from '../actions/types'
 
 const initialState = {
     access : localStorage.getItem('access'),
@@ -25,7 +25,7 @@ export default function authReducer(state = initialState, action){
                 refresh: payload.refresh
             }
 
-        case USER_LOADED_SUCCESSS:
+        case USER_LOADED_SUCCESS:
             return{
                 ...state,
                 user:payload

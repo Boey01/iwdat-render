@@ -9,16 +9,16 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { connect } from 'react-redux';
+import { redux_login } from "../../redux/actions/auth_actions";
 
-export const Login = () => {
+const Login = ({redux_login}) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    const email = data.get("email");
+    const password = data.get("password");
+    redux_login(email,password);
   };
 
   return (
@@ -86,4 +86,4 @@ export const Login = () => {
   );
 }
 
-export default connect(null)(Login);
+export default connect(null, {redux_login})(Login);
