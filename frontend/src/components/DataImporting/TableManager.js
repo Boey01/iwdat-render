@@ -52,7 +52,7 @@ export default function TableManager() {
 
   const handleCloseModal = () => {
     setModalOpen(false);
-    setUploadedFile([]);
+    setUploadedFile(null);
   };
 
   const handleFileUploaded = (fileData) => {
@@ -106,6 +106,8 @@ const handleConfirmTables = () => {
   setCheckedTables([]);
   setPopoverOpen(false);
   handleCloseModal();
+  setTableNames([]);
+  setUploadedFile(null);
 };
 
   function TabPanel(props) {
