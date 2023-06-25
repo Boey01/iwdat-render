@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import MakeDraggable from "../Draggable";
@@ -18,6 +18,7 @@ import Tab from "@mui/material/Tab";
 import { Box } from "@mui/material";
 import PreviewTable from "./TablePreview";
 import Input from '@mui/material/Input';
+import { GlobalTableContext } from "../contexts/TableContext";
 
 const TableManagerButton = styled(Button)({
   left: "10vw",
@@ -33,6 +34,7 @@ const ModalContent = styled("div")({
 });
 
 export default function TableManager() {
+  const { addTablesToGlobalContext } = useContext(GlobalTableContext);
   const [modalOpen, setModalOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -89,7 +91,6 @@ export default function TableManager() {
   const updatedTableNames = [...tableNames];
   updatedTableNames[index] = value;
   setTableNames(updatedTableNames);
-
 };
 
 const handleConfirmTables = () => {
@@ -100,7 +101,8 @@ const handleConfirmTables = () => {
       selectedTables[tableName] = uploadedFile[Object.keys(uploadedFile)[key]];
     }
   }
-  console.log(selectedTables);
+
+  addTablesToGlobalContext(selectedTables);
 
   // Reset the checked tables and close the popover/modal if needed
   setCheckedTables([]);
