@@ -15,9 +15,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Box} from "@mui/material";
+import { Box } from "@mui/material";
 import PreviewTable from "./TablePreview";
-import TextField from "@mui/material/TextField";
+import Input from '@mui/material/Input';
 
 const TableManagerButton = styled(Button)({
   left: "10vw",
@@ -25,7 +25,7 @@ const TableManagerButton = styled(Button)({
 
 const ModalContent = styled("div")({
   position: "absolute",
-  top: "50%",
+  top: "50%", 
   left: "50%",
   transform: "translate(-50%, -50%)",
   backgroundColor: "white",
@@ -35,11 +35,12 @@ const ModalContent = styled("div")({
 export default function TableManager() {
   const [modalOpen, setModalOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const [uploadedFile, setUploadedFile] = useState([]);
+  const [uploadedFile, setUploadedFile] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentTab, setcurrentTab] = useState(0);
-  const [selectedTables, setselectedTables] = useState({});
+  const [checkedTables, setCheckedTables] = useState([]);
+  const [tableNames, setTableNames] = useState([]);
 
   const handleChange = (event, newValue) => {
     setcurrentTab(newValue);
@@ -74,17 +75,44 @@ export default function TableManager() {
     setUploadedFiles(updatedFiles);
   };
 
+  const handleCheckboxChange = (event) => {
+    const { id, checked } = event.target;
+    const index = id;
+    setCheckedTables((prevcheckedTables) => ({
+      ...prevcheckedTables,
+      [index]: checked,
+    }));
+
+  };
+
+  const handleTableNameChange = (index, value) => {
+  const updatedTableNames = [...tableNames];
+  updatedTableNames[index] = value;
+  setTableNames(updatedTableNames);
+
+};
+
+const handleConfirmTables = () => {
+  const selectedTables = {};
+  for (const key in checkedTables) {
+    if (checkedTables[key]) {
+      const tableName = tableNames[key] || Object.keys(uploadedFile)[key];
+      selectedTables[tableName] = uploadedFile[Object.keys(uploadedFile)[key]];
+    }
+  }
+  console.log(selectedTables);
+
+  // Reset the checked tables and close the popover/modal if needed
+  setCheckedTables([]);
+  setPopoverOpen(false);
+  handleCloseModal();
+};
+
   function TabPanel(props) {
-    const { children, value, index, tablename } = props;
+    const { children, value, index } = props;
     return (
       <div role="tabpanel" hidden={value !== index}>
-        {value === index && (
-          <Box sx={{ p: 2 }}>
-            <TextField id="table_name" label="Table Name" variant="standard" defaultValue={tablename}
-            />
-            {children}
-          </Box>
-        )}
+        {value === index && <Box sx={{ p: 2 }}>{children}</Box>}
       </div>
     );
   }
@@ -113,7 +141,11 @@ export default function TableManager() {
         {/* --------- The content of table manager ------- */}
         <List>
           <ListItem>
-            <Button variant="contained" onClick={handleOpenModal} sx={{ px: 2 }} >
+            <Button
+              variant="contained"
+              onClick={handleOpenModal}
+              sx={{ px: 2 }}
+            >
               Add new table
             </Button>
           </ListItem>
@@ -122,7 +154,11 @@ export default function TableManager() {
               <ListItemButton>
                 <Checkbox />
                 TableName
-                <IconButton onClick={() => handleDeleteTable(index)}  edge="end" aria-label="delete">
+                <IconButton
+                  onClick={() => handleDeleteTable(index)}
+                  edge="end"
+                  aria-label="delete"
+                >
                   <DeleteIcon />
                 </IconButton>
               </ListItemButton>
@@ -133,38 +169,60 @@ export default function TableManager() {
 
       <Modal open={modalOpen} onClose={handleCloseModal}>
         <ModalContent className="table-preview-modal-content">
-          <Button onClick={handleCloseModal} style={{ position: "absolute", top: "8px", right: "8px" }}>
+          <Button
+            onClick={handleCloseModal}
+            style={{ position: "absolute", top: "8px", right: "8px" }}
+          >
             X
           </Button>
           <Grid container spacing={1}>
-            <Grid item xs={12} className="file-upload-section">
-              <FileImport onFileUploaded={handleFileUploaded} />
+  <Grid item xs={12} className="file-upload-section">
+    <FileImport onFileUploaded={handleFileUploaded} />
+  </Grid>
+  {uploadedFile && (
+    <>
+      <Grid item xs={12}>
+        <Tabs
+          value={currentTab}
+          onChange={handleChange}
+          textColor="secondary"
+          indicatorColor="primary"
+    >
+          {Object.keys(uploadedFile).map((key, index) => (
+            <Tab label={key} index={index} />
+          ))}
+        </Tabs>
+      </Grid>
+      <Grid item xs={12}>
+        {Object.keys(uploadedFile).map((key, index) => (
+          <TabPanel value={currentTab} index={index} key={index}>
+            <Grid container alignItems="center" spacing={2}>
+              <Grid item>
+                <Checkbox
+                  id={index}
+                  checked={checkedTables[index] || false}
+                  onChange={handleCheckboxChange}
+                />
+              </Grid>
+              <Grid item>
+              <Input
+  defaultValue={tableNames[index] || key}
+  onBlur={(event) => handleTableNameChange(index, event.target.value)}
+  inputProps={{ 'aria-label': 'Table name' }}
+/>
+              </Grid>
             </Grid>
-          </Grid>
+            <PreviewTable data={uploadedFile[key]} />
+          </TabPanel>
+        ))}
+      </Grid>
+      <Grid item xs={12}>
+        <Button variant="outlined" onClick={handleConfirmTables}>Confirm Tables</Button>
+      </Grid>
+    </>
+  )}
+</Grid>
 
-          {uploadedFile && (
-            <>
-              <Grid item xs={12}>
-                <Tabs
-                  value={currentTab}
-                  onChange={handleChange}
-                  textColor="secondary"
-                  indicatorColor="primary"
-                >
-                  {Object.keys(uploadedFile).map((key, index) => (
-                    <Tab label={key} index={index} />
-                  ))}
-                </Tabs>
-              </Grid>
-              <Grid item xs={12}>
-                {Object.keys(uploadedFile).map((key, index) => (
-                  <TabPanel value={currentTab} index={index} tablename={key}>
-                    <PreviewTable data={uploadedFile[key]} />
-                  </TabPanel>
-                ))}
-              </Grid>
-            </>
-          )}
         </ModalContent>
       </Modal>
 
