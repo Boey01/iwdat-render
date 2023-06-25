@@ -1,7 +1,7 @@
 import React from 'react';
 import MiniDrawer from './SideBar';
 import ZIndexProvider from './ZIndexContext';
-import TableManager from './Tables/TableManager';
+import TableManager from './DataImporting/TableManager';
 
 export const RendererMain = () => {
 

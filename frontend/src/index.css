@@ -117,3 +117,9 @@ span.drawer-description{
 .table-manager-btn{
   position: fixed;
 } 
+
+.table-preview-modal-content {
+  width: 60vw; /* Set the desired width */
+  height: 45vh; /* Set the desired height */
+  overflow: auto;
+}

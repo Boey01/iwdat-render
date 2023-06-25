@@ -25,7 +25,7 @@ export default function TableRenderer({ sheetData }) {
    Object.keys(sheetData).forEach((key) => sheetName.push(key));
  
    const firstRow = sheetData[sheetName[0]][0];
- 
+   console.log(sheetData)
    const initialColumns = [];
    Object.keys(firstRow).forEach((key) => {
      initialColumns.push({

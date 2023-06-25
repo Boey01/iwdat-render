@@ -17,6 +17,7 @@ export default function FileImport (props) {
 
     setFile(myFile);
     setFileName(myFile.name);
+
   };
 
   const handleRemove = () => {
@@ -76,7 +77,7 @@ export default function FileImport (props) {
           {file && (
                 <div>
                   <Button onClick={handleReadData}  
-                  color="primary">Read Excel Data</Button>
+                  color="primary">Read File Data</Button>
                 </div>
           )}
          </Grid>

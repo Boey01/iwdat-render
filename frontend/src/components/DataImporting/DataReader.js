@@ -21,26 +21,30 @@ const checkFileName = (name) => {
   }
 };
 
-const readXLSXData = async (file) => {
-  try {
-    const data = await file.arrayBuffer();
-    const wb = XLSX.read(data);
-    const sheetNames = wb.SheetNames;
-    const sheetData = {};
+const readXLSXData = (file) => {
+  return new Promise((resolve, reject) => {
+    file.arrayBuffer()
+      .then((data) => {
+        const wb = XLSX.read(data);
+        const sheetNames = wb.SheetNames;
+        const sheetData = {};
 
-    sheetNames.forEach((sheet_name) => {
-      const worksheet = wb.Sheets[sheet_name];
-    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-      sheetData[sheet_name] = jsonData;
-    });
+        sheetNames.forEach((sheet_name) => {
+          const worksheet = wb.Sheets[sheet_name];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          sheetData[sheet_name] = jsonData;
+        });
 
-    return sheetData;
-  } catch (error) {
-    // Handle any errors that occur during file reading
-    console.error('Error reading XLSX file:', error);
-    throw error; // Rethrow the error or handle it gracefully
-  }
+        resolve(sheetData);
+      })
+      .catch((error) => {
+        // Handle any errors that occur during file reading
+        console.error('Error reading XLSX file:', error);
+        reject(error); // Reject the promise with the error
+      });
+  });
 };
+
 const readCSVData = (file) => {
     return new Promise((resolve, reject) => {
         var jsonData = {};
