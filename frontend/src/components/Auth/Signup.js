@@ -1,20 +1,39 @@
-import React from "react";
+import React, {useState} from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { connect } from "react-redux";
+import { signup } from "../../redux/actions/auth_actions";
 
-export const Signup = () => {
+export const Signup = ({signup}) => {
+  const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
+  const [passwordMatch, setPasswordMatch] = useState(true);
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+    setPasswordMatch(event.target.value === rePassword);
+  };
+
+  const handleRePasswordChange = (event) => {
+    setRePassword(event.target.value);
+    setPasswordMatch(event.target.value === password);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
+    signup( data.get("name"),
+            data.get("email"),
+            data.get("password"),
+            data.get("re-password"));
   };
+
+  const rePasswordColor = passwordMatch ? "inherit" : "red";
 
   return (
     <div className="make-center">
@@ -58,15 +77,23 @@ export const Signup = () => {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handlePasswordChange}
           />
           <TextField
             margin="normal"
             required
             fullWidth
             name="re-password"
-            label="Confirm Password"
+            label="Confirm New Password"
             type="password"
             id="re-password"
+            helperText={passwordMatch ? "" : "Passwords do not match"}
+            onChange={handleRePasswordChange}
+            FormHelperTextProps={{
+              style: {
+                color: rePasswordColor,
+              },
+            }}
           />
           <Button
             type="submit"
@@ -86,4 +113,6 @@ export const Signup = () => {
     </Container>
     </div>
   );
+
 }
+export default connect(null, { signup })(Signup);

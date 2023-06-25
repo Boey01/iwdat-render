@@ -3,17 +3,17 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { connect } from "react-redux";
+import { activateAcc } from "../../redux/actions/auth_actions";
+import { useParams } from "react-router-dom";
 
-export const ActivateAccount = () =>{
+export const ActivateAccount = ({activateAcc}) =>{
+  const { uid, token } = useParams();
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-
-
-        });
+      activateAcc(uid, token);
       };
-
 
   return (
     <div className="make-center">
@@ -43,3 +43,5 @@ export const ActivateAccount = () =>{
     </div>
   );
 };
+
+export default connect(null, { activateAcc })(ActivateAccount);

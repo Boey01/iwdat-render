@@ -36,6 +36,7 @@ export const ChangePassword = ({reset_password}) =>{
       };
 
       const rePasswordColor = passwordMatch ? "inherit" : "red";
+      
   return (
     <div className="make-center">
       <Container component="main" maxWidth='xs'>

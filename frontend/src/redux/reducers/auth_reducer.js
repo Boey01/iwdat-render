@@ -1,6 +1,10 @@
 import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
+  SIGNUP_SUCCESS,
+  SIGNUP_FAIL,
+  ACTIVATION_SUCCESS,
+  ACTIVATION_FAIL,
   USER_LOADED_SUCCESS,
   USER_LOADED_FAIL,
   AUTHENTICATED_SUCCESS,
@@ -42,6 +46,7 @@ export default function authReducer(state = initialState, action) {
         refresh: payload.refresh,
       };
     case LOGIN_FAIL:
+    case SIGNUP_FAIL:
     case LOGOUT:
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
@@ -51,6 +56,11 @@ export default function authReducer(state = initialState, action) {
         refresh: null,
         isAuthenticated: false,
         user: null,
+      };
+    case SIGNUP_SUCCESS:
+      return {
+        ...state,
+        isAuthenticated: false,
       };
     case USER_LOADED_SUCCESS:
       return {
@@ -67,9 +77,11 @@ export default function authReducer(state = initialState, action) {
     case PASSWORD_RESET_REQUEST_FAIL:
     case PASSWORD_RESET_SUCCESS:
     case PASSWORD_RESET_FAIL:
-            return {
-                ...state
-            }
+    case ACTIVATION_SUCCESS:
+    case ACTIVATION_FAIL:
+      return {
+        ...state,
+      };
     default:
       return state;
   }

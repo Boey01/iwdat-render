@@ -1,6 +1,10 @@
 import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
+  SIGNUP_SUCCESS,
+  SIGNUP_FAIL,
+  ACTIVATION_SUCCESS,
+  ACTIVATION_FAIL,
   USER_LOADED_SUCCESS,
   USER_LOADED_FAIL,
   AUTHENTICATED_SUCCESS,
@@ -120,17 +124,18 @@ export const reset_password_req = (email) => async dispatch => {
     const body = JSON.stringify({ email });
 
     try {
-        await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/auth/users/reset_password/`, body, config);
+       await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/auth/users/reset_password/`, body, config);
+
 
         dispatch({
-            type: PASSWORD_RESET_REQUEST_SUCCESS
-        });
-        alert("Password request link sent to your email.")
+          type: PASSWORD_RESET_REQUEST_SUCCESS
+      });
+      alert("Password request link sent to your email.");
     } catch (err) {
         dispatch({
             type: PASSWORD_RESET_REQUEST_FAIL
         });
-        alert("Failed to send email request.")
+        alert("Failed to send email request.");
     }
 };
 
@@ -149,13 +154,58 @@ export const reset_password = (uid, token, new_password, re_new_password) => asy
         dispatch({
             type: PASSWORD_RESET_SUCCESS
         });
-        alert("Password successfully changed.")
+        alert("Password successfully changed.");
     } catch (err) {
         dispatch({
             type: PASSWORD_RESET_FAIL
         });
-        alert("Password change failed.")
+        alert("Password change failed.");
     }
+};
+
+export const signup = (name, email, password, re_password) => async dispatch => {
+  const config = {
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  };
+
+  const body = JSON.stringify({ name, email, password, re_password });
+
+  try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/auth/users/`, body, config);
+
+      dispatch({
+          type: SIGNUP_SUCCESS,
+          payload: response.data
+      });
+  } catch (err) {
+      dispatch({
+          type: SIGNUP_FAIL
+      })
+  }
+};
+
+export const activateAcc = (uid, token) => async dispatch => {
+  const config = {
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  };
+
+  const body = JSON.stringify({ uid, token });
+
+  try {
+      await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/auth/users/activation/`, body, config);
+
+      dispatch({
+          type: ACTIVATION_SUCCESS,
+      });
+  } catch (err) {
+      dispatch({
+          type: ACTIVATION_FAIL
+      })
+  }
 };
 
 export const logout = () => (dispatch) => {
