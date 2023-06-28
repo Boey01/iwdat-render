@@ -60,6 +60,8 @@ export default function TableManager() {
   const handleFileUploaded = (fileData) => {
     // const newFiles = [...uploadedFiles, fileData];
     setUploadedFile(fileData);
+    setCheckedTables([]);
+    setTableNames([]);
   };
 
   const handleOpenPopover = (event) => {
@@ -210,10 +212,10 @@ const handleConfirmTables = () => {
               </Grid>
               <Grid item>
               <Input
-  defaultValue={tableNames[index] || key}
-  onBlur={(event) => handleTableNameChange(index, event.target.value)}
-  inputProps={{ 'aria-label': 'Table name' }}
-/>
+              defaultValue={tableNames[index] || key}
+              onBlur={(event) => handleTableNameChange(index, event.target.value)}
+              inputProps={{ 'aria-label': 'Table name' }}
+              />
               </Grid>
             </Grid>
             <PreviewTable data={uploadedFile[key]} />
