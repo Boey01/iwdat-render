@@ -111,6 +111,7 @@ export const redux_login = (email, password) => async (dispatch) => {
     dispatch({
       type: LOGIN_FAIL,
     });
+    alert('Login failed');
   }
 };
 
