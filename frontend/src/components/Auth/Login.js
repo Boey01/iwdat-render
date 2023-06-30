@@ -34,8 +34,8 @@ const Login = ({redux_login, isAuthenticated}) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-        }}
-      >
+        }}>
+          
         <Typography variant="h5">
           Sign in
         </Typography>
