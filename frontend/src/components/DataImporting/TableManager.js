@@ -34,11 +34,11 @@ const ModalContent = styled("div")({
 });
 
 export default function TableManager() {
-  const { addTablesToGlobalContext } = useContext(GlobalTableContext);
+  const { globalTables, setGlobalTables, addTablesToGlobalTableList } = useContext(GlobalTableContext);
   const [modalOpen, setModalOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  // const [uploadedFiles, setUploadedFiles] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentTab, setcurrentTab] = useState(0);
   const [checkedTables, setCheckedTables] = useState([]);
@@ -74,9 +74,9 @@ export default function TableManager() {
   };
 
   const handleDeleteTable = (index) => {
-    const updatedFiles = [...uploadedFiles];
+    const updatedFiles = [...globalTables];
     updatedFiles.splice(index, 1);
-    setUploadedFiles(updatedFiles);
+    setGlobalTables(updatedFiles);
   };
 
   const handleCheckboxChange = (event) => {
@@ -104,8 +104,9 @@ const handleConfirmTables = () => {
     }
   }
 
-  addTablesToGlobalContext(selectedTables);
-
+  if(Object.keys(selectedTables).length !== 0){
+    addTablesToGlobalTableList(selectedTables);
+}
   // Reset the checked tables and close the popover/modal if needed
   setCheckedTables([]);
   setPopoverOpen(false);
@@ -155,21 +156,23 @@ const handleConfirmTables = () => {
               Add new table
             </Button>
           </ListItem>
-          {uploadedFiles.map((fileData, index) => (
-            <ListItem key={index} disablePadding>
-              <ListItemButton>
-                <Checkbox />
-                TableName
-                <IconButton
-                  onClick={() => handleDeleteTable(index)}
-                  edge="end"
-                  aria-label="delete"
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemButton>
-            </ListItem>
-          ))}
+          {globalTables.map((data, index) => (
+  <ListItem key={index} disablePadding>
+    <ListItemButton sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div>
+        <Checkbox />
+        {data["name"]}
+      </div>
+      <IconButton
+        onClick={() => handleDeleteTable(index)}
+        aria-label="delete"
+      >
+        <DeleteIcon />
+      </IconButton>
+    </ListItemButton>
+  </ListItem>
+))}
+
         </List>
       </Popover>
 
@@ -232,15 +235,15 @@ const handleConfirmTables = () => {
         </ModalContent>
       </Modal>
 
-      {/* <div className="table-workspace">
-      {uploadedFiles.map((fileData, index) => (
+      <div className="table-workspace">
+      {globalTables.map((data, index) => (
         <div key={index}>
           <MakeDraggable>
-            <TableRenderer sheetData={fileData} />
+            <TableRenderer sheetData={data["data"]} tableName={data["name"]}/>  
           </MakeDraggable>
         </div>
       ))}
-      </div> */}
+      </div>
     </>
   );
 }

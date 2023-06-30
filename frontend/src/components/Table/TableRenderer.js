@@ -19,13 +19,9 @@ const CustomTableContainer = styled(TableContainer)({
   width: "70vw",
 });
 
-export default function TableRenderer({ sheetData }) {
+export default function TableRenderer({ sheetData, tableName }) {
    // process sheet data ---------------
-   let sheetName = [];
-   Object.keys(sheetData).forEach((key) => sheetName.push(key));
- 
-   const firstRow = sheetData[sheetName[0]][0];
-   console.log(sheetData)
+   const firstRow = sheetData[0];
    const initialColumns = [];
    Object.keys(firstRow).forEach((key) => {
      initialColumns.push({
@@ -36,7 +32,7 @@ export default function TableRenderer({ sheetData }) {
    //------------------- ---------------
  
    const [columns, setColumns] = useState(initialColumns);
-   const [rows, setRows] = useState(sheetData[sheetName[0]]);
+   const [rows, setRows] = useState(sheetData);
    const [page, setPage] = useState(0);
    const [rowsPerPage, setRowsPerPage] = useState(5);
    const [selectedColumns, setSelectedColumns] = useState(
@@ -74,7 +70,7 @@ export default function TableRenderer({ sheetData }) {
     <>
       <div className="table-wrapper">
         <div className="table-title-bar">
-          <span>Table name </span>  
+          <span>{tableName}</span>  
           <ColumnsManager
             columns={columns}
             selectedColumns={selectedColumns}

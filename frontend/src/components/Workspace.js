@@ -3,9 +3,10 @@ import MiniDrawer from './SideBar';
 import ZIndexProvider from './ZIndexContext';
 import TableManager from './DataImporting/TableManager';
 import GlobalTablesProvider from './contexts/TableContext'
+import PreventUnsave from './PreventUnsave';
 
 export const RendererMain = () => {
-
+PreventUnsave(true);
   return (
     <GlobalTablesProvider>
     <ZIndexProvider>
