@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import Draggable from 'react-draggable';
-import { ZIndexContext } from './contexts/ZIndexContext';
+import { ZIndexContext } from '../contexts/ZIndexContext';
 
 const MakeDraggable = ({ children }) => {
   const { globalZIndex, updateGlobalZIndex } = useContext(ZIndexContext);

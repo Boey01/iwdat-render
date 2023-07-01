@@ -59,7 +59,7 @@ export default function DIModalContent({
       if(Object.keys(selectedTables).length !== 0){
         addTablesToGlobalTableList(selectedTables);
     }
-      // Reset the checked tables and close the popover/modal if needed
+
       setCheckedTables([]);
       handleCloseModal();
       setTableNames([]);

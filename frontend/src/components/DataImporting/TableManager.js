@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
-import MakeDraggable from "../Draggable";
+import MakeDraggable from "../util/Draggable";
 import Modal from "@mui/material/Modal";
 import TableRenderer from "../Table/TableRenderer";
 import Popover from "@mui/material/Popover";
@@ -13,18 +13,28 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { GlobalTableContext } from "../contexts/TableContext";
 import DIModalContent from "./DataImportModal";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const TableManagerButton = styled(Button)({
   left: "10vw",
 });
 
 export default function TableManager() {
-  const { globalTables, addTablesToGlobalTableList, deleteGlobalTable } = useContext(GlobalTableContext);
+  
+  const { globalTables, 
+    addTablesToGlobalTableList, 
+    deleteGlobalTable, 
+    toggleTableVisibility } = useContext(GlobalTableContext);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
   // const [uploadedFiles, setUploadedFiles] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  let tableIndex;
+  const indexFormat = "tb"
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -46,6 +56,10 @@ export default function TableManager() {
 
     const handleDeleteTable = (index) => {
       deleteGlobalTable(index);
+    };
+
+    const handleHideTable = (index) => {
+      toggleTableVisibility(index);
     };
 
   return (
@@ -88,6 +102,12 @@ export default function TableManager() {
         {data["name"]}
       </div>
       <IconButton
+        onClick={() => handleHideTable(index)}
+        aria-label="hide"
+      >
+        {data.hidden ? <VisibilityOffIcon /> : <VisibilityIcon />}
+      </IconButton>
+      <IconButton
         onClick={() => handleDeleteTable(index)}
         aria-label="delete"
       >
@@ -96,7 +116,6 @@ export default function TableManager() {
     </ListItemButton>
   </ListItem>
 ))}
-
         </List>
       </Popover>
 
@@ -110,13 +129,16 @@ export default function TableManager() {
       </Modal>
 
       <div className="table-workspace">
-      {globalTables.map((data, index) => (
-        <div key={index}>
+      {globalTables.map((data, index) => {
+        tableIndex = indexFormat + index;
+        return(
+        <div id={tableIndex} style={{ display: data.hidden ? 'none' : 'block' }}>
           <MakeDraggable>
             <TableRenderer sheetData={data["data"]} tableName={data["name"]}/>  
           </MakeDraggable>
         </div>
-      ))}
+        );
+      })}
       </div>
     </>
   );
