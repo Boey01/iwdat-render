@@ -6,9 +6,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { connect } from "react-redux";
-import { signup } from "../../redux/actions/auth_actions";
+import { redux_signup } from "../../redux/actions/auth_actions";
 
-export const Signup = ({signup}) => {
+export const Signup = ({redux_signup}) => {
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
@@ -27,10 +27,10 @@ export const Signup = ({signup}) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    signup( data.get("name"),
-            data.get("email"),
-            data.get("password"),
-            data.get("re-password"));
+    redux_signup( data.get("name"),
+                  data.get("email"),
+                  data.get("password"),
+                  data.get("re-password"));
   };
 
   const rePasswordColor = passwordMatch ? "inherit" : "red";
@@ -107,7 +107,7 @@ export const Signup = ({signup}) => {
             <Link to="/login">
                 Back To Login
               </Link>
-          
+       
         </Box>
       </Box>
     </Container>
@@ -115,4 +115,4 @@ export const Signup = ({signup}) => {
   );
 
 }
-export default connect(null, { signup })(Signup);
+export default connect(null, { redux_signup })(Signup);

@@ -1,6 +1,6 @@
 import React from 'react';
 import MiniDrawer from './SideBar';
-import ZIndexProvider from './ZIndexContext';
+import ZIndexProvider from './contexts/ZIndexContext';
 import TableManager from './DataImporting/TableManager';
 import GlobalTablesProvider from './contexts/TableContext'
 import PreventUnsave from './PreventUnsave';

@@ -8,8 +8,8 @@ import Initialization from "./components/Auth/Initialization";
 import { RendererMain } from "./components/Workspace";
 import  Login  from "./components/Auth/Login";
 import { PageNotFound } from "./components/PageNotFound";
-import { Signup } from "./components/Auth/Signup";
-import { ActivateAccount } from "./components/Auth/Activate";
+import  Signup  from "./components/Auth/Signup";
+import  ActivateAccount  from "./components/Auth/Activate";
 import ResetPassReq from "./components/Auth/ResetPassReq";
 import ChangePassword from "./components/Auth/ChangePass";
 
