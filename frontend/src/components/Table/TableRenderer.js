@@ -11,7 +11,9 @@ import TablePagination from "@mui/material/TablePagination";
 import EditableTableCell from "./EditableTableCell"
 import TablePaginationActions from "./TablePaginationActions"
 import ColumnsManager from "./ColumnsManager";
-
+import CloseIcon from '@mui/icons-material/Close';
+import MinimizeIcon from '@mui/icons-material/Minimize';
+import { IconButton } from "@mui/material";
 
 const CustomTableContainer = styled(TableContainer)({
   maxHeight: "60vh",
@@ -19,7 +21,7 @@ const CustomTableContainer = styled(TableContainer)({
   width: "70vw",
 });
 
-export default function TableRenderer({ sheetData, tableName }) {
+export default function TableRenderer({ sheetData, tableName, hidefunction, closefunction }) {
    // process sheet data ---------------
    const firstRow = sheetData[0];
    const initialColumns = [];
@@ -71,12 +73,27 @@ export default function TableRenderer({ sheetData, tableName }) {
       <div className="table-wrapper">
         <div className="table-title-bar">
           <span>{tableName}</span>  
+          <div>
           <ColumnsManager
             columns={columns}
             selectedColumns={selectedColumns}
             handleColumnReorder={handleColumnReorder}
             setSelectedColumns={setSelectedColumns} 
           />
+
+    <IconButton
+        onClick={hidefunction}
+        aria-label="hide"
+      >
+        <MinimizeIcon />
+      </IconButton>
+      <IconButton
+        onClick={closefunction}
+        aria-label="delete"
+      >
+        <CloseIcon/>
+      </IconButton>
+      </div>
         </div>
         <CustomTableContainer
           component={Paper}

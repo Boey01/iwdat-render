@@ -134,7 +134,12 @@ export default function TableManager() {
         return(
         <div id={tableIndex} style={{ display: data.hidden ? 'none' : 'block' }}>
           <MakeDraggable>
-            <TableRenderer sheetData={data["data"]} tableName={data["name"]}/>  
+          <TableRenderer
+              sheetData={data["data"]}
+              tableName={data["name"]}
+              hidefunction={() => handleHideTable(index)}
+              closefunction={() => handleDeleteTable(index)}
+            /> 
           </MakeDraggable>
         </div>
         );

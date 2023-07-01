@@ -6,6 +6,7 @@ export default function GlobalTablesProvider({ children }) {
   const [globalTables, setGlobalTables] = useState([]);
 
   useEffect(() => {
+    console.log(globalTables)
   }, [globalTables]);
 
   const addTablesToGlobalTableList = (tables) => {
