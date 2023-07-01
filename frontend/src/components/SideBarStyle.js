@@ -38,6 +38,7 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
 export const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
+  position:"fixed",
   width: `calc(100% - ${closedDrawerWidth}px)`,
   [theme.breakpoints.up("sm")]: {
     width: `calc(100% - ${closedDrawerWidth_sm}px)`,

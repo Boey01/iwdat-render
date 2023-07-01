@@ -8,25 +8,23 @@ export default function GlobalTablesProvider({ children }) {
   useEffect(() => {
   }, [globalTables]);
 
-const addTablesToGlobalTableList = (tables) => {
-    Object.keys(tables).forEach((key) => {
-      globalTables.push({name: key, data: tables[key]});
-    });
+  const addTablesToGlobalTableList = (tables) => {
+    const updatedTables = Object.keys(tables).map((key) => ({
+      name: key,
+      data: tables[key],
+    }));
+  
+    setGlobalTables((prevTables) => [...prevTables, ...updatedTables]);
+  };
 
-};
-
+  const deleteGlobalTable = (index) => {
+    const updatedTables = [...globalTables];
+    updatedTables.splice(index, 1);
+    setGlobalTables(updatedTables);
+  };
   
   return (
-    <GlobalTableContext.Provider value={{ globalTables, setGlobalTables, addTablesToGlobalTableList}}>
-      {/* <div className="table-workspace">
-      {uploadedFiles.map((fileData, index) => (
-        <div key={index}>
-          <MakeDraggable>
-            <TableRenderer sheetData={fileData} />
-          </MakeDraggable>
-        </div>
-      ))}
-      </div> */}
+    <GlobalTableContext.Provider value={{ globalTables, setGlobalTables, addTablesToGlobalTableList, deleteGlobalTable}}>
       {children}
     </GlobalTableContext.Provider>
   );

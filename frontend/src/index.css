@@ -123,3 +123,7 @@ span.drawer-description{
   height: 45vh; /* Set the desired height */
   overflow: auto;
 }
+
+.not-logged-in{
+  cursor: pointer;
+}

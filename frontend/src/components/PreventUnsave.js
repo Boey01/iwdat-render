@@ -4,9 +4,10 @@ export default function PreventUnsave(condition) {
 
     useEffect(() => {
         const handleBeforeUnload = (e) => {
-            if(condition){}
+            if(condition){
           e.preventDefault();
-          e.returnValue = '';   
+          e.returnValue = ''; 
+            }  
         };
     
         window.addEventListener('beforeunload', handleBeforeUnload);

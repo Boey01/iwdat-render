@@ -34,7 +34,7 @@ const ModalContent = styled("div")({
 });
 
 export default function TableManager() {
-  const { globalTables, setGlobalTables, addTablesToGlobalTableList } = useContext(GlobalTableContext);
+  const { globalTables, setGlobalTables, addTablesToGlobalTableList, deleteGlobalTable } = useContext(GlobalTableContext);
   const [modalOpen, setModalOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -73,11 +73,9 @@ export default function TableManager() {
     setPopoverOpen(false);
   };
 
-  const handleDeleteTable = (index) => {
-    const updatedFiles = [...globalTables];
-    updatedFiles.splice(index, 1);
-    setGlobalTables(updatedFiles);
-  };
+    const handleDeleteTable = (index) => {
+      deleteGlobalTable(index);
+    };
 
   const handleCheckboxChange = (event) => {
     const { id, checked } = event.target;

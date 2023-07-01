@@ -15,17 +15,28 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
 import { logout } from "../redux/actions/auth_actions";
 import { DrawerHeader, AppBar, Drawer} from "./SideBarStyle";
+import { useNavigate } from "react-router-dom";
 
 export function MiniDrawer({isAuthenticated, user, logout}) {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
     setOpen(!open);
   };
+ 
+  const handleHeaderTextClick =() => {
+    if(!isAuthenticated){
+      const leavePage = window.confirm('Are you sure you want to leave this page?');
+
+      if (leavePage) {
+        navigate("/login");
+      }
+    }
+  }
 
   const renderSideBarItem = ({ text, icon }) => {
     return (
@@ -55,7 +66,7 @@ export function MiniDrawer({isAuthenticated, user, logout}) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar open={open}>
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
             IWDAT
@@ -79,16 +90,18 @@ export function MiniDrawer({isAuthenticated, user, logout}) {
               />
             ) : null
           ) : (
-            <Link to="/login">
+            
               <ListItemText
-                primary="You're not logged in"
-                secondary=""
+                primary="Not Logged In"
+                secondary="Press here to login"
                 sx={{
                   opacity: open ? 1 : 0,
                   transition: "opacity 0.3s",
                 }}
+                onClick={handleHeaderTextClick}
+                className="not-logged-in"
               />
-              </Link>
+            
           )}
           <IconButton onClick={handleDrawerOpen}>
             <ChevronLeftIcon />

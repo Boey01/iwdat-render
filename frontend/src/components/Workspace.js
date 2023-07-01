@@ -6,7 +6,7 @@ import GlobalTablesProvider from './contexts/TableContext'
 import PreventUnsave from './PreventUnsave';
 
 export const RendererMain = () => {
-PreventUnsave(true);
+PreventUnsave(false);
   return (
     <GlobalTablesProvider>
     <ZIndexProvider>
