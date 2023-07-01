@@ -133,7 +133,7 @@ export default function TableManager() {
         tableIndex = indexFormat + index;
         return(
         <div id={tableIndex} style={{ display: data.hidden ? 'none' : 'block' }}>
-          <MakeDraggable>
+          <MakeDraggable type="table" index={index}>
           <TableRenderer
               sheetData={data["data"]}
               tableName={data["name"]}
