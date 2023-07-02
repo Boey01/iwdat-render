@@ -71,6 +71,15 @@ export default function TableRenderer({
     setColumns(reorderedColumns);
   };
 
+  const handleDeleteColumn = (field) => {
+    setColumns((prevColumns) =>
+      prevColumns.filter((column) => column.field !== field)
+    );
+    setSelectedColumns((prevSelectedColumns) =>
+      prevSelectedColumns.filter((selectedColumn) => selectedColumn !== field)
+    );
+  };
+
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -85,6 +94,7 @@ export default function TableRenderer({
               selectedColumns={selectedColumns}
               handleColumnReorder={handleColumnReorder}
               setSelectedColumns={setSelectedColumns}
+              handleDeleteColumn ={handleDeleteColumn}
             />
             <IconButton onClick={hidefunction} aria-label="hide">
               <MinimizeIcon />

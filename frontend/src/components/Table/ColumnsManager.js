@@ -1,10 +1,12 @@
 import React, { useEffect , useState } from "react";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 import Checkbox from "@mui/material/Checkbox";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import IconButton from "@mui/material/IconButton";
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 export const StrictModeDroppable = ({ children, ...props }) => {
   const [enabled, setEnabled] = useState(false);
@@ -26,7 +28,8 @@ export default function ColumnsManager({
   columns, 
   selectedColumns, 
   handleColumnReorder,
-   setSelectedColumns }){
+   setSelectedColumns,
+   handleDeleteColumn }){
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handlePopoverOpen = (event) => setAnchorEl(event.currentTarget);
@@ -56,13 +59,17 @@ export default function ColumnsManager({
         <DragDropContext onDragEnd={handleColumnReorder}>
           <StrictModeDroppable droppableId="columns" direction="vertical">
             {(provided) => (
-              <FormGroup {...provided.droppableProps} ref={provided.innerRef}>
+              <List {...provided.droppableProps} ref={provided.innerRef}>
                 {columns.map((column, index) => (
                   <Draggable key={column.field} draggableId={column.field} index={index} isDragDisabled={false}>
                     {(provided) => (
-                      <FormControlLabel
-                        key={column.field}
-                        control={
+                      <ListItem key={column.field}  
+                      ref={provided.innerRef} 
+                      {...provided.draggableProps} 
+                      {...provided.dragHandleProps}
+                      disablePadding
+                      sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                      >
                           <Checkbox
                             checked={selectedColumns.includes(column.field)}
                             onChange={(event) => {
@@ -78,17 +85,21 @@ export default function ColumnsManager({
                               });
                             }}
                           />
-                        }
-                        label={column.headerName}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        ref={provided.innerRef}
-                      />
+
+                          {column.headerName}
+
+                          <IconButton
+                            onClick={()=>{handleDeleteColumn(column.field)}}
+                            aria-label="Delete"
+                          >
+                            <DeleteRoundedIcon/>
+                          </IconButton>
+                        </ListItem>
                     )}
                   </Draggable>
                 ))}
                 {provided.placeholder}
-              </FormGroup>
+              </List>
             )}
           </StrictModeDroppable>
         </DragDropContext>
