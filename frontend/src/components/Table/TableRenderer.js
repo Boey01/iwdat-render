@@ -6,13 +6,13 @@ import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
-import { styled} from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import TablePagination from "@mui/material/TablePagination";
-import EditableTableCell from "./EditableTableCell"
-import TablePaginationActions from "./TablePaginationActions"
+import EditableTableCell from "./EditableTableCell";
+import TablePaginationActions from "./TablePaginationActions";
 import ColumnsManager from "./ColumnsManager";
-import CloseIcon from '@mui/icons-material/Close';
-import MinimizeIcon from '@mui/icons-material/Minimize';
+import CloseIcon from "@mui/icons-material/Close";
+import MinimizeIcon from "@mui/icons-material/Minimize";
 import { IconButton } from "@mui/material";
 
 const CustomTableContainer = styled(TableContainer)({
@@ -21,27 +21,32 @@ const CustomTableContainer = styled(TableContainer)({
   width: "70vw",
 });
 
-export default function TableRenderer({ sheetData, tableName, hidefunction, closefunction }) {
-   // process sheet data ---------------
-   const firstRow = sheetData[0];
-   const initialColumns = [];
-   Object.keys(firstRow).forEach((key) => {
-     initialColumns.push({
-       field: key,
-       headerName: key,
-     });
-   });
-   //------------------- ---------------
- 
-   const [columns, setColumns] = useState(initialColumns);
-   const [rows, setRows] = useState(sheetData);
-   const [page, setPage] = useState(0);
-   const [rowsPerPage, setRowsPerPage] = useState(5);
-   const [selectedColumns, setSelectedColumns] = useState(
-     initialColumns.map((column) => column.field)
-   );
+export default function TableRenderer({
+  sheetData,
+  tableName,
+  hidefunction,
+  closefunction,
+}) {
+  // process sheet data ---------------
+  const firstRow = sheetData[0];
+  const initialColumns = [];
+  Object.keys(firstRow).forEach((key) => {
+    initialColumns.push({
+      field: key,
+      headerName: key,
+    });
+  });
+  //------------------- ---------------
 
-   const handleChangePage = (event, newPage) => setPage(newPage);
+  const [columns, setColumns] = useState(initialColumns);
+  const [rows, setRows] = useState(sheetData);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [selectedColumns, setSelectedColumns] = useState(
+    initialColumns.map((column) => column.field)
+  );
+
+  const handleChangePage = (event, newPage) => setPage(newPage);
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -54,7 +59,7 @@ export default function TableRenderer({ sheetData, tableName, hidefunction, clos
       updatedRows[rowIndex][field] = newValue;
       return updatedRows;
     });
-  }; 
+  };
 
   const handleColumnReorder = (result) => {
     if (!result.destination) return;
@@ -66,34 +71,28 @@ export default function TableRenderer({ sheetData, tableName, hidefunction, clos
     setColumns(reorderedColumns);
   };
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <>
       <div className="table-wrapper">
-        <div className="table-title-bar">
-          <span>{tableName}</span>  
+        <div className="table-title-bar spread-items">
+          <span>{tableName}</span>
           <div>
-          <ColumnsManager
-            columns={columns}
-            selectedColumns={selectedColumns}
-            handleColumnReorder={handleColumnReorder}
-            setSelectedColumns={setSelectedColumns} 
-          />
-
-    <IconButton
-        onClick={hidefunction}
-        aria-label="hide"
-      >
-        <MinimizeIcon />
-      </IconButton>
-      <IconButton
-        onClick={closefunction}
-        aria-label="delete"
-      >
-        <CloseIcon/>
-      </IconButton>
-      </div>
+            <ColumnsManager
+              columns={columns}
+              selectedColumns={selectedColumns}
+              handleColumnReorder={handleColumnReorder}
+              setSelectedColumns={setSelectedColumns}
+            />
+            <IconButton onClick={hidefunction} aria-label="hide">
+              <MinimizeIcon />
+            </IconButton>
+            <IconButton onClick={closefunction} aria-label="delete">
+              <CloseIcon />
+            </IconButton>
+          </div>
         </div>
         <CustomTableContainer
           component={Paper}
@@ -131,7 +130,7 @@ export default function TableRenderer({ sheetData, tableName, hidefunction, clos
                         rowIndex={rowIndex}
                         field={column.field}
                         onCellValueChange={handleCellValueChange}
-                        page = {page}
+                        page={page}
                         rowsPerPage={rowsPerPage}
                       />
                     ))}
@@ -160,4 +159,3 @@ export default function TableRenderer({ sheetData, tableName, hidefunction, clos
     </>
   );
 }
-

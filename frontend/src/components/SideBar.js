@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import { Toolbar } from "@mui/material";
+import { Grid, Toolbar } from "@mui/material";
+import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -19,8 +20,11 @@ import { connect } from 'react-redux';
 import { logout } from "../redux/actions/auth_actions";
 import { DrawerHeader, AppBar, Drawer} from "./SideBarStyle";
 import { useNavigate } from "react-router-dom";
+import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import { GlobalTableContext } from "./contexts/TableContext";
 
-export function MiniDrawer({isAuthenticated, user, logout}) {
+export function MiniDrawer({saveFunction, isAuthenticated, user, logout}) {
+  const {saveState} = useContext(GlobalTableContext);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -29,12 +33,14 @@ export function MiniDrawer({isAuthenticated, user, logout}) {
   };
  
   const handleHeaderTextClick =() => {
-    if(!isAuthenticated){
-      const leavePage = window.confirm('Are you sure you want to leave this page?');
-
-      if (leavePage) {
+    if(saveState !==0){
+      const leavePage = window.confirm('Are you sure you want to leave this page, something not saved yet?');
+      saveFunction();
+    if (leavePage) {
         navigate("/login");
       }
+    }else{
+      navigate("/login");
     }
   }
 
@@ -67,11 +73,28 @@ export function MiniDrawer({isAuthenticated, user, logout}) {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar open={open}>
-        <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            IWDAT
-          </Typography>
-        </Toolbar>
+      <Toolbar >
+  <Grid container spacing={1} alignItems="center">
+    <Grid item xs={10}>
+      <Typography variant="h6" noWrap component="div">
+        IWDAT
+      </Typography>
+    </Grid>
+    <Grid item xs={1}>
+      <Typography variant="subtitle1" noWrap component="div">
+      {saveState === 0 && "Saved"}
+    {saveState === 1 && "Not Saved"}
+    {saveState === 2 && "Saving..."}
+      </Typography>
+    </Grid>
+    <Grid item xs={1}>
+      <Button variant="contained" color="secondary" disabled={saveState !== 1} onClick={()=>{saveFunction()}}>
+        Save
+        <SaveRoundedIcon/>
+      </Button>
+    </Grid>
+  </Grid>
+</Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>

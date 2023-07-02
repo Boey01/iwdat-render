@@ -46,10 +46,8 @@ code {
   padding: 10px;
   color: white; 
   border-radius: 5px 5px 0 0 ;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 10px;
+  
 }
 .table-title-bar button{
 margin-left: 50px;
@@ -130,4 +128,14 @@ span.drawer-description{
 
 .not-logged-in{
   cursor: pointer;
+}
+
+.spread-items{
+   display: flex;
+   justify-content: space-between;
+   align-Items: center;
+}
+
+.top-right-header{
+  height:50%;
 }

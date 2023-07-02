@@ -1,16 +1,14 @@
 import React from 'react';
-import MiniDrawer from './SideBar';
 import ZIndexProvider from './contexts/ZIndexContext';
 import TableManager from './DataImporting/TableManager';
 import GlobalTablesProvider from './contexts/TableContext'
-import PreventUnsave from './util/PreventUnsave';
+import {SideBarWrap} from './util/PreventUnsave';
 
 export const RendererMain = () => {
-PreventUnsave(false);
   return (
     <GlobalTablesProvider>
     <ZIndexProvider>
-      <MiniDrawer />
+      <SideBarWrap/>
       <TableManager/>
       <div class= "content">
         </div>

@@ -26,8 +26,7 @@ export default function ColumnsManager({
   columns, 
   selectedColumns, 
   handleColumnReorder,
-   setSelectedColumns }) 
-   {
+   setSelectedColumns }){
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handlePopoverOpen = (event) => setAnchorEl(event.currentTarget);

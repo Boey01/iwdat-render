@@ -3,7 +3,7 @@ import Draggable from 'react-draggable';
 import { ZIndexContext } from '../contexts/ZIndexContext';
 import { GlobalTableContext } from "../contexts/TableContext";
 
-const MakeDraggable = ({ children, type, index}) => {
+const MakeDraggable = ({ children, type, index, position}) => {
   const { updateTablePosition } = useContext(GlobalTableContext);
 
   const { globalZIndex, updateGlobalZIndex } = useContext(ZIndexContext);
@@ -36,7 +36,7 @@ const MakeDraggable = ({ children, type, index}) => {
   };
 
   return (
-    <Draggable onStart={onStart} onStop={onStop}>
+    <Draggable onStart={onStart} onStop={onStop} position={position ? position : undefined}>
       <div style={draggableStyle}>
         {children}
       </div>

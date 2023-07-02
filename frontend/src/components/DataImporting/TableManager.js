@@ -89,7 +89,7 @@ export default function TableManager() {
             <Button
               variant="contained"
               onClick={handleOpenModal}
-              sx={{ px: 2 }}
+              sx={{ px: 2, width: '100%' }}
             >
               Add new table
             </Button>
@@ -97,10 +97,11 @@ export default function TableManager() {
           {globalTables.map((data, index) => (
   <ListItem key={index} disablePadding>
     <ListItemButton sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <div>
+      <div> 
         <Checkbox />
         {data["name"]}
       </div>
+      <div>
       <IconButton
         onClick={() => handleHideTable(index)}
         aria-label="hide"
@@ -113,6 +114,7 @@ export default function TableManager() {
       >
         <DeleteIcon />
       </IconButton>
+      </div>
     </ListItemButton>
   </ListItem>
 ))}
@@ -133,7 +135,7 @@ export default function TableManager() {
         tableIndex = indexFormat + index;
         return(
         <div id={tableIndex} style={{ display: data.hidden ? 'none' : 'block' }}>
-          <MakeDraggable type="table" index={index}>
+          <MakeDraggable type="table" index={index} position ={data["position"]}>
           <TableRenderer
               sheetData={data["data"]}
               tableName={data["name"]}
