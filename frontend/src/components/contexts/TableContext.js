@@ -51,6 +51,16 @@ export default function GlobalTablesProvider({ children }) {
     setSaveState(1);
   };
 
+  const updateTableDataEdit = (index, newData) =>{
+console.log(newData);
+    setGlobalTables((prevTables) =>{
+      const updatedTables = [...prevTables];
+      updatedTables[index].data = newData;
+      return updatedTables;
+    });
+    setSaveState(1);
+  } 
+
   const saveTableListIntoLocal = async () => {
     if (saveState === 1) {
       setSaveState(2); // Set saveState to 2 to indicate saving
@@ -69,11 +79,12 @@ export default function GlobalTablesProvider({ children }) {
         globalTables,
         setGlobalTables,
         addTablesToGlobalTableList,
-        deleteGlobalTable,
+        deleteGlobalTable,  
         toggleTableVisibility,
         updateTablePosition,
         saveState,
         saveTableListIntoLocal,
+        updateTableDataEdit,
       }}
     >
       {children}

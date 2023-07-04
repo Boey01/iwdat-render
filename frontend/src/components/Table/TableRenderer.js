@@ -22,10 +22,12 @@ const CustomTableContainer = styled(TableContainer)({
 });
 
 export default function TableRenderer({
+  index,
   sheetData,
   tableName,
   hidefunction,
   closefunction,
+  updatefunction,
 }) {
   // process sheet data ---------------
   const firstRow = sheetData[0];
@@ -78,8 +80,23 @@ export default function TableRenderer({
     setSelectedColumns((prevSelectedColumns) =>
       prevSelectedColumns.filter((selectedColumn) => selectedColumn !== field)
     );
+
+    compileToOriginal();
   };
 
+  const compileToOriginal = () => {
+    const filteredRows = rows.map((row) => {
+      const filteredRow = {};
+      for (const column of columns) {
+          filteredRow[column.field] = row[column.field];
+      }
+      return filteredRow;
+    });
+    
+    updatefunction(index,filteredRows);
+
+  };
+  
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 

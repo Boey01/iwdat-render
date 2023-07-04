@@ -25,7 +25,8 @@ export default function TableManager() {
   const { globalTables, 
     addTablesToGlobalTableList, 
     deleteGlobalTable, 
-    toggleTableVisibility } = useContext(GlobalTableContext);
+    toggleTableVisibility,
+    updateTableDataEdit } = useContext(GlobalTableContext);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
@@ -61,6 +62,10 @@ export default function TableManager() {
     const handleHideTable = (index) => {
       toggleTableVisibility(index);
     };
+
+    const updateTableDataToGlobal = (index, table) => {
+      updateTableDataEdit(index, table);
+    }
 
   return (
     <>
@@ -137,10 +142,12 @@ export default function TableManager() {
         <div id={tableIndex} style={{ display: data.hidden ? 'none' : 'block' }}>
           <MakeDraggable type="table" index={index} position ={data["position"]}>
           <TableRenderer
+              index={index}
               sheetData={data["data"]}
               tableName={data["name"]}
               hidefunction={() => handleHideTable(index)}
               closefunction={() => handleDeleteTable(index)}
+              updatefunction={updateTableDataToGlobal}
             /> 
           </MakeDraggable>
         </div>
