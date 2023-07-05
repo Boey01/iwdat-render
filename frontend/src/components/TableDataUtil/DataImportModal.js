@@ -10,6 +10,16 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 
+const ModalContent = styled("div")({
+  position: "absolute",
+  top: "50%", 
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  backgroundColor: "white",
+  padding: "16px",
+  width: "60vw",
+});
+
 export default function DIModalContent({
     uploadedFile,
      setUploadedFile,
@@ -42,40 +52,32 @@ export default function DIModalContent({
       };
     
       const handleTableNameChange = (index, value) => {
-      const updatedTableNames = [...tableNames];
-      updatedTableNames[index] = value;
-      setTableNames(updatedTableNames);
-    };
-    
-    const handleConfirmTables = () => {
-      const selectedTables = {};
-      for (const key in checkedTables) {
-        if (checkedTables[key]) {
-          const tableName = tableNames[key] || Object.keys(uploadedFile)[key];
-          selectedTables[tableName] = uploadedFile[Object.keys(uploadedFile)[key]];
+        setTableNames((prevTableNames) => {
+          const updatedTableNames = [...prevTableNames];
+          updatedTableNames[index] = value;
+          return updatedTableNames;
+        });
+      };
+      
+      const handleConfirmTables = () => {
+        const selectedTables = Object.keys(checkedTables).reduce((selected, key) => {
+          if (checkedTables[key]) {
+            const tableName = tableNames[key] || Object.keys(uploadedFile)[key];
+            selected[tableName] = uploadedFile[Object.keys(uploadedFile)[key]];
+          }
+          return selected;
+        }, {});
+      
+        if (Object.keys(selectedTables).length !== 0) {
+          addTablesToGlobalTableList(selectedTables);
         }
-      }
-    
-      if(Object.keys(selectedTables).length !== 0){
-        addTablesToGlobalTableList(selectedTables);
-    }
-
-      setCheckedTables([]);
-      handleCloseModal();
-      setTableNames([]);
-      setUploadedFile(null);
-    };
-
-    const ModalContent = styled("div")({
-        position: "absolute",
-        top: "50%", 
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        backgroundColor: "white",
-        padding: "16px",
-        width: "60vw",
-      });
-
+      
+        setCheckedTables([]);
+        handleCloseModal();
+        setTableNames([]);
+        setUploadedFile(null);
+      };
+      
 
     function TabPanel(props) {
         const { children, value, index } = props;
@@ -87,7 +89,7 @@ export default function DIModalContent({
       }
 
     return(
-        <ModalContent className="table-preview-modal-content">
+        <ModalContent>
         <Button
           onClick={handleCloseModal}
           style={{ position: "absolute", top: "8px", right: "8px" }}
@@ -108,7 +110,7 @@ export default function DIModalContent({
         indicatorColor="primary"
   >
         {Object.keys(uploadedFile).map((key, index) => (
-          <Tab label={key} index={index} />
+          <Tab  label={key} index={index} key={key} />
         ))}
       </Tabs>
     </Grid>
