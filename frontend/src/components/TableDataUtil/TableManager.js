@@ -57,7 +57,7 @@ export default function TableManager() {
       setOpenImportData(false);
     setUploadedFile(null);
       }
-      if(type === 0){
+      if(type === 1){
         setOpenBindTable(false);
         }
   };
@@ -168,6 +168,7 @@ export default function TableManager() {
         <TBModalContent
           handleCloseModal={()=>(handleCloseModal(1))}
           addTablesToGlobalTableList={addTablesToGlobalTableList}
+          globalTables={globalTables}
         />
       </Modal>
 

@@ -120,12 +120,6 @@ span.drawer-description{
   position: fixed;
 } 
 
-.table-preview-modal-content {
-  width: 60vw; /* Set the desired width */
-  height: 45vh; /* Set the desired height */
-  overflow: auto;
-}
-
 .not-logged-in{
   cursor: pointer;
 }

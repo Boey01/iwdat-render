@@ -1,9 +1,9 @@
 import React, { useState} from "react";
 import FileImport from "./FileUploadHandler";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Unstable_Grid2";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Box } from "@mui/material";
+import { Paper } from "@mui/material";
 import PreviewTable from "./TablePreview";
 import Input from '@mui/material/Input';
 import { styled } from "@mui/material/styles";
@@ -73,6 +73,7 @@ export default function DIModalContent({
         transform: "translate(-50%, -50%)",
         backgroundColor: "white",
         padding: "16px",
+        width: "60vw",
       });
 
 
@@ -80,7 +81,7 @@ export default function DIModalContent({
         const { children, value, index } = props;
         return (
           <div role="tabpanel" hidden={value !== index}>
-            {value === index && <Box sx={{ p: 2 }}>{children}</Box>}
+            {value === index && <Paper sx={{ p: 2 }}>{children}</Paper>}
           </div>
         );
       }
@@ -111,7 +112,7 @@ export default function DIModalContent({
         ))}
       </Tabs>
     </Grid>
-    <Grid item xs={12}>
+    <Grid item xs={12} sx={{height:"100%"}}>
       {Object.keys(uploadedFile).map((key, index) => (
         <TabPanel value={currentTab} index={index} key={index}>
           <Grid container alignItems="center" spacing={2}>
@@ -130,7 +131,7 @@ export default function DIModalContent({
             />
             </Grid>
           </Grid>
-          <PreviewTable data={uploadedFile[key]} />
+          <PreviewTable data={uploadedFile[key]}/>
         </TabPanel>
       ))}
     </Grid>
