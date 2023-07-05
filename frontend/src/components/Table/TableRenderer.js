@@ -59,8 +59,11 @@ export default function TableRenderer({
     setRows((prevRows) => {
       const updatedRows = [...prevRows];
       updatedRows[rowIndex][field] = newValue;
+      
+      updatefunction(index, updatedRows);
       return updatedRows;
     });
+
   };
 
   const handleColumnReorder = (result) => {
@@ -81,20 +84,13 @@ export default function TableRenderer({
       prevSelectedColumns.filter((selectedColumn) => selectedColumn !== field)
     );
 
-    compileToOriginal();
-  };
-
-  const compileToOriginal = () => {
-    const filteredRows = rows.map((row) => {
-      const filteredRow = {};
-      for (const column of columns) {
-          filteredRow[column.field] = row[column.field];
-      }
-      return filteredRow;
+    const updatedData = sheetData.map((row) => {
+      const updatedRow = { ...row };
+      delete updatedRow[field];
+      return updatedRow;
     });
-    
-    updatefunction(index,filteredRows);
-
+  
+    updatefunction(index, updatedData);
   };
   
   const emptyRows =

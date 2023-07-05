@@ -19,6 +19,7 @@ const MakeDraggable = ({ children, type, index, position}) => {
     }
 
     updateGlobalZIndex();
+    if(type !== "tm")
     setLocalZIndex(globalZIndex + 1);
   };
 
@@ -31,7 +32,7 @@ const MakeDraggable = ({ children, type, index, position}) => {
   };
 
   const draggableStyle = {
-    zIndex: localZIndex,
+    zIndex: type === "tm" ? 101:localZIndex,
     position: 'absolute',
   };
 

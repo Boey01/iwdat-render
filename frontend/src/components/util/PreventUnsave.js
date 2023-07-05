@@ -8,9 +8,9 @@ export default function PreventUnsave() {
     useEffect(() => {
         const handleBeforeUnload = (e) => {
             if(saveState !== 0){
-              triggerSave();
           e.preventDefault();
           e.returnValue = ''; 
+          triggerSave();
             }  
         };
     

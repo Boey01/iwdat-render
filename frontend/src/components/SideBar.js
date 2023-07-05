@@ -35,10 +35,10 @@ export function MiniDrawer({saveFunction, isAuthenticated, user, logout}) {
   const handleHeaderTextClick =() => {
     if(saveState !==0){
       const leavePage = window.confirm('Are you sure you want to leave this page, something not saved yet?');
-      saveFunction();
     if (leavePage) {
         navigate("/login");
       }
+      saveFunction();
     }else{
       navigate("/login");
     }

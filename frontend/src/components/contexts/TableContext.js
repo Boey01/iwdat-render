@@ -52,7 +52,6 @@ export default function GlobalTablesProvider({ children }) {
   };
 
   const updateTableDataEdit = (index, newData) =>{
-console.log(newData);
     setGlobalTables((prevTables) =>{
       const updatedTables = [...prevTables];
       updatedTables[index].data = newData;

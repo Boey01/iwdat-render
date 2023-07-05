@@ -1,6 +1,6 @@
 import React from 'react';
 import ZIndexProvider from './contexts/ZIndexContext';
-import TableManager from './DataImporting/TableManager';
+import TableManager from './TableDataUtil/TableManager';
 import GlobalTablesProvider from './contexts/TableContext'
 import {SideBarWrap} from './util/PreventUnsave';
 
