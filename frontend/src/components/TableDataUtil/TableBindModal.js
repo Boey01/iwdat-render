@@ -1,17 +1,15 @@
 import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import { Box } from "@mui/material";
-import Input from "@mui/material/Input";
+import { Box, Card, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
+import Typography from '@mui/material/Typography';
+import CustomizedAccordions from "./CustomizedAccordians";
 
 export default function TBModalContent({
-  handleCloseModal,
-}) {
-
+  handleCloseModal, globalTables,}) {
+  
   const ModalContent = styled("div")({
     position: "absolute",
     top: "50%",
@@ -19,6 +17,7 @@ export default function TBModalContent({
     transform: "translate(-50%, -50%)",
     backgroundColor: "white",
     padding: "16px",
+    width: "60vw",
   });
 
   return (
@@ -29,7 +28,26 @@ export default function TBModalContent({
       >
         X
       </Button>
-      <Grid container spacing={1}></Grid>
+
+      <Grid container spacing={1}>
+        <Grid item xs={3}>
+        <Paper variant="outlined" sx={{height:"55vh"}}>
+            <Card sx={{p:1}}>
+        <Typography>
+          Please select the columns from exported tables.
+        </Typography>
+        </Card>
+        <Box sx={{overflow:"auto"}}>
+        <CustomizedAccordions tableList={globalTables}/>
+        </Box>
+     </Paper>
+        </Grid>
+        <Grid item xs={9}>
+        <Typography variant="h4">
+          Table Preview:
+        </Typography>
+        </Grid>
+      </Grid>
     </ModalContent>
   );
 }
