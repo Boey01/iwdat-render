@@ -9,7 +9,7 @@ import { Checkbox, List, ListItem, ListItemText } from '@mui/material';
 import Divider from "@mui/material/Divider";
 
 const Accordion = styled((props) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
+  <MuiAccordion disableGutters elevation={0} square {...props}/>
 ))(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   '&:not(:last-child)': {
@@ -53,6 +53,7 @@ export default function CustomizedAccordions({ tableList }) {
 
   return (
     <>
+    <div className='aslkdjgf'>
       {tableList.map((data, index) => (
         <Accordion expanded={expanded === index} onChange={handleChange(index)} key={index}>
           <AccordionSummary>
@@ -74,6 +75,7 @@ export default function CustomizedAccordions({ tableList }) {
           </AccordionDetails>
         </Accordion>
       ))}
+      </div>
     </>
   );
 }
