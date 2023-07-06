@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     #Below are apps that are outside from default built-in app  
     "corsheaders",
     'accounts',
+    'tables',
     'rest_framework',
     'djoser',
 ]
@@ -133,9 +134,6 @@ DJOSER = {
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),

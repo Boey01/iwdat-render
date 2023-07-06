@@ -11,3 +11,6 @@ class TableData(models.Model):
     position_y = models.IntegerField()
     hidden = models.BooleanField()
     data = models.JSONField()
+
+    def __str__(self):
+        return self.table_name

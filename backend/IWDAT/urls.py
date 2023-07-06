@@ -16,9 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from tables import views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+    path('tables/retrieve/', views.getTables),
+    path('tables/test/', views.TestViewSet.as_view({'post': 'create'}), name='test-view'),
+
 ]
