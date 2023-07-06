@@ -24,6 +24,6 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
     path('tables/retrieve/', views.getTables),
-    path('tables/test/', views.TestViewSet.as_view({'post': 'create'}), name='test-view'),
+    path('tables/create/', views.TestViewSet.as_view({'post': 'create'}), name='test-view'),
 
 ]
