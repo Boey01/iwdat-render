@@ -18,10 +18,6 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import DIModalContent from "./DataImportModal";
 import TBModalContent from "./TableBindModal";
 
-const TableManagerButton = styled(Button)({
-  left: "10vw",
-});
-
 export default function TableManager() {
   const {
     globalTables,
@@ -82,9 +78,9 @@ export default function TableManager() {
   return (
     <>
       <MakeDraggable type="tm">
-        <TableManagerButton variant="contained" onClick={handleOpenPopover}>
+        <Button variant="contained" onClick={handleOpenPopover} sx={{left: "8vw"}}>
           Table Manager
-        </TableManagerButton>
+        </Button>
       </MakeDraggable>
 
       <Popover
@@ -167,8 +163,8 @@ export default function TableManager() {
       <Modal open={openBindTable} onClose={()=>(handleCloseModal(1))}>
         <TBModalContent
           handleCloseModal={()=>(handleCloseModal(1))}
-          addTablesToGlobalTableList={addTablesToGlobalTableList}
           globalTables={globalTables}
+          addTablesToGlobalTableList={addTablesToGlobalTableList}
         />
       </Modal>
 

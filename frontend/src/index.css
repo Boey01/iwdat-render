@@ -133,3 +133,13 @@ span.drawer-description{
 .top-right-header{
   height:50%;
 }
+
+.tb-title-holder{
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+padding-right: 50px;
+margin-bottom: 30px;
+margin-top: 20px;
+}
