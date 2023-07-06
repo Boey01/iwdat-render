@@ -30,3 +30,7 @@ def getTables(request):
 
 class TestViewSet(viewsets.ModelViewSet):
     serializer_class = CreateTableSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def perform_create(self, serializer):
+        serializer.save(user_id=self.request.user)
