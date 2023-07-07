@@ -157,7 +157,7 @@ export default function TBModalContent({
                   >
                     <AccordionSummary>
                       <Typography>
-                        {data.name} ({data.data.length} rows)
+                        {data.table_name} ({data.data.length} rows)
                       </Typography>
                     </AccordionSummary>
                     <AccordionDetails>

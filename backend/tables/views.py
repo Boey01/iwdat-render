@@ -33,19 +33,10 @@ class createTable(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        table_name = request.data.get('table_name')
-        position_x = request.data.get('position_x')
-        position_y = request.data.get('position_y')
-        hidden = request.data.get('hidden')
-        data = request.data.get('data')
-        user_id = request.user.user_id
-        print(request.data)
-        print(request.user)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        table_id = serializer.instance.table_id  # Get the generated 
 
         headers = self.get_success_headers(serializer.data)
-        return Response({'table_id': table_id, **serializer.data}, headers=headers)
+        return Response({**serializer.data}, headers=headers)
 

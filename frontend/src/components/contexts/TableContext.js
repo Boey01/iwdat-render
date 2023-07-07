@@ -16,28 +16,35 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
     }
   }, []);
 
+  useEffect(() => {
+console.log(globalTables)
+  }, [globalTables]);
+
   const addTablesToGlobalTableList = (tables) => {
-    const updatedTables = Object.keys(tables).map((key) => ({
-      databaseID: null,
-      name: key,
-      data: tables[key],
-      hidden: false,
-      position: { x: 0, y: 0 },
-    }));
-
     if (isAuthenticated) {
-      updatedTables.map((table) => {
-        const { x: pos_x, y: pos_y } = table.position;
+      Object.keys(tables).map((key) => {
+        const name= key;
+        const data = tables[key];
+        const hidden= false
+        const x = 0;
+        const y =0;
 
-        addNewTableToAccount(table.name,pos_x, pos_y, table.hidden,table.data );
+         addNewTableToAccount(name,x, y, hidden,data );
+  });
+  //if not logged in, save locally
+    }else{
+      const updatedTables = Object.keys(tables).map((key) => ({
+        table_id: null,
+        table_name: key,
+        data: tables[key],
+        hidden: false,
+        position_x: 0,
+        position_y: 0
+      }));
 
-      });
-    
-      
+      setGlobalTables((prevTables) => [...prevTables, ...updatedTables]); 
+      setSaveState(1);
     }
-
-    setGlobalTables((prevTables) => [...prevTables, ...updatedTables]); 
-    setSaveState(1);
   };
 
   const deleteGlobalTable = (index) => {
@@ -102,7 +109,11 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
           body,
       config
         );
-          console.log(response.data);
+          
+        if(response.status===200){
+          const createdDatabaseTable = response.data;
+          setGlobalTables((prevTables) => [...prevTables, createdDatabaseTable]); 
+          }
         }catch(err) {
           console.log(err);
         }

@@ -184,7 +184,7 @@ export default function TableManager() {
                 <TableRenderer
                   index={index}
                   sheetData={data["data"]}
-                  tableName={data["name"]}
+                  tableName={data["table_name"]}
                   hidefunction={() => handleHideTable(index)}
                   closefunction={() => handleDeleteTable(index)}
                   updatefunction={updateTableDataEdit}
