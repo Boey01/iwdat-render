@@ -28,9 +28,15 @@ def getTables(request):
 #         return Response(serializer.data, status=status.HTTP_201_CREATED)
 #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class TestViewSet(viewsets.ModelViewSet):
+class createTable(viewsets.ModelViewSet):
     serializer_class = CreateTableSerializer
     permission_classes = [IsAuthenticated]
-    
-    def perform_create(self, serializer):
-        serializer.save(user_id=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        table_id = serializer.instance.table_id  # Get the generated table_id
+        headers = self.get_success_headers(serializer.data)
+        return Response({'table_id': table_id, **serializer.data}, headers=headers)
+

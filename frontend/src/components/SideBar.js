@@ -23,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import { GlobalTableContext } from "./contexts/TableContext";
 
-export function MiniDrawer({saveFunction, isAuthenticated, user, logout}) {
+export function MiniDrawer({saveLocalFunction, saveOnlineFunction, isAuthenticated, user, logout}) {
   const {saveState} = useContext(GlobalTableContext);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ export function MiniDrawer({saveFunction, isAuthenticated, user, logout}) {
     if (leavePage) {
         navigate("/login");
       }
-      saveFunction();
+      saveLocalFunction();
     }else{
       navigate("/login");
     }
@@ -69,6 +69,13 @@ export function MiniDrawer({saveFunction, isAuthenticated, user, logout}) {
     );
   };
 
+  const saveTables = () =>{
+    if(isAuthenticated){
+      saveOnlineFunction();
+    }
+    saveLocalFunction();
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -88,7 +95,7 @@ export function MiniDrawer({saveFunction, isAuthenticated, user, logout}) {
       </Typography>
     </Grid>
     <Grid item xs={1}>
-      <Button variant="contained" color="secondary" disabled={saveState !== 1} onClick={()=>{saveFunction()}}>
+      <Button variant="contained" color="secondary" disabled={saveState !== 1} onClick={saveTables}>
         Save
         <SaveRoundedIcon/>
       </Button>

@@ -21,4 +21,4 @@ class TableSerializer(serializers.ModelSerializer):
 class CreateTableSerializer(serializers.ModelSerializer):
     class Meta:
         model = TableData
-        fields = ['table_name', 'position_x', 'position_y','hidden','data']
+        fields = ['table_id', 'table_name', 'position_x', 'position_y', 'hidden', 'data']

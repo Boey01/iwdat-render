@@ -69,7 +69,6 @@ export default function DIModalContent({
         }, {});
       
         if (Object.keys(selectedTables).length !== 0) {
-          console.log(selectedTables)
           addTablesToGlobalTableList(selectedTables);
         }
       
