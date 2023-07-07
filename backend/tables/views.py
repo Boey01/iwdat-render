@@ -38,8 +38,9 @@ class createTable(viewsets.ModelViewSet):
         position_y = request.data.get('position_y')
         hidden = request.data.get('hidden')
         data = request.data.get('data')
-        user_id = request.user.id
-        
+        user_id = request.user.user_id
+        print(request.data)
+        print(request.user)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
