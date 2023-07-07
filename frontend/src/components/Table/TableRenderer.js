@@ -101,7 +101,7 @@ export default function TableRenderer({
       <div className="table-wrapper">
         <div className="table-title-bar spread-items">
           <span>{tableName}</span>
-          <div>
+          
             <ColumnsManager
               columns={columns}
               selectedColumns={selectedColumns}
@@ -115,7 +115,7 @@ export default function TableRenderer({
             <IconButton onClick={closefunction} aria-label="delete">
               <CloseIcon />
             </IconButton>
-          </div>
+          
         </div>
         <CustomTableContainer
           component={Paper}

@@ -29,7 +29,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
       updatedTables.map((table) => {
         const { x: pos_x, y: pos_y } = table.position;
 
-        addNewTableToAccount(updatedTables.name,pos_x, pos_y, updatedTables.hidden,updatedTables.data );
+        addNewTableToAccount(table.name,pos_x, pos_y, table.hidden,table.data );
 
       });
     
@@ -95,7 +95,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
       };
   
       const body = JSON.stringify({ table_name, position_x, position_y, hidden, data });
-      
+
       try {
         const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_API_URL}/tables/create/`,

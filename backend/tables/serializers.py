@@ -19,6 +19,8 @@ class TableSerializer(serializers.ModelSerializer):
 
 
 class CreateTableSerializer(serializers.ModelSerializer):
+    user_id = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = TableData
-        fields = ['table_id', 'table_name', 'position_x', 'position_y', 'hidden', 'data']
+        fields = ['table_id', 'table_name', 'position_x', 'position_y', 'hidden', 'data', 'user_id']
