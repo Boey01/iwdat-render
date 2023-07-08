@@ -1,8 +1,8 @@
 import React, { useEffect, useContext } from 'react';
 import { GlobalTableContext } from '../contexts/TableContext';
-import MiniDrawer from '../util/SideBar';
+import MiniDrawer from './SideBar';
 
-export default function PreventUnsave() {
+export default function PreventUnsave({children}) {
  const {saveState, saveTableListIntoLocal} = useContext(GlobalTableContext);
 
     useEffect(() => {
@@ -26,7 +26,12 @@ export default function PreventUnsave() {
         }
       }
 
-      return <MiniDrawer saveLocalFunction={triggerLocalSave}/>;
+      return (
+      <>
+      <MiniDrawer saveLocalFunction={triggerLocalSave}/>
+      {children}
+      </>
+      );
 }
 
 export { PreventUnsave as SideBarWrap };

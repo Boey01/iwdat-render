@@ -12,7 +12,7 @@ code {
     monospace;
 }
 
-.content {
+.workspace-main{
   max-height: 80%;
   margin: 5%;
   align-items: center;

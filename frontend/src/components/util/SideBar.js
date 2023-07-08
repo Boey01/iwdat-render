@@ -53,7 +53,7 @@ export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
   } 
 
   const handleDashboardButton =() =>{
-    console.log("dashbaord")
+    navigate("/dashboard");
   } 
 
   const renderSideBarItem = ({ text, icon, onClickFunction }) => {
