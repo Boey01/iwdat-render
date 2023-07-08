@@ -23,7 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
-    path('tables/retrieve/', views.getTables),
-    path('tables/create/', views.createTable.as_view({'post': 'create'}), name='test-view'),
+    path('tables/retrieve/', views.getTables, name='get_tables'),
+    path('tables/create/', views.createTable, name='create_table'),
+    path('tables/delete/<int:table_id>/', views.deleteTable, name='delete_table'),
 
 ]

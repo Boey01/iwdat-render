@@ -1,23 +1,46 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .serializers import TableSerializer,CreateTableSerializer
+from .serializers import ReadingTableSerializer,ModifyTableSerializer
 from .models import TableData
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import viewsets
-from rest_framework import permissions
 # Create your views here.
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getTables(request):
-    user_id = request.user.id
-    tables = TableData.objects.filter(user_id=user_id)
-    serializer = TableSerializer(tables, many=True)
+    user = request.user
+    tables = user.tabledata_set.all()
+    serializer = ReadingTableSerializer(tables, many=True)
     return Response(serializer.data)
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createTable(request):
+    serializer = ModifyTableSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteTable(request, table_id):
+    try:
+        table = TableData.objects.get(table_id=table_id)
+    except TableData.DoesNotExist:
+        return Response({'error': 'Table not found'}, status=404)
+
+    # Check if the authenticated user is the author of the table
+    if table.user_id_id == request.user.user_id:
+        table.delete()
+        return Response({'success': 'Table deleted'}, status=204)
+    else:
+        return Response({'error': 'Unauthorized'}, status=403)
 
 # @api_view(['POST'])
 # # @permission_classes([IsAuthenticated])
@@ -28,15 +51,14 @@ def getTables(request):
 #         return Response(serializer.data, status=status.HTTP_201_CREATED)
 #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class createTable(viewsets.ModelViewSet):
-    serializer_class = CreateTableSerializer
-    permission_classes = [IsAuthenticated]
+# class createTable(viewsets.ModelViewSet):
+#     serializer_class = ModifyTableSerializer
+#     permission_classes = [IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_create(serializer)
 
-        headers = self.get_success_headers(serializer.data)
-        return Response({**serializer.data}, headers=headers)
-
+#         headers = self.get_success_headers(serializer.data)
+#         return Response({**serializer.data}, headers=headers)

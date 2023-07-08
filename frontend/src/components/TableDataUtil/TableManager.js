@@ -127,7 +127,7 @@ export default function TableManager() {
               >
                 <div>
                   <Checkbox />
-                  {data["name"]}
+                  {data["table_name"]}
                 </div>
                 <div>
                   <IconButton

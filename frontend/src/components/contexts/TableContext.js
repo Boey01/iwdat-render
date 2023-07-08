@@ -1,24 +1,28 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import axios from "axios";
+import { Snackbar } from '@mui/material';
 
 export const GlobalTableContext = createContext();
 
 export function GlobalTablesProvider({ children, isAuthenticated }) {
   const [globalTables, setGlobalTables] = useState([]);
   const [saveState, setSaveState] = useState(0); //0 = saved, 1= need save, 2= saving
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState(null);
 
   useEffect(() => {
-    const storedGlobalTables = localStorage.getItem('globalTables');
+    loadAccountTables();
+    // const storedGlobalTables = localStorage.getItem('globalTables');
 
-    if (storedGlobalTables) {
-      setGlobalTables(JSON.parse(storedGlobalTables));
-    }
+    // if (storedGlobalTables) {
+    //   setGlobalTables(JSON.parse(storedGlobalTables));
+    // }
   }, []);
 
-  useEffect(() => {
-console.log(globalTables)
-  }, [globalTables]);
+  const handleSnackbarClose = () =>{
+    setSnackbarOpen(false);
+  };
 
   const addTablesToGlobalTableList = (tables) => {
     if (isAuthenticated) {
@@ -48,11 +52,20 @@ console.log(globalTables)
   };
 
   const deleteGlobalTable = (index) => {
+  if(isAuthenticated){
+    const targetTableID = globalTables[index]["table_id"];
+     deleteTable(targetTableID, index);
+  }else{
+    deleteFromTableList (index);
+  }
+  };
+
+  const deleteFromTableList = (index) =>{
     const updatedTables = [...globalTables];
     updatedTables.splice(index, 1);
     setGlobalTables(updatedTables);
-    setSaveState(1);
-  };
+    // setSaveState(1);
+  }
 
   const toggleTableVisibility = (index) => {
     setGlobalTables((prevTables) => {
@@ -60,7 +73,7 @@ console.log(globalTables)
       updatedTables[index].hidden = !updatedTables[index].hidden;
       return updatedTables;
     });
-    setSaveState(1);
+    // setSaveState(1);
   };
 
   const updateTablePosition = (index, newPosition) => {
@@ -69,7 +82,7 @@ console.log(globalTables)
       updatedTables[index].position = newPosition;
       return updatedTables;
     });
-    setSaveState(1);
+    // setSaveState(1);
   };
 
   const updateTableDataEdit = (index, newData) =>{
@@ -78,7 +91,7 @@ console.log(globalTables)
       updatedTables[index].data = newData;
       return updatedTables;
     });
-    setSaveState(1);
+    // setSaveState(1);
   } 
 
   const saveTableListIntoLocal = async () => {
@@ -92,6 +105,8 @@ console.log(globalTables)
     }
   };
   
+//--- BACKEND INVOVLED CRUD OPERATIONS ---------------------
+
   const addNewTableToAccount = async (table_name, position_x, position_y, hidden, data ) => {
     if (localStorage.getItem("access")) {
       const config = {
@@ -100,7 +115,7 @@ console.log(globalTables)
           Authorization: `JWT ${localStorage.getItem("access")}`,
         },
       };
-  
+
       const body = JSON.stringify({ table_name, position_x, position_y, hidden, data });
 
       try {
@@ -118,9 +133,59 @@ console.log(globalTables)
           console.log(err);
         }
   }
-};
-  
+  };
 
+
+  const loadAccountTables = async () => {
+    if (localStorage.getItem("access")) {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${localStorage.getItem("access")}`,
+          Accept: "application/json",
+        },
+      };
+  
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_API_URL}/tables/retrieve/`,
+          config
+        );
+
+        setGlobalTables(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  const deleteTable = async (table_id, indexToDelete) => {
+    if (localStorage.getItem("access")) {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${localStorage.getItem("access")}`,
+        },
+      };
+  
+      try {
+        const response = await axios.delete(
+          `${process.env.REACT_APP_BACKEND_API_URL}/tables/delete/${table_id}/`,
+          config
+        );
+  
+        if (response.status === 204) {
+          setSnackbarMsg("Delete Succesful");
+          setSnackbarOpen(true);
+          
+          deleteFromTableList (indexToDelete);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+  
   const updateAccountTableList = async () =>{
     if(isAuthenticated){
       console.log(globalTables);
@@ -143,6 +208,13 @@ console.log(globalTables)
       }}
     >
       {children}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000} 
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        message={snackbarMsg}
+      />
     </GlobalTableContext.Provider>
   );
 }

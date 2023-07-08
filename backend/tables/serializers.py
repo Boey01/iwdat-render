@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from .models import TableData
 
-class TableSerializer(serializers.ModelSerializer):
+class ReadingTableSerializer(serializers.ModelSerializer):
     class Meta:
         model = TableData
-        fields = '__all__'
+        fields = ['table_id', 'table_name', 'position_x', 'position_y', 'hidden', 'data']
 
 # class CreateTableSerializer(serializers.ModelSerializer):
 #     table_name = serializers.CharField(max_length=255)
@@ -18,9 +18,9 @@ class TableSerializer(serializers.ModelSerializer):
 #         return TableData.objects.create(user_id=user_id, **validated_data)
 
 
-class CreateTableSerializer(serializers.ModelSerializer):
+class ModifyTableSerializer(serializers.ModelSerializer):
     user_id = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = TableData
-        fields = ['table_id', 'table_name', 'position_x', 'position_y', 'hidden', 'data', 'user_id']
+        fields = '__all__'
