@@ -26,5 +26,7 @@ urlpatterns = [
     path('tables/retrieve/', views.getTables, name='get_tables'),
     path('tables/create/', views.createTable, name='create_table'),
     path('tables/delete/<int:table_id>/', views.deleteTable, name='delete_table'),
+    path('tables/update/visible/', views.updateTableVisibility, name='update_visible'),
+    path('tables/update/position/', views.updateTablePosition, name='update_position'),
 
 ]

@@ -21,10 +21,11 @@ def getTables(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def createTable(request):
-    serializer = ModifyTableSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return Response(serializer.data)
+    serializer = ModifyTableSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors)
 
 
 @api_view(['DELETE'])
@@ -41,6 +42,42 @@ def deleteTable(request, table_id):
         return Response({'success': 'Table deleted'}, status=204)
     else:
         return Response({'error': 'Unauthorized'}, status=403)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def updateTableVisibility(request):
+    hidden_tables = request.data
+    for key, value in hidden_tables.items():
+        try:
+            table = TableData.objects.get(table_id=key)
+            table.hidden = value
+            table.save()
+        except TableData.DoesNotExist:
+            print("table not found")
+            pass
+
+    return Response(status=204)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def updateTablePosition(request):
+    moved_tables = request.data
+    for key, value in moved_tables.items():
+        try:
+            table = TableData.objects.get(table_id=key)
+            positions = value.split(',')
+            print(int(positions[0]))
+            print(int(positions[1]))
+            table.position_x = int(positions[0])
+            table.position_y = int(positions[1])
+            table.save()
+        except TableData.DoesNotExist:
+            print("table not found")
+            pass
+
+    return Response(status=204)
 
 # @api_view(['POST'])
 # # @permission_classes([IsAuthenticated])

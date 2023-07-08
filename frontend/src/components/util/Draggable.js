@@ -25,9 +25,7 @@ const MakeDraggable = ({ children, type, index, position}) => {
 
   const onStop = (event, position) => {
     if (type === 'table') {
-      // Call a function to update the position in the global table for table type components
-      const newPosition = { x: position.x, y: position.y }
-      updateTablePosition(index, newPosition);
+      updateTablePosition(index, position.x, position.y);
     }
   };
 

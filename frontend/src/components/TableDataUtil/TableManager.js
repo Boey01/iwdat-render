@@ -161,11 +161,13 @@ export default function TableManager() {
       </Modal>
 
       <Modal open={openBindTable} onClose={()=>(handleCloseModal(1))}>
+        <>
         <TBModalContent
           handleCloseModal={()=>(handleCloseModal(1))}
           globalTables={globalTables}
           addTablesToGlobalTableList={addTablesToGlobalTableList}
         />
+        </>
       </Modal>
 
       <div className="table-workspace">
@@ -173,13 +175,13 @@ export default function TableManager() {
           tableIndex = indexFormat + index;
           return (
             <div
-              id={tableIndex}
+              key={tableIndex}
               style={{ display: data.hidden ? "none" : "block" }}
             >
               <MakeDraggable
                 type="table"
                 index={index}
-                position={data["position"]}
+                position={{x:data["position_x"],y:data["position_y"]}}
               >
                 <TableRenderer
                   index={index}

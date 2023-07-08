@@ -10,7 +10,7 @@ export const RendererMain = () => {
     <ZIndexProvider>
       <SideBarWrap/>
       <TableManager/>
-      <div class= "content">
+      <div className= "content">
         </div>
     </ZIndexProvider>
     </GlobalTablesProvider>

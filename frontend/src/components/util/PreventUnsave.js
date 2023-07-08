@@ -20,20 +20,14 @@ export default function PreventUnsave() {
           window.removeEventListener('beforeunload', handleBeforeUnload);
         };
       }, [saveState]);
-
+      
       const triggerLocalSave = () =>{
         if(saveState === 1){
         saveTableListIntoLocal();
         }
       }
 
-      const triggerOnlineSave =() =>{
-        if(saveState === 1){
-          updateAccountTableList();
-          }
-      }
-
-      return <MiniDrawer saveLocalFunction={triggerLocalSave} saveOnlineFunction={triggerOnlineSave}/>;
+      return <MiniDrawer saveLocalFunction={triggerLocalSave}/>;
 }
 
 export { PreventUnsave as SideBarWrap };
