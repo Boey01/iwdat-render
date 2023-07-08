@@ -24,7 +24,7 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import { GlobalTableContext } from "./contexts/TableContext";
 
 export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
-  const {saveState} = useContext(GlobalTableContext);
+  const {saveState, setGlobalTables} = useContext(GlobalTableContext);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -38,12 +38,15 @@ export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
     if (leavePage) {
         navigate("/login");
       }
-      saveLocalFunction();
     }else{
       navigate("/login");
     }
   }
 
+  const handleLogout =() =>{
+      logout()
+      setGlobalTables([])
+  }
   const renderSideBarItem = ({ text, icon }) => {
     return (
       <ListItem key={text} disablePadding sx={{ display: "block" }}>
@@ -153,7 +156,7 @@ export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
           {/* Empty div to push the last item to the bottom */}
           <Divider />
           { isAuthenticated &&
-            <div onClick={logout}>
+            <div onClick={handleLogout}>
               {renderSideBarItem({ text: "Logout", icon: <LogoutIcon /> })}
             </div>
           }

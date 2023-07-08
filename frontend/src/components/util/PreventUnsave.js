@@ -10,7 +10,6 @@ export default function PreventUnsave() {
             if(saveState !== 0){
           e.preventDefault();
           e.returnValue = ''; 
-          triggerLocalSave();
             }  
         };
     
