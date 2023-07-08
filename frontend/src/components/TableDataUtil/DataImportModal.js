@@ -30,8 +30,7 @@ export default function DIModalContent({
 }) {
   const [currentTab, setcurrentTab] = useState(0);
   const [checkedTables, setCheckedTables] = useState([]);
-  const [tableNames, setTableNames] = useState([]);
-  const [firstPress, setfirstPress] = useState(0);
+  const [tableNames, setTableNames] = useState([]);   
 
   const handleChange = (event, newValue) => {
     setcurrentTab(newValue);
@@ -170,7 +169,6 @@ export default function DIModalContent({
                 Confirm Tables
               </Button>
             </Grid>
-            <Collapse in={firstPress === 1} orientation="horizontal"></Collapse>
           </>
         )}
       </Grid>
