@@ -24,7 +24,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
     debounce(() => {
       updateTablesVisibility(hiddenTablesRef.current);
     }, 3000),
-    []
+    []  
   );
 
   const updateTablesPositionDebounce = useCallback(
@@ -118,12 +118,10 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
     if (isAuthenticated) {
       clearTimeout(hiddenChangeTimer);
 
-     
       hiddenTables[globalTables[index].table_id]= globalTables[index].hidden;
-      
-      hiddenChangeTimer = setTimeout(() => {
-        updateTablesVisibilityDebounce();
-      },3000);
+
+      updateTablesVisibilityDebounce();
+
     }else{
       setSaveState(1);
     }
@@ -143,9 +141,8 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
 
       movedTables[globalTables[index].table_id] = globalTables[index].position_x +","+ globalTables[index].position_y;
       
-      positionChangeTimer = setTimeout(() => {
-         updateTablesPositionDebounce();
-      },100);
+      updateTablesPositionDebounce();
+
     }else{
       setSaveState(1);
     }
@@ -269,7 +266,6 @@ function updateTablesVisibility(refHiddenTable) {
         console.log(err);
       });
   }
-  console.log(refHiddenTable);
 }
 
 function updateTablesPosition(refMovedTable) {
@@ -296,7 +292,6 @@ function updateTablesPosition(refMovedTable) {
         console.log(err);
       });
   }
-  console.log(refMovedTable);
 }
 
   const updateAccountTableList = async () =>{
