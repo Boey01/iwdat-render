@@ -28,5 +28,6 @@ urlpatterns = [
     path('tables/delete/<int:table_id>/', views.deleteTable, name='delete_table'),
     path('tables/update/visible/', views.updateTableVisibility, name='update_visible'),
     path('tables/update/position/', views.updateTablePosition, name='update_position'),
+    path('tables/update/data/', views.updateTableData, name='update_data'),
 
 ]

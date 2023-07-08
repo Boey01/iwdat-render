@@ -101,8 +101,13 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
 
   const deleteFromTableListUseState = (index) =>{
     const updatedTables = [...globalTables];
+
+    delete hiddenTables[updatedTables[index].table_id];
+    delete movedTables[updatedTables[index].table_id];
+
     updatedTables.splice(index, 1);
     setGlobalTables(updatedTables);
+    
   }
   // -------------------------------------------------------------/
 
@@ -126,7 +131,6 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
       setSaveState(1);
     }
   };
-  
 
   const updateTablePosition = (index, x, y) => {
     setGlobalTables((prevTables) => {
@@ -149,12 +153,18 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   };
 
   const updateTableDataEdit = (index, newData) =>{
+    if(isAuthenticated){
+      const edited_table = {[globalTables[index].table_id]:newData}
+      updateTableData(edited_table);
+    }else{
+      setSaveState(1);
+    }
+
     setGlobalTables((prevTables) =>{
       const updatedTables = [...prevTables];
       updatedTables[index].data = newData;
       return updatedTables;
     });
-    // setSaveState(1);
   } 
 
   const saveTableListIntoLocal = async () => {
@@ -169,7 +179,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   };
   
 //--- BACKEND INVOVLED CRUD OPERATIONS ---------------------
-function addNewTableToAccount(table_name, position_x, position_y, hidden, data) {
+async function addNewTableToAccount(table_name, position_x, position_y, hidden, data) {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
@@ -196,7 +206,7 @@ function addNewTableToAccount(table_name, position_x, position_y, hidden, data) 
   }
 }
 
-function loadAccountTables() {
+async function loadAccountTables() {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
@@ -217,7 +227,7 @@ function loadAccountTables() {
   }
 }
 
-function deleteTable(table_id, indexToDelete) {
+async function deleteTable(table_id, indexToDelete) {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
@@ -242,7 +252,7 @@ function deleteTable(table_id, indexToDelete) {
   }
 }
 
-function updateTablesVisibility(refHiddenTable) {
+async function updateTablesVisibility(refHiddenTable) {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
@@ -254,7 +264,7 @@ function updateTablesVisibility(refHiddenTable) {
     const body = JSON.stringify(refHiddenTable);
 
     axios
-      .post(
+      .put(
         `${process.env.REACT_APP_BACKEND_API_URL}/tables/update/visible/`,
         body,
         config
@@ -268,7 +278,7 @@ function updateTablesVisibility(refHiddenTable) {
   }
 }
 
-function updateTablesPosition(refMovedTable) {
+async function updateTablesPosition(refMovedTable) {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
@@ -280,7 +290,7 @@ function updateTablesPosition(refMovedTable) {
     const body = JSON.stringify(refMovedTable);
 
     axios
-      .post(
+      .put(
         `${process.env.REACT_APP_BACKEND_API_URL}/tables/update/position/`,
         body,
         config
@@ -294,10 +304,29 @@ function updateTablesPosition(refMovedTable) {
   }
 }
 
-  const updateAccountTableList = async () =>{
-    if(isAuthenticated){
-      console.log(globalTables);
-    }
+async function updateTableData(target_table){
+  if (localStorage.getItem("access")) {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.getItem("access")}`,
+      },
+    };
+
+    const body = JSON.stringify(target_table);
+
+    axios
+      .put(
+        `${process.env.REACT_APP_BACKEND_API_URL}/tables/update/data/`,
+        body,
+        config
+      )
+      .then(function (response) {
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  }
   }
 
   return (
@@ -312,7 +341,7 @@ function updateTablesPosition(refMovedTable) {
         saveState,
         saveTableListIntoLocal,
         updateTableDataEdit,
-        updateAccountTableList,
+        updateTableData,
       }}
     >
       {children}

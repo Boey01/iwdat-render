@@ -44,7 +44,7 @@ def deleteTable(request, table_id):
         return Response({'error': 'Unauthorized'}, status=403)
 
 
-@api_view(['POST'])
+@api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def updateTableVisibility(request):
     hidden_tables = request.data
@@ -60,7 +60,7 @@ def updateTableVisibility(request):
     return Response(status=204)
 
 
-@api_view(['POST'])
+@api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def updateTablePosition(request):
     moved_tables = request.data
@@ -68,8 +68,6 @@ def updateTablePosition(request):
         try:
             table = TableData.objects.get(table_id=key)
             positions = value.split(',')
-            print(int(positions[0]))
-            print(int(positions[1]))
             table.position_x = int(positions[0])
             table.position_y = int(positions[1])
             table.save()
@@ -78,6 +76,25 @@ def updateTablePosition(request):
             pass
 
     return Response(status=204)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateTableData(request):
+    edited_table = request.data
+    for key, value in edited_table.items():
+        try:
+            table = TableData.objects.get(table_id=key)
+        except TableData.DoesNotExist:
+            return Response({'error': 'Table not found'}, status=404)
+
+        # Check if the authenticated user is the author of the table
+        if table.user_id_id == request.user.user_id:
+            table.data = value
+            table.save()
+            return Response({'success': 'Table edited'}, status=204)
+        else:
+            return Response({'error': 'Unauthorized'}, status=403)
 
 # @api_view(['POST'])
 # # @permission_classes([IsAuthenticated])
