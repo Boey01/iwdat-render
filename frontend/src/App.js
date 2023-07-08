@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {Provider} from 'react-redux';
 import store from './redux/store';
-import Initialization from "./components/Auth/Initialization";
+import Initialization from "./components/util/AuthInitialization";
 
 //--- below are pages ---------------------------------
 import { Workspace } from "./components/Pages/Workspace";

@@ -1,10 +1,10 @@
-import React, { useEffect , useState } from "react";
+import React from "react";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Checkbox from "@mui/material/Checkbox";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import IconButton from "@mui/material/IconButton";
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { StrictModeDroppable } from "../util/CustomComponents";

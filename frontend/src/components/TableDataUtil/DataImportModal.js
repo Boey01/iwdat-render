@@ -9,7 +9,6 @@ import Input from "@mui/material/Input";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
-import Collapse from "@mui/material/Collapse";
 
 const ModalContent = styled("div")({
   position: "absolute",

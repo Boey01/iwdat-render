@@ -28,14 +28,14 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
     debounce(() => {
       updateTablesVisibility(hiddenTablesRef.current);
     }, 3000),
-    []  
+    [updateTablesVisibility]  
   );
 
   const updateTablesPositionDebounce = useCallback(
     debounce(() => {
       updateTablesPosition(movedTablesRef.current);
     }, 3000),
-    []
+    [updateTablesPosition]
   );
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
     if (localTableList) {
       localTableList = JSON.parse(localTableList);
       if(isAuthenticated){ 
-        localTableList.map((table) => {
+        localTableList.forEach((table) => {
           const { table_name, data } = table;
           previousLocalData[table_name] = data;
         });
@@ -78,15 +78,15 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   // Add tables ----------------------------------------------------\
   const addTablesToGlobalTableList = (tables) => {
     if (isAuthenticated) {
-      Object.keys(tables).map((key) => {
-        const name= key;
+      Object.keys(tables).forEach((key) => {
+        const name = key;
         const data = tables[key];
-        const hidden= false
+        const hidden = false;
         const x = 0;
-        const y =0;
-
-         addNewTableToAccount(name,x, y, hidden,data );
-  });
+        const y = 0;
+    
+        addNewTableToAccount(name, x, y, hidden, data);
+      });
   //if not logged in, save locally
     }else{
       const updatedTables = Object.keys(tables).map((key) => ({
