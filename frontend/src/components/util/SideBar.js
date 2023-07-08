@@ -87,25 +87,27 @@ export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
       <CssBaseline />
       <AppBar open={open}>
       <Toolbar >
-  <Grid container spacing={1} alignItems="center">
-    <Grid item xs={10}>
+  <Grid container spacing={1} alignItems="center" sx={{display: "flex", justifyContent: "space-between"}}>
+  <Button variant="contained" color="secondary" disabled={saveState !== 1} onClick={saveLocalFunction}>
+        Save
+        <SaveRoundedIcon/>
+      </Button>
       <Typography variant="h6" noWrap component="div">
         IWDAT
       </Typography>
-    </Grid>
-    <Grid item xs={1}>
+
+<div style={{ display: 'flex', flexDirection: 'row' }}>
       <Typography variant="subtitle1" noWrap component="div">
       {saveState === 0 && "Saved"}
     {saveState === 1 && "Not Saved"}
     {saveState === 2 && "Saving..."}
       </Typography>
-    </Grid>
-    <Grid item xs={1}>
+
       <Button variant="contained" color="secondary" disabled={saveState !== 1} onClick={saveLocalFunction}>
         Save
         <SaveRoundedIcon/>
       </Button>
-    </Grid>
+      </div>
   </Grid>
 </Toolbar>
       </AppBar>
