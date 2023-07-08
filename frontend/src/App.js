@@ -5,11 +5,11 @@ import store from './redux/store';
 import Initialization from "./components/Auth/Initialization";
 
 //--- below are pages ---------------------------------
-import { RendererMain } from "./components/Workspace";
-import  Login  from "./components/Auth/Login";
-import { PageNotFound } from "./components/PageNotFound";
-import  Signup  from "./components/Auth/Signup";
-import  ActivateAccount  from "./components/Auth/Activate";
+import { Workspace } from "./components/Pages/Workspace";
+import Login  from "./components/Auth/Login";
+import { PageNotFound } from "./components/Pages/PageNotFound";
+import Signup  from "./components/Auth/Signup";
+import ActivateAccount  from "./components/Auth/Activate";
 import ResetPassReq from "./components/Auth/ResetPassReq";
 import ChangePassword from "./components/Auth/ChangePass";
 
@@ -19,7 +19,7 @@ export default function App() {
       <Initialization>
     <Router>
         <Routes>
-          <Route path="/" element={<RendererMain/>}/>
+          <Route path="/" element={<Workspace/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/signup" element={<Signup/>}/>
           <Route path="/activate/:uid/:token" element={<ActivateAccount />}/>

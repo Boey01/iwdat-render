@@ -1,9 +1,9 @@
 import React, { useEffect, useContext } from 'react';
 import { GlobalTableContext } from '../contexts/TableContext';
-import MiniDrawer from '../SideBar';
+import MiniDrawer from '../util/SideBar';
 
 export default function PreventUnsave() {
- const {saveState, saveTableListIntoLocal, updateAccountTableList } = useContext(GlobalTableContext);
+ const {saveState, saveTableListIntoLocal} = useContext(GlobalTableContext);
 
     useEffect(() => {
         const handleBeforeUnload = (e) => {

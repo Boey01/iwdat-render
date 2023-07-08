@@ -17,11 +17,11 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { connect } from 'react-redux';
-import { logout } from "../redux/actions/auth_actions";
+import { logout } from "../../redux/actions/auth_actions";
 import { DrawerHeader, AppBar, Drawer} from "./SideBarStyle";
 import { useNavigate } from "react-router-dom";
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
-import { GlobalTableContext } from "./contexts/TableContext";
+import { GlobalTableContext } from "../contexts/TableContext";
 
 export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
   const {saveState, setGlobalTables} = useContext(GlobalTableContext);
@@ -47,7 +47,16 @@ export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
       logout()
       setGlobalTables([])
   }
-  const renderSideBarItem = ({ text, icon }) => {
+
+  const handleWorkspaceButton =() =>{
+    navigate("/");
+  } 
+
+  const handleDashboardButton =() =>{
+    console.log("dashbaord")
+  } 
+
+  const renderSideBarItem = ({ text, icon, onClickFunction }) => {
     return (
       <ListItem key={text} disablePadding sx={{ display: "block" }}>
         <ListItemButton
@@ -56,6 +65,7 @@ export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
             justifyContent: open ? "initial" : "center",
             px: 2.5,
           }}
+          onClick = {onClickFunction}
         >
           <ListItemIcon
             sx={{
@@ -150,8 +160,8 @@ export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
             justifyContent: "flex-end",
           }}
         >
-          {renderSideBarItem({ text: "Workspace", icon: <SelectAllIcon /> })}
-          {renderSideBarItem({ text: "Dashboard", icon: <DashboardIcon /> })}
+          {renderSideBarItem({ text: "Workspace", icon: <SelectAllIcon/>, onClickFunction: handleWorkspaceButton})}
+          {renderSideBarItem({ text: "Dashboard", icon: <DashboardIcon/>, onClickFunction: handleDashboardButton})}
           <div style={{ flexGrow: 1 }}></div>{" "}
           {/* Empty div to push the last item to the bottom */}
           <Divider />
