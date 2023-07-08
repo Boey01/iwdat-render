@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import axios from "axios";
 import { Snackbar } from '@mui/material';
 import { debounce } from 'lodash';
+import Modal from "@mui/material/Modal";
+import DIModalContent from '../TableDataUtil/DataImportModal';
 
 export const GlobalTableContext = createContext();
 
@@ -13,6 +15,8 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   const [snackbarMsg, setSnackbarMsg] = useState(null);
   const [movedTables, setMovedTables] = useState({});
   const [hiddenTables, setHiddenTables] = useState({});
+  const [openModal, setOpenModal] = useState(false);
+  const [previousLocalData, setPreviousLocalData] = useState({});
 
   const hiddenTablesRef = useRef(hiddenTables);
   const movedTablesRef = useRef(movedTables);
@@ -36,10 +40,19 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
 
   useEffect(() => {
     loadAccountTables();
-    if(!isAuthenticated){
-    if (localStorage.getItem('globalTables')) {
-      setGlobalTables(JSON.parse(localStorage.getItem('globalTables')));
-    }}
+    let localTableList = localStorage.getItem('globalTables')
+    if (localTableList) {
+      localTableList = JSON.parse(localTableList);
+      if(isAuthenticated){ 
+        localTableList.map((table) => {
+          const { table_name, data } = table;
+          previousLocalData[table_name] = data;
+        });
+        setOpenModal(true);
+    }else{
+      setGlobalTables(localTableList);
+    }
+  }
     return () => {
       updateTablesVisibilityDebounce.cancel();
       updateTablesPositionDebounce.cancel();
@@ -57,6 +70,10 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   const handleSnackbarClose = () =>{
     setSnackbarOpen(false);
   };
+
+  const handleCloseModal = () =>{
+    setOpenModal(false);
+  }
 
   // Add tables ----------------------------------------------------\
   const addTablesToGlobalTableList = (tables) => {
@@ -352,6 +369,15 @@ async function updateTableData(target_table){
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         message={snackbarMsg}
       />
+
+      <Modal open={openModal} onClose={handleCloseModal}>
+        <DIModalContent
+          upload = {false}
+          uploadedFile={previousLocalData}
+          handleCloseModal={handleCloseModal}
+          addTablesToGlobalTableList={addTablesToGlobalTableList}
+        />
+      </Modal>
     </GlobalTableContext.Provider>
   );
 }

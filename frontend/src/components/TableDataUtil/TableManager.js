@@ -153,6 +153,7 @@ export default function TableManager() {
 
       <Modal open={openImportData} onClose={()=>(handleCloseModal(0))}>
         <DIModalContent
+          upload = {true}
           uploadedFile={uploadedFile}
           setUploadedFile={setUploadedFile}
           handleCloseModal={()=>(handleCloseModal(0))}
