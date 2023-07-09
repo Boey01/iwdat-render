@@ -31,7 +31,7 @@ export function MiniDrawer({
   user,
   logout,
 }) {
-  const { globalCards, addCards } = useContext(GlobalCardContext);
+  const { cardSaveState, addCards } = useContext(GlobalCardContext);
   const { tableSaveState, setGlobalTables } = useContext(GlobalTableContext);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -97,6 +97,35 @@ export function MiniDrawer({
     );
   };
 
+  const renderSaveState = () => {
+    switch (location.pathname) {
+      case "/":
+        switch (tableSaveState) {
+          case 0:
+            return "Saved";
+          case 1:
+            return "Not Saved";
+          case 2:
+            return "Saving...";
+          default:
+            return null;
+        }
+      case "/dashboard":
+        switch (cardSaveState) {
+          case 0:
+            return "Saved";
+          case 1:
+            return "Not Saved";
+          case 2:
+            return "Saving...";
+          default:
+            return null;
+        }
+      default:
+        return null;
+    }
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -135,16 +164,15 @@ export function MiniDrawer({
                 align="justify"
                 sx={{ display: "flex", alignItems: "center" }}
               >
-                {tableSaveState === 0 && "Saved"}
-                {tableSaveState === 1 && "Not Saved"}
-                {tableSaveState === 2 && "Saving..."}
+              {renderSaveState()}
               </Typography>
 
               <Button
                 variant="contained"
                 color="secondary"
-                disabled={tableSaveState !== 1}
-                onClick={saveLocalFunction}
+                disabled={(location.pathname === "/" && tableSaveState !== 1) ||
+                (location.pathname === "/dashboard" && cardSaveState !== 1)}
+                onClick={location.pathname === "/" ?() =>saveLocalFunction(0) : () =>saveLocalFunction(1)}
                 sx={{ mx: 3 }}
               >
                 Save
