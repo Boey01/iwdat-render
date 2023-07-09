@@ -143,3 +143,55 @@ padding-right: 50px;
 margin-bottom: 30px;
 margin-top: 20px;
 }
+
+.app-bar .MuiTypography-root{
+  display: flex;
+   align-Items: center;
+}
+
+.resizable-card {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  position: relative;
+  border-radius: 30px;
+}
+  
+.card-content{
+width:100%;
+height: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.card-popup-controls {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border-radius: 10px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color:gray;
+}
+
+.resizable-card:hover .card-popup-controls {
+  opacity: 1;
+}
+
+.card-resize-handle {
+  bottom: -5px;
+  right: -5px;
+  cursor: grab;
+  transform: rotate(90deg);
+}
+
+.card-delete-button {
+  top: -5px;
+  right: -5px;
+  cursor: pointer;
+}

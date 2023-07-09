@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,45 +16,60 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 import { logout } from "../../redux/actions/auth_actions";
-import { DrawerHeader, AppBar, Drawer} from "./SideBarStyle";
+import { DrawerHeader, AppBar, Drawer } from "./SideBarStyle";
 import { useNavigate } from "react-router-dom";
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import { GlobalTableContext } from "../contexts/TableContext";
+import { useLocation } from "react-router-dom";
+import { GlobalCardContext } from "../contexts/CardContext";
 
-export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
-  const {saveState, setGlobalTables} = useContext(GlobalTableContext);
+export function MiniDrawer({
+  saveLocalFunction,
+  isAuthenticated,
+  user,
+  logout,
+}) {
+  const { globalCards, addCards } = useContext(GlobalCardContext);
+  const { tableSaveState, setGlobalTables } = useContext(GlobalTableContext);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleAddCard = () => {
+    addCards();
+  };
 
   const handleDrawerOpen = () => {
     setOpen(!open);
   };
- 
-  const handleHeaderTextClick =() => {
-    if(saveState !==0){
-      const leavePage = window.confirm('Are you sure you want to leave this page, something not saved yet?');
-    if (leavePage) {
+
+  const handleHeaderTextClick = () => {
+    if (tableSaveState !== 0) {
+      const leavePage = window.confirm(
+        "Are you sure you want to leave this page, something not saved yet?"
+      );
+      if (leavePage) {
         navigate("/login");
       }
-    }else{
+    } else {
       navigate("/login");
     }
-  }
+  };
 
-  const handleLogout =() =>{
-      logout()
-      setGlobalTables([])
-  }
+  const handleLogout = () => {
+    logout();
+    setGlobalTables([]);
+  };
 
-  const handleWorkspaceButton =() =>{
+  const handleWorkspaceButton = () => {
     navigate("/");
-  } 
+  };
 
-  const handleDashboardButton =() =>{
+  const handleDashboardButton = () => {
     navigate("/dashboard");
-  } 
+  };
 
   const renderSideBarItem = ({ text, icon, onClickFunction }) => {
     return (
@@ -65,7 +80,7 @@ export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
             justifyContent: open ? "initial" : "center",
             px: 2.5,
           }}
-          onClick = {onClickFunction}
+          onClick={onClickFunction}
         >
           <ListItemIcon
             sx={{
@@ -86,30 +101,58 @@ export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar open={open}>
-      <Toolbar >
-  <Grid container spacing={1} alignItems="center" sx={{display: "flex", justifyContent: "space-between"}}>
-  <Button variant="contained" color="secondary" disabled={saveState !== 1} onClick={saveLocalFunction}>
-        Save
-        <SaveRoundedIcon/>
-      </Button>
-      <Typography variant="h6" noWrap component="div">
-        IWDAT
-      </Typography>
+        <Toolbar>
+          <Grid
+            container
+            spacing={1}
+            alignItems="center"
+            className="app-bar spread-items"
+          >
+            <Grid item sx={{ display: "flex", flexDirection: "row" }}>
+              <Typography variant="h5" noWrap component="div">
+                IWDAT 
+              </Typography>
+              <Typography variant="button" noWrap component="div" sx={{mx:2}}>
+               {location.pathname ==="/" ? "workspace":"dashboard"}
+              </Typography>
+            </Grid>
+            <Grid item>
+           { location.pathname === "/dashboard" &&
+           <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleAddCard}
+              >
+                Add New Card
+              </Button>
+              }
+            </Grid>
+            <Grid item sx={{ display: "flex", flexDirection: "row" }}>
+              <Typography
+                variant="subtitle1"
+                noWrap
+                component="div"
+                align="justify"
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                {tableSaveState === 0 && "Saved"}
+                {tableSaveState === 1 && "Not Saved"}
+                {tableSaveState === 2 && "Saving..."}
+              </Typography>
 
-<div style={{ display: 'flex', flexDirection: 'row' }}>
-      <Typography variant="subtitle1" noWrap component="div">
-      {saveState === 0 && "Saved"}
-    {saveState === 1 && "Not Saved"}
-    {saveState === 2 && "Saving..."}
-      </Typography>
-
-      <Button variant="contained" color="secondary" disabled={saveState !== 1} onClick={saveLocalFunction}>
-        Save
-        <SaveRoundedIcon/>
-      </Button>
-      </div>
-  </Grid>
-</Toolbar>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={tableSaveState !== 1}
+                onClick={saveLocalFunction}
+                sx={{ mx: 3 }}
+              >
+                Save
+                <SaveRoundedIcon />
+              </Button>
+            </Grid>
+          </Grid>
+        </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
@@ -128,18 +171,16 @@ export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
               />
             ) : null
           ) : (
-            
-              <ListItemText
-                primary="Not Logged In"
-                secondary="Press here to login"
-                sx={{
-                  opacity: open ? 1 : 0,
-                  transition: "opacity 0.3s",
-                }}
-                onClick={handleHeaderTextClick}
-                className="not-logged-in"
-              />
-            
+            <ListItemText
+              primary="Not Logged In"
+              secondary="Press here to login"
+              sx={{
+                opacity: open ? 1 : 0,
+                transition: "opacity 0.3s",
+              }}
+              onClick={handleHeaderTextClick}
+              className="not-logged-in"
+            />
           )}
           <IconButton onClick={handleDrawerOpen}>
             <ChevronLeftIcon />
@@ -162,16 +203,24 @@ export function MiniDrawer({saveLocalFunction, isAuthenticated, user, logout}) {
             justifyContent: "flex-end",
           }}
         >
-          {renderSideBarItem({ text: "Workspace", icon: <SelectAllIcon/>, onClickFunction: handleWorkspaceButton})}
-          {renderSideBarItem({ text: "Dashboard", icon: <DashboardIcon/>, onClickFunction: handleDashboardButton})}
+          {renderSideBarItem({
+            text: "Workspace",
+            icon: <SelectAllIcon />,
+            onClickFunction: handleWorkspaceButton,
+          })}
+          {renderSideBarItem({
+            text: "Dashboard",
+            icon: <DashboardIcon />,
+            onClickFunction: handleDashboardButton,
+          })}
           <div style={{ flexGrow: 1 }}></div>{" "}
           {/* Empty div to push the last item to the bottom */}
           <Divider />
-          { isAuthenticated &&
+          {isAuthenticated && (
             <div onClick={handleLogout}>
               {renderSideBarItem({ text: "Logout", icon: <LogoutIcon /> })}
             </div>
-          }
+          )}
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -186,4 +235,4 @@ const mapStateToProps = (state) => ({
   user: state.authReducer.user,
 });
 
-export default connect(mapStateToProps, {logout})(MiniDrawer);
+export default connect(mapStateToProps, { logout })(MiniDrawer);

@@ -10,7 +10,7 @@ export const GlobalTableContext = createContext();
 
 export function GlobalTablesProvider({ children, isAuthenticated }) {
   const [globalTables, setGlobalTables] = useState([]);
-  const [saveState, setSaveState] = useState(0); //0 = saved, 1= need save, 2= saving, 3= need save for visiblity and position(online)
+  const [tableSaveState, setTableSaveState] = useState(0); //0 = saved, 1= need save, 2= saving
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState(null);
   const [movedTables, setMovedTables] = useState({});
@@ -99,7 +99,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
       }));
 
       setGlobalTables((prevTables) => [...prevTables, ...updatedTables]); 
-      setSaveState(1);
+      setTableSaveState(1);
     }
   };
 
@@ -112,7 +112,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
      deleteTable(targetTableID, index);
   }else{
     deleteFromTableListUseState (index);
-    setSaveState(1);
+    setTableSaveState(1);
   }
   };
 
@@ -145,7 +145,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
       updateTablesVisibilityDebounce();
 
     }else{
-      setSaveState(1);
+      setTableSaveState(1);
     }
   };
 
@@ -165,7 +165,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
       updateTablesPositionDebounce();
 
     }else{
-      setSaveState(1);
+      setTableSaveState(1);
     }
   };
 
@@ -174,7 +174,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
       const edited_table = {[globalTables[index].table_id]:newData}
       updateTableData(edited_table);
     }else{
-      setSaveState(1);
+      setTableSaveState(1);
     }
 
     setGlobalTables((prevTables) =>{
@@ -185,13 +185,13 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   } 
 
   const saveTableListIntoLocal = async () => {
-    if (saveState === 1) {
-      setSaveState(2); // Set saveState to 2 to indicate saving
+    if (tableSaveState === 1) {
+      setTableSaveState(2); // Set tableSaveState to 2 to indicate saving
       await new Promise((resolve) => {
         localStorage.setItem('globalTables', JSON.stringify(globalTables));
         resolve();
       });
-      setSaveState(0); // Set saveState to 0 to indicate saved
+      setTableSaveState(0); // Set tableSaveState to 0 to indicate saved
     }
   };
   
@@ -355,7 +355,7 @@ async function updateTableData(target_table){
         deleteGlobalTable,  
         toggleTableVisibility,
         updateTablePosition,
-        saveState,
+        tableSaveState,
         saveTableListIntoLocal,
         updateTableDataEdit,
         updateTableData,

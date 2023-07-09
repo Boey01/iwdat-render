@@ -7,6 +7,7 @@ import { SideBarWrap } from "./components/util/PreventLocalUnsave";
 
 import ZIndexProvider from './components/contexts/ZIndexContext';
 import GlobalTablesProvider from './components/contexts/TableContext'
+import  GlobalCardsProvider  from "./components/contexts/CardContext";
 
 //--- below are pages ---------------------------------
 import { Workspace } from "./components/Pages/Workspace";
@@ -21,9 +22,11 @@ import { Dashboard } from "./components/Pages/Dashboard";
 const ContextAndSidebarProvider = ({ children }) => {
   return (
     <GlobalTablesProvider>
+      <GlobalCardsProvider>
       <ZIndexProvider>
         <SideBarWrap>{children}</SideBarWrap>
       </ZIndexProvider>
+      </GlobalCardsProvider>
     </GlobalTablesProvider>
   );
 };
