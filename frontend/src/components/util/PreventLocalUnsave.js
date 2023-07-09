@@ -3,11 +3,11 @@ import { GlobalTableContext } from '../contexts/TableContext';
 import MiniDrawer from './SideBar';
 
 export default function PreventUnsave({children}) {
- const {saveState, saveTableListIntoLocal} = useContext(GlobalTableContext);
+ const {tableSaveState, saveTableListIntoLocal} = useContext(GlobalTableContext);
 
     useEffect(() => {
         const handleBeforeUnload = (e) => {
-            if(saveState !== 0){
+            if(tableSaveState !== 0){
           e.preventDefault();
           e.returnValue = ''; 
             }  
@@ -18,10 +18,10 @@ export default function PreventUnsave({children}) {
         return () => {
           window.removeEventListener('beforeunload', handleBeforeUnload);
         };
-      }, [saveState]);
+      }, [tableSaveState]);
       
       const triggerLocalSave = () =>{
-        if(saveState === 1){
+        if(tableSaveState === 1){
         saveTableListIntoLocal();
         }
       }
