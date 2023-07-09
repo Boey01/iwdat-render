@@ -10,12 +10,12 @@ import GlobalTablesProvider from './components/contexts/TableContext'
 
 //--- below are pages ---------------------------------
 import { Workspace } from "./components/Pages/Workspace";
-import Login  from "./components/Auth/Login";
+import Login  from "./components/Pages/Login";
 import { PageNotFound } from "./components/Pages/PageNotFound";
-import Signup  from "./components/Auth/Signup";
-import ActivateAccount  from "./components/Auth/Activate";
-import ResetPassReq from "./components/Auth/ResetPassReq";
-import ChangePassword from "./components/Auth/ChangePass";
+import Signup  from "./components/Pages/Signup";
+import ActivateAccount  from "./components/Pages/Activate";
+import ResetPassReq from "./components/Pages/ResetPassReq";
+import ChangePassword from "./components/Pages/ChangePass";
 import { Dashboard } from "./components/Pages/Dashboard";
 
 const ContextAndSidebarProvider = ({ children }) => {
