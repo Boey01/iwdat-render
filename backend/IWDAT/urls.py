@@ -34,5 +34,7 @@ urlpatterns = [
     path('cards/create/', card_views.createCard, name='create_card'),
     path('cards/retrieve/', card_views.getCards, name='get_cards'),
     path('cards/delete/<int:card_id>/', card_views.deleteCard, name='delete_cards'),
+    path('cards/update/position/', card_views .updateCardPosition, name='update_card_position'),
+
 
 ]

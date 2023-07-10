@@ -24,12 +24,12 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
       [updateCardsPositionDB]  
     );
   
-    // const updateCardsSizeDebounce = useCallback(
-    //   debounce(() => {
-    //     updateTablesPosition(movedTablesRef.current);
-    //   }, 3000),
-    //   [updateTablesPosition]
-    // );
+    const updateCardsSizeDebounce = useCallback(
+      debounce(() => {
+        updateCardsSizeDB(resizedCardsRef.current);
+      }, 3000),
+      [ updateCardsSizeDB]
+    );
 
     useEffect(() => {
       if(isAuthenticated){loadAccountCards()};
@@ -222,6 +222,32 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
           };
       
           const body = JSON.stringify(refMovedCards);
+      
+          axios
+            .put(
+              `${process.env.REACT_APP_BACKEND_API_URL}/cards/update/position/`,
+              body,
+              config
+            )
+            .then(function (response) {
+              setMovedCards({});
+            })
+            .catch(function (err) {
+              console.log(err);
+            });
+        }
+      }
+
+      async function updateCardsSizeDB(resizedCardsRef) {
+        if (localStorage.getItem("access")) {
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `JWT ${localStorage.getItem("access")}`,
+            },  
+          };
+      
+          const body = JSON.stringify(resizedCardsRef);
       
           axios
             .put(

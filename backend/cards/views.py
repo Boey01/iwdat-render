@@ -41,3 +41,21 @@ def deleteCard(request, card_id):
         return Response({'success': 'Card deleted'}, status=204)
     else:
         return Response({'error': 'Unauthorized'}, status=403)
+    
+    
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateCardPosition(request):
+    moved_cards = request.data
+    for key, value in moved_cards.items():
+        try:
+            card = Cards.objects.get(card_id=key)
+            positions = value.split(',')
+            card.position_x = int(positions[0])
+            card.position_y = int(positions[1])
+            card.save()
+        except Cards.DoesNotExist:
+                print("card not found")
+                pass
+
+    return Response(status=204)
