@@ -1,18 +1,16 @@
 import React, {useState, useEffect, createContext } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
-import { takeRight } from "lodash";
+import { debounce } from 'lodash';
 
 export const GlobalCardContext = createContext();
 
 export function GlobalCardsProvider({ children, isAuthenticated }) {
     const [globalCards, setGlobalCards] = useState([]);
     const [cardSaveState, setCardSaveState] = useState(0); //0 = saved, 1= need save, 2= saving
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMsg, setSnackbarMsg] = useState(null);
 
     useEffect(() => {
-      loadAccountCards();
+      if(isAuthenticated){loadAccountCards()};
       let localCardList = localStorage.getItem('globalCards')
         if (localCardList) {
             localCardList  = JSON.parse(localCardList );
@@ -22,7 +20,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
           }else{setGlobalCards(localCardList);}
         // }
       }
-      }, []);
+      }, [isAuthenticated]);
 
       const addCards = () =>{
         const newCard = {
@@ -48,7 +46,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
 
       const deleteCard = (index) => {
         if(isAuthenticated){
-          const targetCardID = globalCards  [index].card_id;
+          const targetCardID = globalCards[index].card_id;
            deleteCardfromAccount(targetCardID, index);
         }else{
           deleteFromCardListUseState(index);
@@ -132,7 +130,6 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
       }
 
       async function loadAccountCards() {
-        console.log("AC load")
         if (localStorage.getItem("access")) {
           const config = {
             headers: {
@@ -166,10 +163,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
           axios
             .delete(`${process.env.REACT_APP_BACKEND_API_URL}/cards/delete/${card_id}/`, config)
             .then(function (response) {
-              if (response.status === 204) {
-                setSnackbarMsg("Delete Successful");
-                setSnackbarOpen(true);
-      
+              if (response.status === 204) {  
                 deleteFromCardListUseState(indexToDelete);
               }
             })
