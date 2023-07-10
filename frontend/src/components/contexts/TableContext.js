@@ -58,7 +58,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
       updateTablesVisibilityDebounce.cancel();
       updateTablesPositionDebounce.cancel();
     };
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     hiddenTablesRef.current = hiddenTables;

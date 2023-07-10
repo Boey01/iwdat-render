@@ -25,3 +25,19 @@ def createCard(request):
         return Response(serializer.data)
     return Response(serializer.errors)
 
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteCard(request, card_id):
+    try:
+        card = Cards.objects.get(card_id=card_id)
+    except Cards.DoesNotExist:
+        return Response({'error': 'Card not found'}, status=404)
+
+    # Check if the authenticated user is the author of the card
+    if card.user_id_id == request.user.user_id:
+        card.delete()
+        return Response({'success': 'Card deleted'}, status=204)
+    else:
+        return Response({'error': 'Unauthorized'}, status=403)

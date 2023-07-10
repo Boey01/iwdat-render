@@ -4,7 +4,7 @@ from .models import Cards
 class ReadingCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cards
-        exclude = ('user_id',   )
+        exclude = ('user_id', )
 
 class ModifyCardSerializer(serializers.ModelSerializer):
     user_id = serializers.HiddenField(default=serializers.CurrentUserDefault())

@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from tables import views as table_views 
-from cards import views as card_views
+from cards import views as card_views   
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,5 +33,6 @@ urlpatterns = [
     # Card api
     path('cards/create/', card_views.createCard, name='create_card'),
     path('cards/retrieve/', card_views.getCards, name='get_cards'),
+    path('cards/delete/<int:card_id>/', card_views.deleteCard, name='delete_cards'),
 
 ]
