@@ -50,6 +50,8 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
         const updatedCards= [...globalCards];
         updatedCards.splice(index, 1);
         setGlobalCards(updatedCards);
+        
+        setCardSaveState(1);
        }
 
       const updateCardPosition = (index, x, y) => {
@@ -59,6 +61,8 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
           newCardList[index].position_y = y;
           return newCardList;
         });
+        
+        setCardSaveState(1);
       }
 
       const updateCardSize = (index, width, height) => {
