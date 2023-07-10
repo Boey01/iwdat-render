@@ -26,16 +26,16 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
 
   const updateTablesVisibilityDebounce = useCallback(
     debounce(() => {
-      updateTablesVisibility(hiddenTablesRef.current);
+      updateTablesVisibilityDB(hiddenTablesRef.current);
     }, 3000),
-    [updateTablesVisibility]  
+    [updateTablesVisibilityDB]  
   );
 
   const updateTablesPositionDebounce = useCallback(
     debounce(() => {
-      updateTablesPosition(movedTablesRef.current);
+      updateTablesPositionDB(movedTablesRef.current);
     }, 3000),
-    [updateTablesPosition]
+    [updateTablesPositionDB]
   );
 
   useEffect(() => {
@@ -110,7 +110,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   const deleteGlobalTable = (index) => {
   if(isAuthenticated){
     const targetTableID = globalTables[index].table_id;
-     deleteTable(targetTableID, index);
+     deleteTableFromAccount(targetTableID, index);
   }else{
     deleteFromTableListUseState (index);
     setTableSaveState(1);
@@ -245,7 +245,7 @@ async function loadAccountTables() {
   }
 }
 
-async function deleteTable(table_id, indexToDelete) {
+async function deleteTableFromAccount(table_id, indexToDelete) {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
@@ -270,7 +270,7 @@ async function deleteTable(table_id, indexToDelete) {
   }
 }
 
-async function updateTablesVisibility(refHiddenTable) {
+async function updateTablesVisibilityDB(refHiddenTable) {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
@@ -296,7 +296,7 @@ async function updateTablesVisibility(refHiddenTable) {
   }
 }
 
-async function updateTablesPosition(refMovedTable) {
+async function updateTablesPositionDB(refMovedTable) {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {

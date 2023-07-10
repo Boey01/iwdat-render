@@ -1,4 +1,4 @@
-import React, {useState, useEffect, createContext } from "react";
+import React, {useState, useEffect, createContext, useRef, useCallback } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
 import { debounce } from 'lodash';
@@ -8,6 +8,28 @@ export const GlobalCardContext = createContext();
 export function GlobalCardsProvider({ children, isAuthenticated }) {
     const [globalCards, setGlobalCards] = useState([]);
     const [cardSaveState, setCardSaveState] = useState(0); //0 = saved, 1= need save, 2= saving
+    const [movedCards, setMovedCards] = useState({});
+    const [resizedCards, setResizedCards] = useState({});
+
+    const movedCardsRef = useRef(movedCards);
+    const resizedCardsRef = useRef(resizedCards);
+
+    let positionChangeTimer;
+    let sizeChangeTimer;
+    
+    const updateCardsPositionDebounce = useCallback(
+      debounce(() => {
+        updateCardsPositionDB(movedCardsRef.current);
+      }, 3000),
+      [updateCardsPositionDB]  
+    );
+  
+    // const updateCardsSizeDebounce = useCallback(
+    //   debounce(() => {
+    //     updateTablesPosition(movedTablesRef.current);
+    //   }, 3000),
+    //   [updateTablesPosition]
+    // );
 
     useEffect(() => {
       if(isAuthenticated){loadAccountCards()};
@@ -21,6 +43,15 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
         // }
       }
       }, [isAuthenticated]);
+
+      
+      useEffect(() => {
+        movedCardsRef.current = movedCards;
+      }, [movedCards]);
+
+      useEffect(() => {
+        resizedCardsRef.current = resizedCards;
+       }, [resizedCards]);
 
       const addCards = () =>{
         const newCard = {
@@ -69,8 +100,18 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
           newCardList[index].position_y = y;
           return newCardList;
         });
+
+        if (isAuthenticated) {
+          clearTimeout(positionChangeTimer);
+    
+          movedCards[globalCards[index].card_id] = globalCards[index].position_x +","+ globalCards[index].position_y;
+          
+          updateCardsPositionDebounce();
+          console.log(movedCards  )
+        }else{
+         setCardSaveState(1);
+        }
         
-        setCardSaveState(1);
       }
 
       const updateCardSize = (index, width, height) => {
@@ -115,7 +156,6 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
       .post(`${process.env.REACT_APP_BACKEND_API_URL}/cards/create/`, body, config)
       .then(function (response) { 
         if (response.status === 200) {
-          console.log(response.data);
 
            setGlobalCards((prevCards) => {
              return [...prevCards, newCard];
@@ -143,7 +183,6 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
             .get(`${process.env.REACT_APP_BACKEND_API_URL}/cards/retrieve/`, config)
             .then(function (response) {
               setGlobalCards(response.data);
-              console.log(response.data);
             })
             .catch(function (err) {
               console.log(err);
@@ -151,7 +190,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
         }
       }
 
-      async function deleteCardfromAccount(card_id, indexToDelete) {
+      async function deleteCardfromAccount (card_id, indexToDelete) {
         if (localStorage.getItem("access")) {
           const config = {
             headers: {
@@ -166,6 +205,32 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
               if (response.status === 204) {  
                 deleteFromCardListUseState(indexToDelete);
               }
+            })
+            .catch(function (err) {
+              console.log(err);
+            });
+        }
+      }
+
+      async function updateCardsPositionDB(refMovedCards) {
+        if (localStorage.getItem("access")) {
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `JWT ${localStorage.getItem("access")}`,
+            },  
+          };
+      
+          const body = JSON.stringify(refMovedCards);
+      
+          axios
+            .put(
+              `${process.env.REACT_APP_BACKEND_API_URL}/cards/update/position/`,
+              body,
+              config
+            )
+            .then(function (response) {
+              setMovedCards({});
             })
             .catch(function (err) {
               console.log(err);
