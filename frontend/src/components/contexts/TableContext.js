@@ -109,7 +109,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   // Delete tables -----------------------------------------------\
   const deleteGlobalTable = (index) => {
   if(isAuthenticated){
-    const targetTableID = globalTables[index]["table_id"];
+    const targetTableID = globalTables[index].table_id;
      deleteTable(targetTableID, index);
   }else{
     deleteFromTableListUseState (index);

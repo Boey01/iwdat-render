@@ -1,13 +1,16 @@
 import React, {useState, useEffect, createContext } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
+import { takeRight } from "lodash";
 
 export const GlobalCardContext = createContext();
 
 export function GlobalCardsProvider({ children, isAuthenticated }) {
     const [globalCards, setGlobalCards] = useState([]);
     const [cardSaveState, setCardSaveState] = useState(0); //0 = saved, 1= need save, 2= saving
-    
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMsg, setSnackbarMsg] = useState(null);
+
     useEffect(() => {
       loadAccountCards();
       let localCardList = localStorage.getItem('globalCards')
@@ -44,12 +47,22 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
       }
 
       const deleteCard = (index) => {
-        const updatedCards= [...globalCards];
-        updatedCards.splice(index, 1);
-        setGlobalCards(updatedCards);
-        
-        setCardSaveState(1);
+        if(isAuthenticated){
+          const targetCardID = globalCards  [index].card_id;
+           deleteCardfromAccount(targetCardID, index);
+        }else{
+          deleteFromCardListUseState(index);
+          setCardSaveState(1);
+        }
        }
+
+       const deleteFromCardListUseState = (index) =>{
+        const updatedCardList = [...globalCards];
+    
+        updatedCardList.splice(index, 1);
+        setGlobalCards(updatedCardList);
+        
+      }
 
       const updateCardPosition = (index, x, y) => {
         setGlobalCards((prevCards) => {
@@ -80,7 +93,6 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
           setCardSaveState(0);
         }
       };
-
 
       //Below are api opertions
 
@@ -142,6 +154,30 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
         }
       }
 
+      async function deleteCardfromAccount(card_id, indexToDelete) {
+        if (localStorage.getItem("access")) {
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `JWT ${localStorage.getItem("access")}`,
+            },
+          };
+      
+          axios
+            .delete(`${process.env.REACT_APP_BACKEND_API_URL}/cards/delete/${card_id}/`, config)
+            .then(function (response) {
+              if (response.status === 204) {
+                setSnackbarMsg("Delete Successful");
+                setSnackbarOpen(true);
+      
+                deleteFromCardListUseState(indexToDelete);
+              }
+            })
+            .catch(function (err) {
+              console.log(err);
+            });
+        }
+      }
 
     return (
         <GlobalCardContext.Provider 
