@@ -1,5 +1,6 @@
 import React, {useState, useEffect, createContext } from "react";
 import { connect } from "react-redux";
+import axios from "axios";
 
 export const GlobalCardContext = createContext();
 
@@ -8,42 +9,38 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
     const [cardSaveState, setCardSaveState] = useState(0); //0 = saved, 1= need save, 2= saving
     
     useEffect(() => {
-        let localCardList = localStorage.getItem('globalCards')
+      loadAccountCards();
+      let localCardList = localStorage.getItem('globalCards')
         if (localCardList) {
             localCardList  = JSON.parse(localCardList );
-        //   if(isAuthenticated){ 
-        //     localTableList.forEach((table) => {
-        //       const { table_name, data } = table;
-        //       previousLocalData[table_name] = data;
-        //     });
-        //     setOpenModal(true);
-        // }else{
-            setGlobalCards(localCardList);
+
+        if(isAuthenticated){
+
+          }else{setGlobalCards(localCardList);}
         // }
       }
       }, []);
 
-      useEffect(() => {
-        console.log(cardSaveState);
-      }, [cardSaveState]);
-
       const addCards = () =>{
         const newCard = {
           card_id: null,
-          user_id: null,
           table_id: null,
           visualized: false,
-          visual_option:"",
-          column_used: "",
+          visual_option:null,
+          column_used: null,
           position_x: 0,
           position_y: 0,
           width: 300,
           height:300,
         };
-  
+
+        if(isAuthenticated){
+          addNewCardToAccount(newCard);
+        }else{
         setGlobalCards((prevCards) => [...prevCards, newCard]); 
 
         setCardSaveState(1);
+        }
       }
 
       const deleteCard = (index) => {
@@ -83,6 +80,68 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
           setCardSaveState(0);
         }
       };
+
+
+      //Below are api opertions
+
+ async function addNewCardToAccount(newCard){
+        if (localStorage.getItem("access")) {
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `JWT ${localStorage.getItem("access")}`,
+            },
+          };
+
+          const body = JSON.stringify({
+              visualized: newCard.visualized,
+              height: newCard.height,
+              width: newCard.width,
+              position_x: newCard.position_x,
+              position_y: newCard.position_y,
+          });
+
+          axios
+      .post(`${process.env.REACT_APP_BACKEND_API_URL}/cards/create/`, body, config)
+      .then(function (response) { 
+        if (response.status === 200) {
+          console.log(response.data);
+
+           setGlobalCards((prevCards) => {
+             return [...prevCards, newCard];
+           });
+        }
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+
+        }
+      }
+
+      async function loadAccountCards() {
+        console.log("AC load")
+        if (localStorage.getItem("access")) {
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `JWT ${localStorage.getItem("access")}`,
+              Accept: "application/json",
+            },
+          };
+      
+          axios
+            .get(`${process.env.REACT_APP_BACKEND_API_URL}/cards/retrieve/`, config)
+            .then(function (response) {
+              setGlobalCards(response.data);
+              console.log(response.data);
+            })
+            .catch(function (err) {
+              console.log(err);
+            });
+        }
+      }
+
 
     return (
         <GlobalCardContext.Provider 

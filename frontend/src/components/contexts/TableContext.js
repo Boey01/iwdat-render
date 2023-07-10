@@ -39,7 +39,8 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   );
 
   useEffect(() => {
-    loadAccountTables();
+    if(isAuthenticated){ loadAccountTables();}
+    
     let localTableList = localStorage.getItem('globalTables')
     if (localTableList) {
       localTableList = JSON.parse(localTableList);
@@ -212,7 +213,7 @@ async function addNewTableToAccount(table_name, position_x, position_y, hidden, 
       .then(function (response) {
         if (response.status === 200) {
           const createdDatabaseTable = response.data;
-          setGlobalTables(function (prevTables) {
+          setGlobalTables((prevTables) => {
             return [...prevTables, createdDatabaseTable];
           });
         }

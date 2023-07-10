@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import ReadingTableSerializer,ModifyTableSerializer
+from .serializers import ReadingTableSerializer, ModifyTableSerializer
 from .models import TableData
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated

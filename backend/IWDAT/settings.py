@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'accounts',
     'tables',
+    'cards',
     'rest_framework',
     'djoser',
 ]
