@@ -68,6 +68,10 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
     movedTablesRef.current = movedTables;
   }, [movedTables]);
 
+  useEffect(() => {
+   console.log(globalTables);
+  }, [globalTables]);
+
   const handleSnackbarClose = () =>{
     setSnackbarOpen(false);
   };

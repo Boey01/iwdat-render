@@ -195,3 +195,7 @@ justify-content: center;
   right: -5px;
   cursor: pointer;
 }
+
+.vo-selected{
+  background-color: lightgray;
+}

@@ -10,14 +10,14 @@ import GlobalTablesProvider from './components/contexts/TableContext'
 import  GlobalCardsProvider  from "./components/contexts/CardContext";
 
 //--- below are pages ---------------------------------
-import { Workspace } from "./components/Pages/Workspace";
-import Login  from "./components/Pages/Login";
-import { PageNotFound } from "./components/Pages/PageNotFound";
-import Signup  from "./components/Pages/Signup";
-import ActivateAccount  from "./components/Pages/Activate";
-import ResetPassReq from "./components/Pages/ResetPassReq";
-import ChangePassword from "./components/Pages/ChangePass";
-import { Dashboard } from "./components/Pages/Dashboard";
+import { Workspace } from "./components/pages/Workspace";
+import Login  from "./components/pages/Login";
+import { PageNotFound } from "./components/pages/PageNotFound";
+import Signup  from "./components/pages/Signup";
+import ActivateAccount  from "./components/pages/Activate";
+import ResetPassReq from "./components/pages/ResetPassReq";
+import ChangePassword from "./components/pages/ChangePass";
+import { Dashboard } from "./components/pages/Dashboard";
 
 const ContextAndSidebarProvider = ({ children }) => {
   return (

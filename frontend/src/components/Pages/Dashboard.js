@@ -1,11 +1,13 @@
-import React, { useEffect, useContext, forwardRef } from "react";
-import { Button, IconButton } from "@mui/material";
+import React, { useState, useEffect, useContext, forwardRef } from "react";
+import { IconButton } from "@mui/material";
 import { GlobalCardContext } from "../contexts/CardContext";
 import { ResizableBox } from "react-resizable";
 import MakeDraggable from "../util/Draggable";
 import OpenInFullRoundedIcon from "@mui/icons-material/OpenInFullRounded";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import DVModalContent from "../CardUtil/DataVisualizeModal";
+import Modal from "@mui/material/Modal";
 
 const ResizeHandle = forwardRef((props, ref) => {
   const { handleAxis, ...restProps } = props;
@@ -22,6 +24,15 @@ const ResizeHandle = forwardRef((props, ref) => {
 
 export const Dashboard = () => {
   const { globalCards, deleteCard, updateCardSize} = useContext(GlobalCardContext);
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  }
 
   return (
     <div className="dashboard-render">
@@ -48,12 +59,16 @@ export const Dashboard = () => {
                   </i>
 
                 <div className="card-content">
-              <IconButton><AddRoundedIcon fontSize="large"/></IconButton>
+              <IconButton onClick={handleOpenModal}><AddRoundedIcon fontSize="large"/></IconButton>
               </div>
             </ResizableBox>
           </MakeDraggable>
         ))}
       </div>
+
+      <Modal open={openModal} onClose={handleCloseModal}>
+        <DVModalContent handleCloseModal={handleCloseModal}/>
+      </Modal>
     </div>
   );
 };
