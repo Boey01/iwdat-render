@@ -59,3 +59,21 @@ def updateCardPosition(request):
                 pass
 
     return Response(status=204)
+
+    
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateCardSize(request):
+    resized_cards = request.data
+    for key, value in resized_cards.items():
+        try:
+            card = Cards.objects.get(card_id=key)
+            sizes = value.split(',')
+            card.width = float(sizes[0])
+            card.height = float(sizes[1])
+            card.save()
+        except Cards.DoesNotExist:
+                print("card not found")
+                pass
+
+    return Response(status=204)

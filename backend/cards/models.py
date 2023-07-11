@@ -13,6 +13,6 @@ class Cards(models.Model):
     column_used = models.CharField(max_length=255, null=True)
     position_x = models.IntegerField()
     position_y = models.IntegerField()
-    width = models.IntegerField()
-    height = models.IntegerField()
+    width = models.DecimalField(max_digits=7, decimal_places=2)
+    height = models.DecimalField(max_digits=7, decimal_places=2)
 

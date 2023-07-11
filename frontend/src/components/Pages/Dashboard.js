@@ -21,7 +21,7 @@ const ResizeHandle = forwardRef((props, ref) => {
 });
 
 export const Dashboard = () => {
-  const { globalCards, deleteCard, updateCardPosition, updateCardSize} = useContext(GlobalCardContext);
+  const { globalCards, deleteCard, updateCardSize} = useContext(GlobalCardContext);
 
   return (
     <div className="dashboard-render">

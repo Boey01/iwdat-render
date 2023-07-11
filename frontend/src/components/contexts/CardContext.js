@@ -16,7 +16,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
 
     let positionChangeTimer;
     let sizeChangeTimer;
-    
+
     const updateCardsPositionDebounce = useCallback(
       debounce(() => {
         updateCardsPositionDB(movedCardsRef.current);
@@ -31,6 +31,10 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
       [ updateCardsSizeDB]
     );
 
+    useEffect(()=>{
+      console.log(globalCards); 
+    },[globalCards])
+    
     useEffect(() => {
       if(isAuthenticated){loadAccountCards()};
       let localCardList = localStorage.getItem('globalCards')
@@ -107,7 +111,6 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
           movedCards[globalCards[index].card_id] = globalCards[index].position_x +","+ globalCards[index].position_y;
           
           updateCardsPositionDebounce();
-          console.log(movedCards  )
         }else{
          setCardSaveState(1);
         }
@@ -117,12 +120,20 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
       const updateCardSize = (index, width, height) => {
         setGlobalCards((prevCards) => {
           const newCardList = [...prevCards];
-          newCardList[index].width = width;
-          newCardList[index].height = height;
+          newCardList[index].width = parseFloat(width.toFixed(2));
+          newCardList[index].height = parseFloat(height.toFixed(2));
           return newCardList;
         });
 
-        setCardSaveState(1);
+        if (isAuthenticated) {
+          clearTimeout(sizeChangeTimer);
+    
+          resizedCards[globalCards[index].card_id] = globalCards[index].width +","+ globalCards[index].height
+          
+          updateCardsSizeDebounce();
+        }else{
+         setCardSaveState(1);
+        }
       }    
 
       const saveCardListIntoLocal = () => {
@@ -158,7 +169,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
         if (response.status === 200) {
 
            setGlobalCards((prevCards) => {
-             return [...prevCards, newCard];
+             return [...prevCards, response.data];
            });
         }
       })
@@ -183,6 +194,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
             .get(`${process.env.REACT_APP_BACKEND_API_URL}/cards/retrieve/`, config)
             .then(function (response) {
               setGlobalCards(response.data);
+              console.log(response.data["width"]);
             })
             .catch(function (err) {
               console.log(err);
@@ -251,12 +263,12 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
       
           axios
             .put(
-              `${process.env.REACT_APP_BACKEND_API_URL}/cards/update/position/`,
+              `${process.env.REACT_APP_BACKEND_API_URL}/cards/update/size/`,
               body,
               config
             )
             .then(function (response) {
-              setMovedCards({});
+              setResizedCards({});
             })
             .catch(function (err) {
               console.log(err);
