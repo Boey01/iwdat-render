@@ -17,7 +17,6 @@ import {
   ToggleButtonGroup,
   Paper,
   Chip,
-  Slider,
 } from "@mui/material";
 import {
   BarChart,
@@ -158,8 +157,8 @@ export default function BarChartPreview(data) {
           <AccordionSummary sx={{ m: 0 }}>
             <Typography>Expand option</Typography>
           </AccordionSummary>
-          <AccordionDetails sx={{ p: 1 }}>
-            <Grid container spacing={2} sx={{mb:1, overflow:"auto", maxHeight:"20vh"}}>
+          <AccordionDetails>
+            <Grid container spacing={2} sx={{mb:1, mt:0.5, overflow:"auto", maxHeight:"20vh"}}>
               {/* Row 1 */}
               <Grid item xs={12}>
                 <Typography>Target Column (Variable):</Typography>
@@ -248,40 +247,7 @@ export default function BarChartPreview(data) {
                 </React.Fragment>
               ))}
             {/* 4th Row */}   
-            <Grid item xs={12}>
-                <Typography variant="caption" gutterBottom>
-                  Chart Size
-                </Typography>
-              </Grid>
-              <Grid item xs={5}>
-                <Slider
-                  value={chartWidth}
-                  onChange={handleChartWidthChange}
-                  min={0}
-                  max={100}
-                  step={1}
-                  valueLabelDisplay="auto"
-                />
-              </Grid>
-              <Grid item xs={1}>
-                <Typography variant="caption">Width: {chartWidth}%</Typography>
-              </Grid>
-
-              <Grid item xs={5}>
-                <Slider
-                  value={chartHeight}
-                  onChange={handleChartHeightChange}
-                  min={0}
-                  max={100}
-                  step={1}
-                  valueLabelDisplay="auto"
-                />
-              </Grid>
-              <Grid item xs={1}>
-                <Typography variant="caption">Height: {chartHeight}%</Typography>
-              </Grid>
-
-            </Grid>
+        </Grid>
             {/* last Row */}              
 
             <Button variant="contained" onClick={handleApplyChanges}>
@@ -294,7 +260,7 @@ export default function BarChartPreview(data) {
       {/* Render the Bar Chart */}
       <Paper sx={{ overflow: "auto" }}>
       {transformedData.length > 0 && (
-       <ResponsiveContainer width={`${chartWidth}%`} aspect={chartHeight/100}>
+       <ResponsiveContainer width="100%" aspect={2}>
       <BarChart data={transformedData}>
   <CartesianGrid strokeDasharray="3 3" />
   <XAxis dataKey={targetColumn} />
