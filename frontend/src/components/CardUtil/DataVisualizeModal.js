@@ -28,7 +28,7 @@ import Divider from "@mui/material/Divider";
 import { GlobalCardContext } from "../contexts/CardContext";
 import { GlobalTableContext } from "../contexts/TableContext";
 import BarChartIcon from "../../static/bar-chart.svg";
-import BarChartPreview from "./BarChart";
+import BarChartPreview from "./BarChartUtil";
 
 const ModalContent = styled("div")({
   position: "absolute",
@@ -115,24 +115,9 @@ export default function DVModalContent({ handleCloseModal }) {
 
         <Grid container spacing={1}>
           <Grid item xs={3}>
-            <Paper variant="outlined" sx={{ height: "55vh" }}>
+            <Paper variant="outlined" sx={{ height:"100%", minHeight:"50vh" }}>
               <Card sx={{ p: 2, height: "auto", textAlign: "center" }}>
-                <Typography>Exported Tables</Typography>
-              </Card>
-              <Box sx={{ overflow: "auto", height: "89%" }}>
-                <List>
-                {renderVOButton("bar chart", "Bar Chart", BarChartIcon)}
-                </List>
-              </Box>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={9}>
-            <Stack spacing={2}>
-              <div>
-                <Typography variant="h5">DataVisualization</Typography>
-              </div>
-              <FormControl sx={{ width: "50%" }} size="small">
+              <FormControl sx={{ width: "100%" }} size="small">
                 <InputLabel id="table-selector">Table</InputLabel>
                 <Select
                   labelId="table-selector"
@@ -146,6 +131,20 @@ export default function DVModalContent({ handleCloseModal }) {
 
                 </Select>
               </FormControl>
+              </Card>
+              <Box sx={{ overflow: "auto", height: "89%" }}>
+                <List>
+                {renderVOButton("bar chart", "Bar Chart", BarChartIcon)}
+                </List>
+              </Box>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={9}>
+            <Stack spacing={2}>
+              <div>
+                <Typography variant="h5">Data Visualization</Typography>
+              </div>
               {tableIndex !== '' && selectedVO !== '' && (
                 <BarChartPreview data={globalTables[tableIndex].data} />
               )}
