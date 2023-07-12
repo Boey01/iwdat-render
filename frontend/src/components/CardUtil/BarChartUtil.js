@@ -118,101 +118,106 @@ export default function BarChartPreview(data) {
     <>
       <Stack>
         <Accordion>
-          <AccordionSummary>
+          <AccordionSummary sx={{m:0}}>
             <Typography>Expand option</Typography>
           </AccordionSummary>
-          <AccordionDetails sx={{ p: 0}}>
-            <Grid container spacing={2} sx={{ m: 2}}>
-            <div className="dv-options-menu">
-              <Grid item xs={5}>
-                <Typography> Target Column (Variable):</Typography>
-                <Select
-                  labelId="column"
-                  id="demo-simple-select-standard"
-                  value={targetColumn}
-                  onChange={handleChange}
-                  label="Target Column"
-                  fullWidth
-                >
-                  {menuItems}
-                </Select>
-              </Grid>
+          <AccordionDetails sx={{ p: 0 }}>
+  <Grid container spacing={2}>
+    {/* Row 1 */}
+    <Grid item xs={12}>
+      <Typography>Target Column (Variable):</Typography>
+    </Grid>
+    
+    {/* Row 2 */}
+    <Grid item xs={5}>
+      <Select
+        value={targetColumn}
+        onChange={handleChange}
+        label="Target Column"
+        fullWidth
+        sx={{ height: 35 }}
+      >
+        {menuItems}
+      </Select>
+    </Grid>
+    <Grid item xs={3}>
+      <ToggleButtonGroup
+        value={isGrouped}
+        exclusive
+        onChange={handleGroupToggle}
+        fullWidth
+      >
+        <ToggleButton value={true}>Grouped</ToggleButton>
+        <ToggleButton value={false}>Ungrouped</ToggleButton>
+      </ToggleButtonGroup>
+    </Grid>
+    <Grid item xs={4}></Grid>
 
-              <Grid item xs={3}>
-                <Typography>
-                  Grouping:
-                </Typography>
-                <ToggleButtonGroup value={isGrouped} exclusive onChange={handleGroupToggle}>
-                  <ToggleButton value={true}>Grouped</ToggleButton>
-                  <ToggleButton value={false}>Ungrouped</ToggleButton>
-                </ToggleButtonGroup>
-              </Grid>
-              <Grid item xs={4}></Grid>
+    {/* Row 3 */}
+    <Grid item xs={12}>
+      <Typography>
+        Values
+        <IconButton onClick={addNewValueColumn} sx={{ p: 0 }}>
+          <AddIcon />
+        </IconButton>
+        :
+      </Typography>
+    </Grid>
 
-              <Grid item xs={12}>
-                <Typography>
-                  Values
-                  <IconButton onClick={addNewValueColumn} sx={{ p: 0 }}>
-                    <AddIcon />
-                  </IconButton>
-                  :
-                </Typography>
-              </Grid>
-              {valueColumns.map((column, index) => (
-                <>
-                  <Grid item xs={5} sx={{ p: 0 }}>
-                    <Select
-                      name="columnName"
-                      value={column.columnName}
-                      onChange={(event) =>
-                        handleValueColumnChange(event, index)
-                      }
-                      fullWidth
-                      sx={{ mx: 1 }}
-                      variant="standard"
-                    >
-                      {Object.keys(data.data[0])
-                        .filter((key) => key !== targetColumn)
-                        .map((key) => (
-                          <MenuItem value={key}>{key}</MenuItem>
-                        ))}
-                    </Select>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Select
-                      name="type"
-                      value={column.type}
-                      onChange={(event) =>
-                        handleValueColumnChange(event, index)
-                      }
-                      fullWidth
-                      variant="standard"
-                    >
-                      <MenuItem value={"Direct Use"}>Direct Use</MenuItem>
-                      <MenuItem value={"Count"}>Count</MenuItem>
-                      <MenuItem value={"Sum"}>Sum</MenuItem>
-                    </Select>
-                  </Grid>
-                  <Grid item xs={1}>
-                    <IconButton onClick={() => deleteValueColumn(index)}>
-                      <DeleteOutlineRoundedIcon />
-                    </IconButton>
-                  </Grid>
-                  <Grid item xs={3}></Grid>
-                </>
+    {/* Rows based on valueColumns object */}
+    {valueColumns.map((column, index) => (
+      <React.Fragment key={index}>
+        <Grid item xs={5}>
+          <Select
+            name="columnName"
+            value={column.columnName}
+            onChange={(event) => handleValueColumnChange(event, index)}
+            fullWidth
+            sx={{ mx: 1 }}
+            variant="standard"
+          >
+            {Object.keys(data.data[0])
+              .filter((key) => key !== targetColumn)
+              .map((key) => (
+                <MenuItem key={key} value={key}>{key}</MenuItem>
               ))}
-              </div>
-              <Grid item xs={12}>
-                <Button variant="contained" onClick={handleApplyChanges}>Apply Changes</Button>
-              </Grid>
-            </Grid>
-          </AccordionDetails>
+          </Select>
+        </Grid>
+        <Grid item xs={3}>
+          <Select
+            name="type"
+            value={column.type}
+            onChange={(event) => handleValueColumnChange(event, index)}
+            fullWidth
+            variant="standard"
+          >
+            <MenuItem value={"Direct Use"}>Direct Use</MenuItem>
+            <MenuItem value={"Count"}>Count</MenuItem>
+            <MenuItem value={"Sum"}>Sum</MenuItem>
+          </Select>
+        </Grid>
+        <Grid item xs={1}>
+          <IconButton onClick={() => deleteValueColumn(index)}>
+            <DeleteOutlineRoundedIcon />
+          </IconButton>
+        </Grid>
+        <Grid item xs={3}></Grid>
+      </React.Fragment>
+    ))}
+
+    {/* Last Row */}
+    <Grid item xs={12}>
+      <Button variant="contained" onClick={handleApplyChanges}>Apply Changes</Button>
+    </Grid>
+  </Grid>
+</AccordionDetails>
+
         </Accordion>
       </Stack>
 
       {/* Render the Bar Chart */}
       <Paper sx={{overflow:"auto"}}>
-      <BarChart width={500} height={300} data={transformedData}>
+      <BarChart width={500} height={200} data={transformedData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey={targetColumn} />
         <YAxis />

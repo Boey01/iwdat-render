@@ -34,6 +34,7 @@ export const AccordionSummary = styled((props) => (
     transform: 'rotate(90deg)',
   },
   '& .MuiAccordionSummary-content': {
+    margin: 0, 
     marginLeft: theme.spacing(1),
   },
 }));
