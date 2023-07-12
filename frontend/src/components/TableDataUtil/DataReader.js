@@ -9,6 +9,7 @@ const checkFileName = (name) => {
   switch (fileExtension) {
     case "xlsx":
     case "xls":
+    case "xlsm":
       return readXLSXData;
     case "csv":
       return readCSVData;

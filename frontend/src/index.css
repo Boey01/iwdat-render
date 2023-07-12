@@ -199,3 +199,9 @@ justify-content: center;
 .vo-selected{
   background-color: lightgray;
 }
+
+.dv-options-menu{
+  overflow: auto;
+  height:10vh;
+  width: 100%;
+}
