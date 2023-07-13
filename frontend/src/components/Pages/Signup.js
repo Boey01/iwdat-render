@@ -5,6 +5,11 @@ import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import KeyboardCapslockIcon from '@mui/icons-material/KeyboardCapslock';
+
 import { connect } from "react-redux";
 import { redux_signup } from "../../redux/actions/auth_actions";
 
@@ -21,6 +26,21 @@ export const Signup = ({redux_signup}) => {
   const handleRePasswordChange = (event) => {
     setRePassword(event.target.value);
     setPasswordMatch(event.target.value === password);
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.getModifierState("CapsLock")) {
+      setCapsLockOn(true);
+    } else {
+      setCapsLockOn(false);
+    }
   };
 
   const handleSubmit = (event) => {
@@ -74,10 +94,21 @@ export const Signup = ({redux_signup}) => {
             fullWidth
             name="password"
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="current-password"
             onChange={handlePasswordChange}
+            InputProps={{
+              endAdornment: (
+                <>
+                {capsLockOn && <KeyboardCapslockIcon  edge="end"/>}
+                <IconButton onClick={handleTogglePasswordVisibility} edge="end">
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+                </>
+              ),
+            }}
+            onKeyDown={handleKeyDown}
           />
           <TextField
             margin="normal"
@@ -85,7 +116,7 @@ export const Signup = ({redux_signup}) => {
             fullWidth
             name="re-password"
             label="Confirm Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="re-password"
             helperText={passwordMatch ? "" : "Passwords do not match"}
             onChange={handleRePasswordChange}
@@ -94,12 +125,24 @@ export const Signup = ({redux_signup}) => {
                 color: rePasswordColor,
               },
             }}
+            InputProps={{
+              endAdornment: (
+                <>
+                {capsLockOn && <KeyboardCapslockIcon  edge="end"/>}
+                <IconButton onClick={handleTogglePasswordVisibility} edge="end">
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+                </>
+              ),
+            }}
+            onKeyDown={handleKeyDown}
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            disabled= {!passwordMatch}
           >
             Sign In
           </Button>
@@ -107,7 +150,6 @@ export const Signup = ({redux_signup}) => {
             <Link to="/login">
                 Back To Login
               </Link>
-       
         </Box>
       </Box>
     </Container>

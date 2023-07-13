@@ -3,7 +3,12 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import KeyboardCapslockIcon from '@mui/icons-material/KeyboardCapslock';
 import TextField from "@mui/material/TextField";
+
 import { reset_password } from "../../redux/actions/auth_actions";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -13,6 +18,8 @@ export const ChangePassword = ({reset_password}) =>{
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -22,6 +29,18 @@ export const ChangePassword = ({reset_password}) =>{
   const handleRePasswordChange = (event) => {
     setRePassword(event.target.value);
     setPasswordMatch(event.target.value === password);
+  };
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.getModifierState("CapsLock")) {
+      setCapsLockOn(true);
+    } else {
+      setCapsLockOn(false);
+    }
   };
 
     const handleSubmit = (event) => {
@@ -51,25 +70,35 @@ export const ChangePassword = ({reset_password}) =>{
           flexDirection: "column",
           alignItems: "center", }}       
         >
-            <TextField
+           <TextField
             margin="normal"
             required
             fullWidth
             name="password"
-            label="Your New Password"
-            type="password"
+            label="Password"
+            type={showPassword ? "text" : "password"}
             id="password"
-            autoFocus
+            autoComplete="current-password"
             onChange={handlePasswordChange}
+            InputProps={{
+              endAdornment: (
+                <>
+                {capsLockOn && <KeyboardCapslockIcon  edge="end"/>}
+                <IconButton onClick={handleTogglePasswordVisibility} edge="end">
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+                </>
+              ),
+            }}
+            onKeyDown={handleKeyDown}
           />
-
-            <TextField
+          <TextField
             margin="normal"
             required
             fullWidth
             name="re-password"
-            label="Confirm New Password"
-            type="password"
+            label="Confirm Password"
+            type={showPassword ? "text" : "password"}
             id="re-password"
             helperText={passwordMatch ? "" : "Passwords do not match"}
             onChange={handleRePasswordChange}
@@ -78,6 +107,17 @@ export const ChangePassword = ({reset_password}) =>{
                 color: rePasswordColor,
               },
             }}
+            InputProps={{
+              endAdornment: (
+                <>
+                {capsLockOn && <KeyboardCapslockIcon  edge="end"/>}
+                <IconButton onClick={handleTogglePasswordVisibility} edge="end">
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+                </>
+              ),
+            }}
+            onKeyDown={handleKeyDown}
           />
 
           <Button
