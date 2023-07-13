@@ -134,12 +134,12 @@ export const reset_password_req = (email) => async (dispatch) => {
     dispatch({
       type: PASSWORD_RESET_REQUEST_SUCCESS,
     });
-    alert("Password request link sent to your email.");
+    alert("A request reset link has sent to your email.");
   } catch (err) {
     dispatch({
       type: PASSWORD_RESET_REQUEST_FAIL,
     });
-    alert("Failed to send email request.");
+    alert("Failed to send reset request.");
   }
 };
 
