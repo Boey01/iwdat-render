@@ -17,20 +17,12 @@ import {
   Chip,
   Popover,
 } from "@mui/material";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { ChromePicker } from "react-color";
+import AlignVerticalBottomIcon from '@mui/icons-material/AlignVerticalBottom';
+import RenderChart from "./RenderChart";
 
 export default function BarChartPreview(data) {
   const [targetColumn, setTargetColumn] = useState("");
@@ -40,6 +32,7 @@ export default function BarChartPreview(data) {
   const [selectedBarKey, setSelectedBarKey] = useState("");
   const [barColors, setBarColors] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
+  const [horizontal, setHorizontal] = useState(true);
 
   useEffect(() => {
     console.log(transformedData);
@@ -216,11 +209,26 @@ export default function BarChartPreview(data) {
       sx={{ height: 35 }}
     />
   }
-  label="Group By" // Replace "Group By" with your desired label text
+  label="Group By" 
+/>
+
+              </Grid>
+              <Grid item xs={1}>
+              <FormControlLabel
+  control={
+    <Switch
+      checked={!horizontal}
+      onChange={() => {
+        setHorizontal(!horizontal);
+      }}
+      sx={{ height: 35 }}
+    />
+  }
+  label={<AlignVerticalBottomIcon sx={{ transform: horizontal ? "rotate(0deg)" : "rotate(90deg)" }} />}
 />
               </Grid>
-              <Grid item xs={4}></Grid>
 
+              <Grid item xs={3}></Grid>
               {/* Row 3 */}
               <Grid item xs={12}>
                 <Chip
@@ -283,6 +291,7 @@ export default function BarChartPreview(data) {
 
               {/* 4th Row */}
               {/* Color Picker Section */}
+              {transformedData.length > 0 && (
               <Grid item xs={12}>
                 <Typography>Legends' Color:</Typography>
                 <Stack direction="row" spacing={1} sx={{ overflowX: "auto", p:0.5, border:"1px solid grey", borderRadius: 3 }}>
@@ -305,6 +314,7 @@ export default function BarChartPreview(data) {
                       ))}
                 </Stack>
               </Grid>
+)}
             </Grid>
 
             <Button
@@ -320,29 +330,16 @@ export default function BarChartPreview(data) {
 
       {/* Render the Bar Chart */}
       <Paper sx={{ overflow: "auto", height: "30vh" }}>
-        {transformedData.length > 0 && (
-          <ResponsiveContainer width="100%" height="100%" >
-            <BarChart data={transformedData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey={targetColumn} />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              {Object.keys(transformedData[0])
-                .slice(1)
-                .map((key) => (
-                  <Bar
-                    key={key}
-                    dataKey={key}
-                    fill={
-                      barColors[key] 
-                    }
-                  />
-                ))}
-            </BarChart>
-          </ResponsiveContainer>
-        )}
-      </Paper>
+  {transformedData.length > 0 && 
+        <RenderChart
+        type="bar-chart"
+        data={transformedData}
+        dataKey={targetColumn}
+        horizontal={horizontal}
+        colors={barColors}
+      />
+  }
+</Paper>
 
       {/* Color Picker Dialog */}
       <Popover
@@ -366,3 +363,4 @@ export default function BarChartPreview(data) {
     </>
   );
 }
+
