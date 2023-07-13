@@ -77,13 +77,13 @@ const readXMLData = (file) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const xmlString = event.target.result;
-      xml2js.parseString(xmlString, (err, result) => {
+      xml2js.parseString(xmlString, { explicitArray: false }, (err, result) => {
         if (err) {
           console.error(err);
           reject(err);
           return;
         }
-
+        console.log(result);
         const topLevelElement = Object.keys(result)[0];
         const tableName = Object.keys(result[topLevelElement])[0];
         let headers = Object.keys(result[topLevelElement][tableName][0]);
@@ -98,6 +98,7 @@ const readXMLData = (file) => {
 
         let jsonData = {};
         jsonData["Data"] = entries;
+        console.log(jsonData)
 
         resolve(jsonData);
       });
@@ -117,7 +118,7 @@ const removeAndReplaceKey = (entries) => {
       if (key === "$") {
         const dollarSignProp = obj["$"];
         for (const innerKey in dollarSignProp) {
-          modifiedObj[innerKey] = [dollarSignProp[innerKey]];
+          modifiedObj[innerKey] = dollarSignProp[innerKey];
         }
       } else {
         modifiedObj[key] = obj[key];
