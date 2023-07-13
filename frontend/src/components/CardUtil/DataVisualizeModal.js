@@ -22,7 +22,14 @@ import Typography from "@mui/material/Typography";
 import { GlobalCardContext } from "../contexts/CardContext";
 import { GlobalTableContext } from "../contexts/TableContext";
 import BarChartIcon from "../../static/bar-chart.svg";
+import LineChartIcon from "../../static/line-chart.svg";
+import PieChartIcon from "../../static/pie-chart.svg";
+import ScatterPlotIcon from "../../static/scatter-plot.svg";
+
 import BarChartPreview from "./BarChartUtil";
+import LineChartPreview from "./LineChartUtil";
+import PieChartPreview from "./PieChartUtil";
+import ScatterChartPreview from "./ScatterPlotUtil";
 
 const ModalContent = styled("div")({
   position: "absolute",
@@ -81,6 +88,21 @@ export default function DVModalContent({index, handleCloseModal }) {
     insertNewVisualization(index, key, value);
   }
 
+  const renderPreview = () => {
+    switch (selectedVO) {
+      case 'bar-chart':
+        return <BarChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig}/>;
+      case 'line-chart':
+        return <LineChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig}/>;
+      case 'pie-chart':
+        return <PieChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig}/>;
+      case 'scatter-plot':
+        return <ScatterChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig}/>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="make-center">
       <ModalContent>
@@ -113,6 +135,9 @@ export default function DVModalContent({index, handleCloseModal }) {
               <Box sx={{ overflow: "auto", height: "89%" }}>
                 <List>
                 {renderVOButton("bar-chart", "Bar Chart", BarChartIcon)}
+                {renderVOButton("line-chart", "Line Chart", LineChartIcon)}
+                {renderVOButton("pie-chart", "Pie Chart", PieChartIcon)}
+                {renderVOButton("scatter-plot", "Scatter Plot", ScatterPlotIcon)}
                 </List>
               </Box>
             </Paper>
@@ -123,11 +148,7 @@ export default function DVModalContent({index, handleCloseModal }) {
               <div>
                 <Typography variant="h5">Data Visualization</Typography>
               </div>
-              {tableIndex !== '' && selectedVO !== '' && (
-                <BarChartPreview 
-                data={globalTables[tableIndex].data} 
-                defineVisualConfig={defineVisualConfig}/>
-              )}
+              {tableIndex !== '' && selectedVO !== '' && renderPreview()}
               <Button variant="contained" onClick={handleInsertNewVisual}>Confirm Data Visualize</Button>
             </Stack>
           </Grid>
