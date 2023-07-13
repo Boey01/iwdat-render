@@ -24,7 +24,7 @@ import { ChromePicker } from "react-color";
 import AlignVerticalBottomIcon from '@mui/icons-material/AlignVerticalBottom';
 import RenderChart from "./RenderChart";
 
-export default function BarChartPreview(data) {
+export default function BarChartPreview({data, defineVisualConfig}) {
   const [targetColumn, setTargetColumn] = useState("");
   const [valueColumns, setValueColumns] = useState([]);
   const [transformedData, setTransformedData] = useState([]);
@@ -33,14 +33,6 @@ export default function BarChartPreview(data) {
   const [barColors, setBarColors] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
   const [horizontal, setHorizontal] = useState(true);
-
-  useEffect(() => {
-    console.log(transformedData);
-  }, [transformedData]);
-
-  useEffect(() => {
-    console.log(valueColumns);
-  }, [valueColumns]);
 
   const handleChange = (event) => {
     setTargetColumn(event.target.value);
@@ -76,7 +68,7 @@ export default function BarChartPreview(data) {
     setBarColors({ ...barColors, [selectedBarKey]: color.hex });
   };
 
-  const menuItems = Object.keys(data.data[0]).map((key) => (
+  const menuItems = Object.keys(data[0]).map((key) => (
     <MenuItem value={key} key={key}>
       {key}
     </MenuItem>
@@ -87,7 +79,7 @@ export default function BarChartPreview(data) {
       return [];
     }
 
-    const transformedData = data.data.reduce((result, item) => {
+    const transformedData = data.reduce((result, item) => {
       const targetValue = item[targetColumn];
       const existingItem = result.find((d) => d[targetColumn] === targetValue);
 
@@ -139,7 +131,7 @@ export default function BarChartPreview(data) {
     if (isGrouped) {
       return transformedData;
     } else {
-      return data.data.map((item) => ({
+      return data.map((item) => ({
         [targetColumn]: item[targetColumn],
         ...item,
       }));
@@ -159,6 +151,14 @@ export default function BarChartPreview(data) {
   
     setTransformedData(transformedData);
     setBarColors(newBarColors); // Update barColors state with new colors
+
+    const compiledConfig = {
+      data:transformedData,
+      dataKey:targetColumn,
+      horizontal:horizontal,
+      colors:newBarColors,
+  }
+    defineVisualConfig("bar-chart",compiledConfig)
   };
   return (
     <>
@@ -253,7 +253,7 @@ export default function BarChartPreview(data) {
                       sx={{ mx: 1 }}
                       variant="standard"
                     >
-                      {Object.keys(data.data[0])
+                      {Object.keys(data[0])
                         .filter((key) => key !== targetColumn)
                         .map((key) => (
                           <MenuItem key={key} value={key}>

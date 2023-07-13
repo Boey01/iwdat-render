@@ -50,7 +50,10 @@ function renderBarChart(data, { dataKey, horizontal, colors }) {
         {Object.keys(data[0])
           .slice(1)
           .map((key) => (
+            <>
+           { console.log("colors:", colors)}
             <Bar key={key} dataKey={key} fill={colors[key]} />
+            </>
           ))}
       </BarChart>
     </ResponsiveContainer>

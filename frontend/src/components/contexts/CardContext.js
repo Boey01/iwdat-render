@@ -144,7 +144,18 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
         }
       };
 
-      //Below are api opertions
+      //Visualization operations ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+      const insertNewVisualization = (index, chart_type, visual_config ) => {
+        setGlobalCards((prevCards) => {
+          prevCards[index].chart_type = chart_type;
+          prevCards[index].visual_config = visual_config;
+          prevCards[index].visualized = true;
+          return prevCards;
+        });
+      }
+
+//Below are api opertions ------------------------------------------------------------
 
  async function addNewCardToAccount(newCard){
         if (localStorage.getItem("access")) {
@@ -286,6 +297,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
             deleteCard,
             updateCardPosition,
             updateCardSize,
+            insertNewVisualization,
           }}
         >
           {children}

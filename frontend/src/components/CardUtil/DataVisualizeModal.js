@@ -31,11 +31,13 @@ const ModalContent = styled("div")({
   width: "60vw",
 });
 
-export default function DVModalContent({ handleCloseModal }) {
+export default function DVModalContent({index, handleCloseModal }) {
   const { globalTables} = useContext(GlobalTableContext);
+  const { insertNewVisualization } = useContext(GlobalCardContext);
 
   const [tableIndex, setTableIndex] = useState('');  
   const [selectedVO, setSelectedVO] = useState('');
+  const [visualConfig, setVisualConfig] = useState({});
 
   useEffect(() => {
     console.log("Selected Visual Option:", selectedVO);
@@ -69,6 +71,16 @@ export default function DVModalContent({ handleCloseModal }) {
  );
   }
 
+  const defineVisualConfig = (chart_type, config) => {
+      setVisualConfig({[chart_type]:config});
+  }
+
+  const handleInsertNewVisual = () =>{
+    const [key, value] = Object.entries(visualConfig)[0];
+    console.log("aaa",key,value)
+    insertNewVisualization(index, key, value);
+  }
+
   return (
     <div className="make-center">
       <ModalContent>
@@ -100,7 +112,7 @@ export default function DVModalContent({ handleCloseModal }) {
               </Card>
               <Box sx={{ overflow: "auto", height: "89%" }}>
                 <List>
-                {renderVOButton("bar chart", "Bar Chart", BarChartIcon)}
+                {renderVOButton("bar-chart", "Bar Chart", BarChartIcon)}
                 </List>
               </Box>
             </Paper>
@@ -112,9 +124,11 @@ export default function DVModalContent({ handleCloseModal }) {
                 <Typography variant="h5">Data Visualization</Typography>
               </div>
               {tableIndex !== '' && selectedVO !== '' && (
-                <BarChartPreview data={globalTables[tableIndex].data} />
+                <BarChartPreview 
+                data={globalTables[tableIndex].data} 
+                defineVisualConfig={defineVisualConfig}/>
               )}
-              <Button variant="contained">Create New Card</Button>
+              <Button variant="contained" onClick={handleInsertNewVisual}>Confirm Data Visualize</Button>
             </Stack>
           </Grid>
         </Grid>

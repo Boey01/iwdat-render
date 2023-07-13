@@ -8,6 +8,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import DVModalContent from "../CardUtil/DataVisualizeModal";
 import Modal from "@mui/material/Modal";
+import RenderChart from "../CardUtil/RenderChart";
 
 const ResizeHandle = forwardRef((props, ref) => {
   const { handleAxis, ...restProps } = props;
@@ -25,9 +26,11 @@ const ResizeHandle = forwardRef((props, ref) => {
 export const Dashboard = () => {
   const { globalCards, deleteCard, updateCardSize} = useContext(GlobalCardContext);
   const [openModal, setOpenModal] = useState(false);
+  const [focusedCard, setFocusedCard] = useState(null);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (index) => {
     setOpenModal(true);
+    setFocusedCard(index)
   }
 
   const handleCloseModal = () => {
@@ -59,7 +62,18 @@ export const Dashboard = () => {
                   </i>
 
                 <div className="card-content">
-              <IconButton onClick={handleOpenModal}><AddRoundedIcon fontSize="large"/></IconButton>
+              {!card.visualized ? 
+              <IconButton onClick={()=>handleOpenModal(index)}>
+                <AddRoundedIcon fontSize="large"/>
+                </IconButton>
+              :
+              <RenderChart
+              type= {card.chart_type}
+              data={card.visual_config.data}
+              dataKey={card.visual_config.dataKey}
+              horizontal={card.visual_config.horizontal}
+              colors={card.visual_config.colors}
+            />}
               </div>
             </ResizableBox>
           </MakeDraggable>
@@ -67,7 +81,7 @@ export const Dashboard = () => {
       </div>
 
       <Modal open={openModal} onClose={handleCloseModal}>
-        <DVModalContent handleCloseModal={handleCloseModal}/>
+        <DVModalContent index={focusedCard} handleCloseModal={handleCloseModal}/>
       </Modal>
     </div>
   );
