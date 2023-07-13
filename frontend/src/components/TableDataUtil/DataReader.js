@@ -63,13 +63,22 @@ const readCSVData = (file) => {
   };
 
 const readJSONData = (data) => {
-  // Logic to read JSON file format
-  // Modify this function according to the JSON file reading logic
-  // Example:
-  // const jsonData = parseJSON(data);
-  // const sheetData = extractDataFromJSON(jsonData);
-  // return sheetData;
-  return null;
+  return new Promise((resolve, reject) => {
+  var reader = new FileReader();
+  reader.onload = (event) => {
+    try{
+      const parsedResult = JSON.parse(event.target.result);
+      let jsonData = {};
+      jsonData["data"] = parsedResult;
+
+      resolve(jsonData);
+    }catch(err){
+      console.log(err);
+    }
+  }
+  reader.readAsText(data);
+
+  })
 };
 
 const readXMLData = (file) => {
