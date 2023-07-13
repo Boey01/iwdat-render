@@ -84,7 +84,7 @@ export const Signup = ({redux_signup}) => {
             required
             fullWidth
             name="re-password"
-            label="Confirm New Password"
+            label="Confirm Password"
             type="password"
             id="re-password"
             helperText={passwordMatch ? "" : "Passwords do not match"}
