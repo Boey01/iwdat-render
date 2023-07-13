@@ -4,15 +4,10 @@ import {
   Box,
   Card,
   Paper,
-  Checkbox,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
-  Chip,
-  TextField,
-  Alert,
-  IconButton,
   FormControl,
   InputLabel,
   Select,
@@ -24,7 +19,6 @@ import {
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
 import { GlobalCardContext } from "../contexts/CardContext";
 import { GlobalTableContext } from "../contexts/TableContext";
 import BarChartIcon from "../../static/bar-chart.svg";
@@ -38,7 +32,6 @@ const ModalContent = styled("div")({
 });
 
 export default function DVModalContent({ handleCloseModal }) {
-  const { globalCards } = useContext(GlobalCardContext);
   const { globalTables} = useContext(GlobalTableContext);
 
   const [tableIndex, setTableIndex] = useState('');  
@@ -52,38 +45,11 @@ export default function DVModalContent({ handleCloseModal }) {
     const selectedIndex = event.target.value;
     setTableIndex(selectedIndex);
 
-    // if (selectedIndex !== null) {
-    //   const selectedTableData = globalTables[selectedIndex].data;
-    //   const splitedTable = columnSplitter(selectedTableData);
-    //   console.log(splitedTable);
-    //   // Do something with the splitedTable data
-    // }
   };
 
   const handleVisualOptionPressed = (option) => {
     setSelectedVO(option)
   }
-
-  const columnSplitter = (tableData) => {
-    const columns = {};
-  
-    // Iterate over each row in the table data
-    tableData.forEach((row) => {
-      // Iterate over each column in the row
-      Object.entries(row).forEach(([columnName, columnValue]) => {
-        // Check if the column exists in the columns object
-        if (!columns[columnName]) {
-          // If not, create an array for the column
-          columns[columnName] = [];
-        }
-  
-        // Push the column value to the corresponding array
-        columns[columnName].push(columnValue);
-      });
-    });
-  
-    return columns;
-  };
 
   const renderVOButton = (optionName, displayText, icon) => {
  return (
