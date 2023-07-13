@@ -148,7 +148,7 @@ export default function DVModalContent({ handleCloseModal }) {
               {tableIndex !== '' && selectedVO !== '' && (
                 <BarChartPreview data={globalTables[tableIndex].data} />
               )}
-              <Button variant="contained">Create New Table</Button>
+              <Button variant="contained">Create New Card</Button>
             </Stack>
           </Grid>
         </Grid>
