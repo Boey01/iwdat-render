@@ -153,6 +153,15 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
           prevCards[index].visualized = true;
           return prevCards;
         });
+        setCardSaveState(1);
+      }
+
+      const updateCardTitle = (index, title) => {
+        setGlobalCards((prevCards) => {
+          prevCards[index].visual_config.title = title;
+          return prevCards;
+        });
+        setCardSaveState(1);
       }
 
 //Below are api opertions ------------------------------------------------------------
@@ -298,6 +307,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
             updateCardPosition,
             updateCardSize,
             insertNewVisualization,
+            updateCardTitle,
           }}
         >
           {children}

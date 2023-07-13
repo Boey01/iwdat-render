@@ -157,6 +157,7 @@ export default function BarChartPreview({data, defineVisualConfig}) {
       dataKey:targetColumn,
       horizontal:horizontal,
       colors:newBarColors,
+      title: "",
   }
     defineVisualConfig("bar-chart",compiledConfig)
   };

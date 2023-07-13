@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Text,
 } from "recharts";
 
 export default function RenderChart({ data, type, ...chartProps }) {
@@ -32,8 +33,11 @@ export default function RenderChart({ data, type, ...chartProps }) {
 function renderBarChart(data, { dataKey, horizontal, colors }) {
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data} layout={horizontal ? "horizontal" : "vertical"}>
-        <CartesianGrid strokeDasharray="3 3" />
+      <BarChart data={data} 
+      layout={horizontal ? "horizontal" : "vertical"} 
+      margin={{ top: 30, right: 30, left: 0, bottom: 0 }}
+      >
+        <Text>Test</Text>
         {horizontal ? (
           <>
             <XAxis dataKey={dataKey} type="category" />
@@ -50,10 +54,7 @@ function renderBarChart(data, { dataKey, horizontal, colors }) {
         {Object.keys(data[0])
           .slice(1)
           .map((key) => (
-            <>
-           { console.log("colors:", colors)}
             <Bar key={key} dataKey={key} fill={colors[key]} />
-            </>
           ))}
       </BarChart>
     </ResponsiveContainer>
