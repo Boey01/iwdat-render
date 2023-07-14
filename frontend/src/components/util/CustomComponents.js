@@ -38,14 +38,13 @@ export const AccordionSummary = styled((props) => (
     marginLeft: theme.spacing(1),
   },
   '&.Mui-expanded': {
-    backgroundColor:  '#f4f4f8', // Background color when expanded
     borderBottom: 'none',
   },
 }));
 
 export const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: 0,
-  backgroundColor: 'white', // Background color
+  backgroundColor: '#f4f4f8', // Background color
 
 }));
 
