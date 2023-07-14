@@ -110,6 +110,7 @@ export const Dashboard = () => {
                       dataKey={card.visual_config.dataKey}
                       horizontal={card.visual_config.horizontal}
                       colors={card.visual_config.colors}
+                      showGrid = {card.visual_config.showGrid}
                     />
                   </>
                 )}

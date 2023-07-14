@@ -22,7 +22,6 @@ export const checkAuthenticated = () => async (dispatch) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
       },
     };
     const body = JSON.stringify({ token: localStorage.getItem("access") });

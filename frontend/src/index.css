@@ -176,7 +176,7 @@ margin-top: 20px;
 .resizable-card {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   position: relative;
-  border-radius: 30px;
+  border-radius: 10px;
 }
   
 .card-content{
@@ -186,8 +186,7 @@ display: flex;
 align-items: center;
 justify-content: center;
 flex-direction: column;
-padding: 10px;
-padding-top: 20px;
+padding: 20px;
 }
 
 .card-popup-controls {
@@ -235,4 +234,21 @@ padding-top: 20px;
 .dv-options-menu{
   overflow: auto;
   width: 100%;
+}
+
+.visual-option-menu{
+width:100%; 
+}
+
+.visual-option-bottom-handle {
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px -10px;
+  display: flex;
+  justify-content: center;
+}
+
+.visual-option-bottom-handle .controls-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

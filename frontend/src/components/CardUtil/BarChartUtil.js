@@ -3,6 +3,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  StyledToggleButtonGroup,
 } from "../util/CustomComponents";
 import {
   Grid,
@@ -16,15 +17,20 @@ import {
   Paper,
   Chip,
   Popover,
+  Tooltip,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { ChromePicker } from "react-color";
-import AlignVerticalBottomIcon from '@mui/icons-material/AlignVerticalBottom';
+import AlignVerticalBottomIcon from "@mui/icons-material/AlignVerticalBottom";
 import RenderChart from "./RenderChart";
+import GridOnIcon from "@mui/icons-material/GridOn";
+import GridOffIcon from "@mui/icons-material/GridOff";
+import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
+import ToggleButton from "@mui/material/ToggleButton";
 
-export default function BarChartPreview({data, defineVisualConfig}) {
+export default function BarChartPreview({ data, defineVisualConfig }) {
   const [targetColumn, setTargetColumn] = useState("");
   const [valueColumns, setValueColumns] = useState([]);
   const [transformedData, setTransformedData] = useState([]);
@@ -33,7 +39,20 @@ export default function BarChartPreview({data, defineVisualConfig}) {
   const [barColors, setBarColors] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
   const [horizontal, setHorizontal] = useState(true);
+  const [showGrid, setShowGrid] = useState(false);
+  const [toggleBtn, setToggleBtn] = useState(() => []);
 
+  const handleToggleButtonClicked = (event, changes) => {
+    if (changes.includes("group-by")) {
+      setIsGrouped(!isGrouped);
+    }
+    if (changes.includes("horizontal")) {
+      setHorizontal(!horizontal);
+    }
+    if (changes.includes("grid")) {
+      setShowGrid(!showGrid);
+    }
+  };
   const handleChange = (event) => {
     setTargetColumn(event.target.value);
   };
@@ -131,10 +150,15 @@ export default function BarChartPreview({data, defineVisualConfig}) {
     if (isGrouped) {
       return transformedData;
     } else {
-      return data.map((item) => ({
-        [targetColumn]: item[targetColumn],
-        ...item,
-      }));
+      return data.map((item, index) => {
+        const newItem = { [targetColumn]: item[targetColumn] };
+        valueColumns.forEach((column) => {
+          const { columnName } = column;
+
+          newItem[columnName] = item[columnName];
+        });
+        return newItem;
+      });
     }
   };
 
@@ -146,20 +170,23 @@ export default function BarChartPreview({data, defineVisualConfig}) {
     Object.keys(transformedData[0])
       .slice(1)
       .forEach((key) => {
-        newBarColors[key] = barColors[key] || `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        newBarColors[key] =
+          barColors[key] ||
+          `#${Math.floor(Math.random() * 16777215).toString(16)}`;
       });
-  
+
     setTransformedData(transformedData);
     setBarColors(newBarColors); // Update barColors state with new colors
 
     const compiledConfig = {
-      data:transformedData,
-      dataKey:targetColumn,
-      horizontal:horizontal,
-      colors:newBarColors,
+      data: transformedData,
+      dataKey: targetColumn,
+      horizontal: horizontal,
+      colors: newBarColors,
       title: "",
-  }
-    defineVisualConfig("bar-chart",compiledConfig)
+      showGrid: showGrid,
+    };
+    defineVisualConfig("bar-chart", compiledConfig);
   };
   return (
     <>
@@ -168,179 +195,191 @@ export default function BarChartPreview({data, defineVisualConfig}) {
           <AccordionSummary sx={{ m: 0 }}>
             <Typography>Expand option</Typography>
           </AccordionSummary>
+
           <AccordionDetails>
-            <Grid
-              container
-              spacing={2}
-              sx={{
-                mb: 1,
-                mt: 0.5,
-                pl: 1,
-                overflow: "auto",
-                maxHeight: "20vh",
-              }}
-            >
-              {/* Row 1 */}
-              <Grid item xs={12}>
-                <Typography>Target Column (Variable):</Typography>
-              </Grid>
+            <div className="visual-option-menu">
+              <Grid
+                container
+                spacing={2}
+                sx={{
+                  mt: 0.1,
+                  pl: 1,
+                  overflow: "auto",
+                  maxHeight: "20vh",
+                }}
+              >
+                {/* Row 1 */}
+                <Grid item xs={12}>
+                  <Typography>Target Column (Variable):</Typography>
+                </Grid>
 
-              {/* Row 2 */}
+                {/* Row 2 */}
 
-              <Grid item xs={5}>
-                <Select
-                  color="primary"
-                  value={targetColumn}
-                  onChange={handleChange}
-                  label="Target Column"
-                  fullWidth
-                  sx={{ height: 35 }}
-                >
-                  {menuItems}
-                </Select>
-              </Grid>
-              <Grid item xs={3}>
-              <FormControlLabel
-  control={
-    <Switch
-      checked={isGrouped}
-      onChange={() => {
-        setIsGrouped(!isGrouped);
-      }}
-      sx={{ height: 35 }}
-    />
-  }
-  label="Group By" 
-/>
+                <Grid item xs={5}>
+                  <Select
+                    color="primary"
+                    value={targetColumn}
+                    onChange={handleChange}
+                    label="Target Column"
+                    fullWidth
+                    sx={{ height: 35 }}
+                  >
+                    {menuItems}
+                  </Select>
+                </Grid>
+                <Grid item xs={7}></Grid>
+                {/* Row 3 */}
+                <Grid item xs={12}>
+                  <Chip
+                    label="Add Value"
+                    onClick={addNewValueColumn}
+                    onDelete={addNewValueColumn}
+                    deleteIcon={<AddIcon />}
+                  />
+                </Grid>
 
-              </Grid>
-              <Grid item xs={1}>
-              <FormControlLabel
-  control={
-    <Switch
-      checked={!horizontal}
-      onChange={() => {
-        setHorizontal(!horizontal);
-      }}
-      sx={{ height: 35 }}
-    />
-  }
-  label={<AlignVerticalBottomIcon sx={{ transform: horizontal ? "rotate(0deg)" : "rotate(90deg)" }} />}
-/>
-              </Grid>
+                {/* Rows based on valueColumns object */}
+                {valueColumns.map((column, index) => (
+                  <React.Fragment key={index}>
+                    <Grid item xs={5}>
+                      <Select
+                        name="columnName"
+                        value={column.columnName}
+                        onChange={(event) =>
+                          handleValueColumnChange(event, index)
+                        }
+                        fullWidth
+                        sx={{ mx: 1 }}
+                        variant="standard"
+                      >
+                        {Object.keys(data[0])
+                          .filter((key) => key !== targetColumn)
+                          .map((key) => (
+                            <MenuItem key={key} value={key}>
+                              {key}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Select
+                        name="type"
+                        value={column.type}
+                        onChange={(event) =>
+                          handleValueColumnChange(event, index)
+                        }
+                        fullWidth
+                        variant="standard"
+                      >
+                        <MenuItem value={"Direct Use"}>Direct Use</MenuItem>
+                        <MenuItem value={"Sum"}>Sum</MenuItem>
+                        <MenuItem value={"Count"}>Count</MenuItem>
+                        <MenuItem value={"Categorical Count"}>
+                          Categorical Count
+                        </MenuItem>
+                      </Select>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <IconButton onClick={() => deleteValueColumn(index)}>
+                        <DeleteOutlineRoundedIcon />
+                      </IconButton>
+                    </Grid>
+                    <Grid item xs={3}></Grid>
+                  </React.Fragment>
+                ))}
 
-              <Grid item xs={3}></Grid>
-              {/* Row 3 */}
-              <Grid item xs={12}>
-                <Chip
-                  label="Add Value"
-                  onClick={addNewValueColumn}
-                  onDelete={addNewValueColumn}
-                  deleteIcon={<AddIcon />}
-                />
-              </Grid>
-
-              {/* Rows based on valueColumns object */}
-              {valueColumns.map((column, index) => (
-                <React.Fragment key={index}>
-                  <Grid item xs={5}>
-                    <Select
-                      name="columnName"
-                      value={column.columnName}
-                      onChange={(event) =>
-                        handleValueColumnChange(event, index)
-                      }
-                      fullWidth
-                      sx={{ mx: 1 }}
-                      variant="standard"
+                {/* 4th Row */}
+                {/* Color Picker Section */}
+                {transformedData.length > 0 && (
+                  <Grid item xs={12}>
+                    <Typography>Legends' Color:</Typography>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{
+                        overflowX: "auto",
+                        p: 0.5,
+                        border: "1px solid grey",
+                        borderRadius: 3,
+                      }}
                     >
-                      {Object.keys(data[0])
-                        .filter((key) => key !== targetColumn)
-                        .map((key) => (
-                          <MenuItem key={key} value={key}>
-                            {key}
-                          </MenuItem>
-                        ))}
-                    </Select>
+                      {transformedData.length > 0 &&
+                        Object.keys(transformedData[0])
+                          .slice(1)
+                          .map((key) => (
+                            <Chip
+                              key={key}
+                              label={key}
+                              onClick={(e) => {
+                                handleColorPickerOpen(e, key);
+                              }}
+                              sx={{
+                                backgroundColor: barColors[key] || "grey",
+                                color: "#FFF",
+                                boxShadow: 2,
+                              }}
+                            />
+                          ))}
+                    </Stack>
                   </Grid>
-                  <Grid item xs={3}>
-                    <Select
-                      name="type"
-                      value={column.type}
-                      onChange={(event) =>
-                        handleValueColumnChange(event, index)
-                      }
-                      fullWidth
-                      variant="standard"
-                    >
-                      <MenuItem value={"Direct Use"}>Direct Use</MenuItem>
-                      <MenuItem value={"Sum"}>Sum</MenuItem>
-                      <MenuItem value={"Count"}>Count</MenuItem>
-                      <MenuItem value={"Categorical Count"}>
-                        Categorical Count
-                      </MenuItem>
-                    </Select>
-                  </Grid>
-                  <Grid item xs={1}>
-                    <IconButton onClick={() => deleteValueColumn(index)}>
-                      <DeleteOutlineRoundedIcon />
-                    </IconButton>
-                  </Grid>
-                  <Grid item xs={3}></Grid>
-                </React.Fragment>
-              ))}
-
-              {/* 4th Row */}
-              {/* Color Picker Section */}
-              {transformedData.length > 0 && (
-              <Grid item xs={12}>
-                <Typography>Legends' Color:</Typography>
-                <Stack direction="row" spacing={1} sx={{ overflowX: "auto", p:0.5, border:"1px solid grey", borderRadius: 3}}>
-                  {transformedData.length > 0 &&
-                    Object.keys(transformedData[0])
-                      .slice(1)
-                      .map((key) => (
-                        <Chip
-                          key={key}
-                          label={key}
-                          onClick={(e) => {
-                            handleColorPickerOpen(e, key);
-                          }}
-                          sx={{
-                            backgroundColor: barColors[key] || "grey",
-                            color: "#FFF",
-                            boxShadow: 2,
-                          }}
-                        />
-                      ))}
-                </Stack>
+                )}
               </Grid>
-)}
-            </Grid>
+            </div>
+            <div className="visual-option-bottom-handle">
+              <div className="controls-group">
+              <Button
+                variant="contained"
+                onClick={handleApplyChanges}
+                sx={{ m: 0 }}
+              >
+                Apply Changes
+              </Button>
 
-            <Button
-              variant="contained"
-              onClick={handleApplyChanges}
-              sx={{ m: 0 }}
-            >
-              Apply Changes
-            </Button>
+              <StyledToggleButtonGroup
+                size="small"
+                value={toggleBtn}
+                onChange={handleToggleButtonClicked}
+              >
+                <Tooltip title="Target Column Group By?" placement="top">
+                <ToggleButton value="group-by" selected={isGrouped}>
+                  <CategoryRoundedIcon />
+                </ToggleButton>
+                </Tooltip>
+
+                  <Tooltip title="Horizontal Layout?" placement="top">
+                  <ToggleButton value="horizontal" selected={!horizontal}>
+                    <AlignVerticalBottomIcon
+                      sx={{
+                        transform: horizontal ? "rotate(0deg)" : "rotate(90deg)",
+                      }}
+                    />
+                  </ToggleButton>
+                  </Tooltip>
+                  <Tooltip title="Enable Grid?" placement="top">
+                <ToggleButton value="grid" selected={showGrid}>
+                  {showGrid ? <GridOnIcon /> : <GridOffIcon />}
+                </ToggleButton>
+                </Tooltip>
+              </StyledToggleButtonGroup>
+              </div>
+            </div>
           </AccordionDetails>
         </Accordion>
       </Stack>
 
       {/* Render the Bar Chart */}
       <Paper sx={{ overflow: "auto", height: "30vh" }}>
-  {transformedData.length > 0 && 
-        <RenderChart
-        type="bar-chart"
-        data={transformedData}
-        dataKey={targetColumn}
-        horizontal={horizontal}
-        colors={barColors}
-      />
-  }
-</Paper>
+        {transformedData.length > 0 && (
+          <RenderChart
+            type="bar-chart"
+            data={transformedData}
+            dataKey={targetColumn}
+            horizontal={horizontal}
+            colors={barColors}
+            showGrid={showGrid}
+          />
+        )}
+      </Paper>
 
       {/* Color Picker Dialog */}
       <Popover
@@ -364,4 +403,3 @@ export default function BarChartPreview({data, defineVisualConfig}) {
     </>
   );
 }
-

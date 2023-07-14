@@ -6,17 +6,20 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import { Droppable } from "react-beautiful-dnd";
 import TableContainer from '@mui/material/TableContainer';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 export const Accordion = styled((props) => (
-  <MuiAccordion disableGutters elevation={0} square {...props}/>
+  <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
+  borderRadius: '10px',
+  opacity: '0.8', // Opacity of the border
   '&:not(:last-child)': {
     borderBottom: 0,
   },
   '&:before': {
     display: 'none',
-  },
+  }
 }));
 
 export const AccordionSummary = styled((props) => (
@@ -25,23 +28,25 @@ export const AccordionSummary = styled((props) => (
     {...props}
   />
 ))(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === 'dark'
-      ? 'rgba(255, 255, 255, .05)'
-      : 'rgba(0, 0, 0, .03)',
+  backgroundColor: 'transparent',
   flexDirection: 'row-reverse',
   '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
     transform: 'rotate(90deg)',
   },
   '& .MuiAccordionSummary-content': {
-    margin: 0, 
+    margin: 0,
     marginLeft: theme.spacing(1),
+  },
+  '&.Mui-expanded': {
+    backgroundColor:  '#f4f4f8', // Background color when expanded
+    borderBottom: 'none',
   },
 }));
 
 export const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: 0,
-  borderTop: '1px solid rgba(0, 0, 0, .125)',
+  backgroundColor: 'white', // Background color
+
 }));
 
 export const StrictModeDroppable = ({ children, ...props }) => {
@@ -64,3 +69,19 @@ export const StrictModeDroppable = ({ children, ...props }) => {
     overflow: "auto",
     height:"21vh",
   });
+
+ export const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+    '& .MuiToggleButtonGroup-grouped': {
+      margin: theme.spacing(0.5),
+      border: 0,
+      '&.Mui-disabled': {
+        border: 0,
+      },
+      '&:not(:first-of-type)': {
+        borderRadius: theme.shape.borderRadius,
+      },
+      '&:first-of-type': {
+        borderRadius: theme.shape.borderRadius,
+      },
+    },
+  }));
