@@ -40,7 +40,7 @@ export default function FileImport (props) {
     {/* Title */}
     <Grid xs={12}>
         <Grid item>
-          <h2>Excel Table</h2>
+          <h2>Import Data</h2>
         </Grid>
       </Grid>
 

@@ -87,10 +87,6 @@ const Login = ({ redux_login, isAuthenticated }) => {
               }}
               onKeyDown={handleKeyDown}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth

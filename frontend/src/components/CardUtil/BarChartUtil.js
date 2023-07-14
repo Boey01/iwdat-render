@@ -140,7 +140,7 @@ export default function BarChartPreview({data, defineVisualConfig}) {
 
   const handleApplyChanges = () => {
     const transformedData = transformData();
-    
+    console.log(transformedData);
     // Generate random colors for each bar
     const newBarColors = {};
     Object.keys(transformedData[0])
@@ -295,7 +295,7 @@ export default function BarChartPreview({data, defineVisualConfig}) {
               {transformedData.length > 0 && (
               <Grid item xs={12}>
                 <Typography>Legends' Color:</Typography>
-                <Stack direction="row" spacing={1} sx={{ overflowX: "auto", p:0.5, border:"1px solid grey", borderRadius: 3 }}>
+                <Stack direction="row" spacing={1} sx={{ overflowX: "auto", p:0.5, border:"1px solid grey", borderRadius: 3}}>
                   {transformedData.length > 0 &&
                     Object.keys(transformedData[0])
                       .slice(1)
@@ -321,7 +321,7 @@ export default function BarChartPreview({data, defineVisualConfig}) {
             <Button
               variant="contained"
               onClick={handleApplyChanges}
-              sx={{ m: 1 }}
+              sx={{ m: 0 }}
             >
               Apply Changes
             </Button>

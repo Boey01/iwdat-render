@@ -84,8 +84,8 @@ export default function DVModalContent({index, handleCloseModal }) {
 
   const handleInsertNewVisual = () =>{
     const [key, value] = Object.entries(visualConfig)[0];
-    console.log("aaa",key,value)
     insertNewVisualization(index, key, value);
+    handleCloseModal();
   }
 
   const renderPreview = () => {
@@ -148,8 +148,14 @@ export default function DVModalContent({index, handleCloseModal }) {
               <div>
                 <Typography variant="h5">Data Visualization</Typography>
               </div>
-              {tableIndex !== '' && selectedVO !== '' && renderPreview()}
-              <Button variant="contained" onClick={handleInsertNewVisual}>Confirm Data Visualize</Button>
+              {tableIndex !== '' && selectedVO !== '' && (
+                <>
+                  {renderPreview()}
+                  <Button variant="contained" onClick={handleInsertNewVisual}>
+                    Confirm Data Visualize
+                  </Button>
+                </>
+              )}
             </Stack>
           </Grid>
         </Grid>

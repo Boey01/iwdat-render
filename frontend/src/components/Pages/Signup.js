@@ -144,7 +144,7 @@ export const Signup = ({redux_signup}) => {
             sx={{ mt: 3, mb: 2 }}
             disabled= {!passwordMatch}
           >
-            Sign In
+            Sign Up
           </Button>
 
             <Link to="/login">

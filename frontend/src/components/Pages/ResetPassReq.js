@@ -21,7 +21,7 @@ export const ResetPassReq = ({reset_password_req}) =>{
           Send Reset Password Request.
         </Typography>
         <Typography variant="subtitle1" align="center">
-          Please enter your registered password.
+          Please enter your registered email.
         </Typography>
         <Box
           component="form"
