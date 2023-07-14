@@ -257,3 +257,11 @@ padding-bottom: 5px;
   padding-top: 5px;
   padding-bottom: 5px;
 }
+
+.layout-rotate-icon {
+  transition: transform 0.3s ease;
+}
+
+.layout-rotated {
+  transform: rotate(90deg);
+}

@@ -10,9 +10,8 @@ const checkFileName = (name) => {
     case "xlsx":
     case "xls":
     case "xlsm":
-      return readXLSXData;
     case "csv":
-      return readCSVData;
+      return readXLSXData;
     case "json":
       return readJSONData;
     case "xml": 
@@ -46,21 +45,21 @@ const readXLSXData = (file) => {
   });
 };
 
-const readCSVData = (file) => {
-    return new Promise((resolve, reject) => {
-        var jsonData = {};
-      Papa.parse(file, {
-        header: true,
-        complete: function(results) {
-         jsonData["Data"] = results.data;
-          resolve(jsonData);
-        },
-        error: function(error) {
-          reject(error);
-        }
-      });
-    });
-  };
+// const readCSVData = (file) => {
+//     return new Promise((resolve, reject) => {
+//         var jsonData = {};
+//       Papa.parse(file, {
+//         header: true,
+//         complete: function(results) {
+//          jsonData["Data"] = results.data;
+//           resolve(jsonData);
+//         },
+//         error: function(error) {
+//           reject(error);
+//         }
+//       });
+//     });
+//   };
 
 const readJSONData = (data) => {
   return new Promise((resolve, reject) => {

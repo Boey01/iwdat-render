@@ -1,6 +1,7 @@
 import React from "react";
 import {
   BarChart,
+  LineChart,
   Bar,
   XAxis,
   YAxis,
@@ -8,6 +9,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Line,
 } from "recharts";
 
 export default function RenderChart({ data, type, ...chartProps }) {
@@ -18,7 +20,7 @@ export default function RenderChart({ data, type, ...chartProps }) {
       chartComponent = renderBarChart(data,chartProps);
       break;
     case "line-chart":
-      // Add logic for rendering line chart
+      chartComponent = renderLineChart(data,chartProps);
       break;
     // Add more cases for other chart types if needed
     default:
@@ -56,6 +58,38 @@ function renderBarChart(data, { dataKey, horizontal, colors, showGrid }) {
             <Bar key={key} dataKey={key} fill={colors[key]} />
           ))}
       </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+function renderLineChart(data, { dataKey, horizontal, colors, showGrid }) {
+  console.log(data, colors);
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={data} 
+      layout={horizontal ? "horizontal" : "vertical"} 
+      margin={{ top: 30, right: 30, left: 0, bottom: 0 }}
+      >
+        {showGrid && <CartesianGrid strokeDasharray="5 5" />}
+        {horizontal ? (
+          <>
+            <XAxis dataKey={dataKey} type="category" />
+            <YAxis />
+          </>
+        ) : (
+          <>
+            <XAxis type="number" />
+            <YAxis dataKey={dataKey} type="category" />
+          </>
+        )}
+        <Tooltip />
+        <Legend />
+        {Object.keys(data[0])
+          .slice(1)
+          .map((key) => (
+            <Line key={key} dataKey={key} stroke={colors[key]} />
+          ))}
+      </LineChart>
     </ResponsiveContainer>
   );
 }

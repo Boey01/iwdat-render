@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -12,13 +12,10 @@ import {
   Stack,
   Typography,
   Button,
-  Switch,
-  FormControlLabel,
   Paper,
   Chip,
   Popover,
   Tooltip,
-  FormControl,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
@@ -54,6 +51,7 @@ export default function BarChartPreview({ data, defineVisualConfig }) {
       setShowGrid(!showGrid);
     }
   };
+  
   const handleChange = (event) => {
     setTargetColumn(event.target.value);
   };
@@ -212,7 +210,7 @@ export default function BarChartPreview({ data, defineVisualConfig }) {
                 {/* Row 1 */}
                 <Grid item xs={3}>
                   <Typography
-                    sx={{ fontWeight: "bold", textAlign: "center", pt:0.5 }}
+                    sx={{ fontWeight: "bold", textAlign: "center", pt: 0.5 }}
                     variant="subtitle2"
                   >
                     Define a Target Column:
@@ -355,11 +353,9 @@ export default function BarChartPreview({ data, defineVisualConfig }) {
                   <Tooltip title="Horizontal Layout?" placement="top">
                     <ToggleButton value="horizontal" selected={!horizontal}>
                       <AlignVerticalBottomIcon
-                        sx={{
-                          transform: horizontal
-                            ? "rotate(0deg)"
-                            : "rotate(90deg)",
-                        }}
+                        className={
+                          horizontal ? "layout-rotate-icon " : "layout-rotate-icon layout-rotated" 
+                        }
                       />
                     </ToggleButton>
                   </Tooltip>
