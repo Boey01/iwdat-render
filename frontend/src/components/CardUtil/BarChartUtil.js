@@ -18,6 +18,7 @@ import {
   Chip,
   Popover,
   Tooltip,
+  FormControl,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
@@ -209,158 +210,165 @@ export default function BarChartPreview({ data, defineVisualConfig }) {
                 }}
               >
                 {/* Row 1 */}
-                <Grid item xs={12}>
-                  <Typography>Target Column (Variable):</Typography>
+                <Grid item xs={3}>
+                  <Typography
+                    sx={{ fontWeight: "bold", textAlign: "center", pt:0.5 }}
+                    variant="subtitle2"
+                  >
+                    Define a Target Column:
+                  </Typography>
                 </Grid>
-
-                {/* Row 2 */}
-
-                <Grid item xs={5}>
+                <Grid item xs={7}>
                   <Select
-                    color="primary"
                     value={targetColumn}
                     onChange={handleChange}
-                    label="Target Column"
+                    displayEmpty
                     fullWidth
-                    sx={{ height: 35 }}
+                    sx={{ height: 35, fontWeight: "bold" }}
                   >
                     {menuItems}
                   </Select>
                 </Grid>
-                <Grid item xs={7}></Grid>
-                {/* Row 3 */}
-                <Grid item xs={12}>
-                  <Chip
-                    label="Add Value"
-                    onClick={addNewValueColumn}
-                    onDelete={addNewValueColumn}
-                    deleteIcon={<AddIcon />}
-                  />
+                <Grid item xs={2}></Grid>
+                {/* Row 2 */}
+                <Grid item xs={3}>
+                  <Typography
+                    sx={{ fontWeight: "bold", textAlign: "center" }}
+                    variant="subtitle2"
+                  >
+                    Define Value Column:
+                    <IconButton onClick={addNewValueColumn}>
+                      <AddIcon />
+                    </IconButton>
+                  </Typography>
                 </Grid>
+                <Grid item xs={7}>
+                  {valueColumns.map((column, index) => (
+                    <React.Fragment key={index}>
+                      <Stack direction="row">
+                        <Select
+                          name="columnName"
+                          value={column.columnName}
+                          onChange={(event) =>
+                            handleValueColumnChange(event, index)
+                          }
+                          displayEmpty
+                          fullWidth
+                          sx={{ mr: 1, height: 35, fontWeight: "bold" }}
+                        >
+                          {Object.keys(data[0])
+                            .filter((key) => key !== targetColumn)
+                            .map((key) => (
+                              <MenuItem key={key} value={key}>
+                                {key}
+                              </MenuItem>
+                            ))}
+                        </Select>
 
-                {/* Rows based on valueColumns object */}
-                {valueColumns.map((column, index) => (
-                  <React.Fragment key={index}>
-                    <Grid item xs={5}>
-                      <Select
-                        name="columnName"
-                        value={column.columnName}
-                        onChange={(event) =>
-                          handleValueColumnChange(event, index)
-                        }
-                        fullWidth
-                        sx={{ mx: 1 }}
-                        variant="standard"
-                      >
-                        {Object.keys(data[0])
-                          .filter((key) => key !== targetColumn)
-                          .map((key) => (
-                            <MenuItem key={key} value={key}>
-                              {key}
-                            </MenuItem>
-                          ))}
-                      </Select>
-                    </Grid>
-                    <Grid item xs={3}>
-                      <Select
-                        name="type"
-                        value={column.type}
-                        onChange={(event) =>
-                          handleValueColumnChange(event, index)
-                        }
-                        fullWidth
-                        variant="standard"
-                      >
-                        <MenuItem value={"Direct Use"}>Direct Use</MenuItem>
-                        <MenuItem value={"Sum"}>Sum</MenuItem>
-                        <MenuItem value={"Count"}>Count</MenuItem>
-                        <MenuItem value={"Categorical Count"}>
-                          Categorical Count
-                        </MenuItem>
-                      </Select>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <IconButton onClick={() => deleteValueColumn(index)}>
-                        <DeleteOutlineRoundedIcon />
-                      </IconButton>
-                    </Grid>
-                    <Grid item xs={3}></Grid>
-                  </React.Fragment>
-                ))}
+                        <Select
+                          name="type"
+                          value={column.type}
+                          onChange={(event) =>
+                            handleValueColumnChange(event, index)
+                          }
+                          displayEmpty
+                          fullWidth
+                          sx={{ height: 35 }}
+                        >
+                          <MenuItem value={"Direct Use"}>Direct Use</MenuItem>
+                          <MenuItem value={"Sum"}>Sum</MenuItem>
+                          <MenuItem value={"Count"}>Count</MenuItem>
+                          <MenuItem value={"Categorical Count"}>
+                            Categorical Count
+                          </MenuItem>
+                        </Select>
 
-                {/* 4th Row */}
-                {/* Color Picker Section */}
-                {transformedData.length > 0 && (
-                  <Grid item xs={12}>
-                    <Typography>Legends' Color:</Typography>
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      sx={{
-                        overflowX: "auto",
-                        p: 0.5,
-                        border: "1px solid grey",
-                        borderRadius: 3,
-                      }}
-                    >
-                      {transformedData.length > 0 &&
-                        Object.keys(transformedData[0])
-                          .slice(1)
-                          .map((key) => (
-                            <Chip
-                              key={key}
-                              label={key}
-                              onClick={(e) => {
-                                handleColorPickerOpen(e, key);
-                              }}
-                              sx={{
-                                backgroundColor: barColors[key] || "grey",
-                                color: "#FFF",
-                                boxShadow: 2,
-                              }}
-                            />
-                          ))}
-                    </Stack>
-                  </Grid>
-                )}
+                        <IconButton onClick={() => deleteValueColumn(index)}>
+                          <DeleteOutlineRoundedIcon />
+                        </IconButton>
+                      </Stack>
+                      <Grid item xs={3}></Grid>
+                    </React.Fragment>
+                  ))}
+                </Grid>
+                <Grid item xs={2}></Grid>
+                {/* Row 3 */}
+                <Grid item xs={3}>
+                  <Typography
+                    sx={{ fontWeight: "bold", textAlign: "center" }}
+                    variant="subtitle2"
+                  >
+                    Legends' Color:
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Stack
+                    spacing={{ xs: 1, sm: 2 }}
+                    direction="row"
+                    useFlexGap
+                    flexWrap="wrap"
+                    sx={{ overflowY: "auto" }}
+                  >
+                    {transformedData.length > 0 &&
+                      Object.keys(transformedData[0])
+                        .slice(1)
+                        .map((key) => (
+                          <Chip
+                            key={key}
+                            label={key}
+                            onClick={(e) => {
+                              handleColorPickerOpen(e, key);
+                            }}
+                            sx={{
+                              backgroundColor: barColors[key] || "grey",
+                              color: "#FFF",
+                              boxShadow: 2,
+                            }}
+                          />
+                        ))}
+                  </Stack>
+                </Grid>
+                <Grid item xs={2}></Grid>
               </Grid>
             </div>
             <div className="visual-option-bottom-handle">
               <div className="controls-group">
-              <Button
-                variant="contained"
-                onClick={handleApplyChanges}
-                sx={{ m: 0 }}
-              >
-                Apply Changes
-              </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleApplyChanges}
+                  sx={{ m: 0 }}
+                >
+                  Apply Changes
+                </Button>
 
-              <StyledToggleButtonGroup
-                size="small"
-                value={toggleBtn}
-                onChange={handleToggleButtonClicked}
-              >
-                <Tooltip title="Target Column Group By?" placement="top">
-                <ToggleButton value="group-by" selected={isGrouped}>
-                  <CategoryRoundedIcon />
-                </ToggleButton>
-                </Tooltip>
+                <StyledToggleButtonGroup
+                  size="small"
+                  value={toggleBtn}
+                  onChange={handleToggleButtonClicked}
+                >
+                  <Tooltip title="Group Target Column?" placement="top">
+                    <ToggleButton value="group-by" selected={isGrouped}>
+                      <CategoryRoundedIcon />
+                    </ToggleButton>
+                  </Tooltip>
 
                   <Tooltip title="Horizontal Layout?" placement="top">
-                  <ToggleButton value="horizontal" selected={!horizontal}>
-                    <AlignVerticalBottomIcon
-                      sx={{
-                        transform: horizontal ? "rotate(0deg)" : "rotate(90deg)",
-                      }}
-                    />
-                  </ToggleButton>
+                    <ToggleButton value="horizontal" selected={!horizontal}>
+                      <AlignVerticalBottomIcon
+                        sx={{
+                          transform: horizontal
+                            ? "rotate(0deg)"
+                            : "rotate(90deg)",
+                        }}
+                      />
+                    </ToggleButton>
                   </Tooltip>
                   <Tooltip title="Enable Grid?" placement="top">
-                <ToggleButton value="grid" selected={showGrid}>
-                  {showGrid ? <GridOnIcon /> : <GridOffIcon />}
-                </ToggleButton>
-                </Tooltip>
-              </StyledToggleButtonGroup>
+                    <ToggleButton value="grid" selected={showGrid}>
+                      {showGrid ? <GridOnIcon /> : <GridOffIcon />}
+                    </ToggleButton>
+                  </Tooltip>
+                </StyledToggleButtonGroup>
               </div>
             </div>
           </AccordionDetails>
