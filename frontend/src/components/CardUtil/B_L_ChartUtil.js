@@ -5,7 +5,7 @@ import {
   AccordionSummary,
   StyledToggleButtonGroup,
   IOSSwitch,
-  ColorPickerButton
+  ColorPickerButton,
 } from "../util/CustomComponents";
 import {
   Grid,
@@ -15,7 +15,6 @@ import {
   Typography,
   Button,
   Paper,
-  Chip,
   Popover,
   Tooltip,
   FormControlLabel,
@@ -31,7 +30,11 @@ import GridOffIcon from "@mui/icons-material/GridOff";
 import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
 import ToggleButton from "@mui/material/ToggleButton";
 
-export default function LineChartPreview({ data, defineVisualConfig }) {
+export default function Bar_Line_ChartPreview({
+  data,
+  defineVisualConfig,
+  type,
+}) {
   const [targetColumn, setTargetColumn] = useState("");
   const [valueColumns, setValueColumns] = useState([]);
   const [transformedData, setTransformedData] = useState([]);
@@ -56,7 +59,7 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
       setShowGrid(!showGrid);
     }
   };
-  
+
   const handleChange = (event) => {
     setTargetColumn(event.target.value);
   };
@@ -79,7 +82,7 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
   };
 
   function handleColorPickerOpen(event, key) {
-      setSelectedBarKey(key);
+    setSelectedBarKey(key);
     setAnchorEl(event.currentTarget);
   }
 
@@ -88,7 +91,7 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
   };
 
   const handleColorChange = (color) => {
-      setColumnColors({ ...columnColors, [selectedBarKey]: color.hex });
+    setColumnColors({ ...columnColors, [selectedBarKey]: color.hex });
   };
 
   const menuItems = Object.keys(data[0]).map((key) => (
@@ -168,7 +171,6 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
 
   const handleApplyChanges = () => {
     const transformedData = transformData();
-    console.log(transformedData);
     // Generate random colors for each bar
     const newColumnColors = {};
     Object.keys(transformedData[0])
@@ -189,10 +191,10 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
       colors: newColumnColors,
       title: "",
       showGrid: showGrid,
-      dot:dot,
-      hollow:hollow,
+      ...(type === "line-chart" && { dot: dot, hollow: hollow }),
     };
-    defineVisualConfig("line-chart", compiledConfig);
+
+    defineVisualConfig(type, compiledConfig);
   };
   return (
     <>
@@ -304,10 +306,10 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
                     sx={{ fontWeight: "bold", textAlign: "left" }}
                     variant="subtitle2"
                   >
-                    Line's Color:
+                    {type === "bar-chart" ? "Bars' Color" : "Line's Color:"}
                   </Typography>
                 </Grid>
-                <Grid item xs={7} sx={{p:0}}>
+                <Grid item xs={7} sx={{ p: 0 }}>
                   <Stack
                     spacing={{ xs: 1, sm: 2 }}
                     direction="row"
@@ -320,40 +322,67 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
                         .slice(1)
                         .map((key) => (
                           <ColorPickerButton
-                          key={key}
+                            key={key}
                             onClick={(e) => {
-                              handleColorPickerOpen(e,key);
+                              handleColorPickerOpen(e, key);
                             }}
                             BGcolor={columnColors[key]}
                             size="small"
-                          >{key}</ColorPickerButton>
+                          >
+                            {key}
+                          </ColorPickerButton>
                         ))}
                   </Stack>
                 </Grid>
                 <Grid item xs={2}></Grid>
                 {/* --- Row --- */}
-                <Grid item xs={3}>
-                  <Typography
-                    sx={{ fontWeight: "bold", textAlign: "left" }}
-                    variant="subtitle2"
-                  >
-                    Dot:
-                  </Typography>
-                </Grid>
-                <Grid item xs={7}>
-                <Stack direction="row">
-                <FormControlLabel control={
-                <IOSSwitch  checked={dot} onChange={()=>{setDot(!dot)}} />
-                } label={<Typography variant="caption">Enable Dot?</Typography>}/>
+                {type === "line-chart" && (
+                  <>
+                    <Grid item xs={3}>
+                      <Typography
+                        sx={{ fontWeight: "bold", textAlign: "left" }}
+                        variant="subtitle2"
+                      >
+                        Dot:
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={7}>
+                      <Stack direction="row">
+                        <FormControlLabel
+                          control={
+                            <IOSSwitch
+                              checked={dot}
+                              onChange={() => {
+                                setDot(!dot);
+                              }}
+                            />
+                          }
+                          label={
+                            <Typography variant="caption">
+                              Enable Dot?
+                            </Typography>
+                          }
+                        />
 
-
-                <FormControlLabel control={
-                <IOSSwitch  checked={hollow} onChange={()=>{setHollow(!hollow)}} disabled={!dot}/>
-                } label={<Typography variant="caption">Hollow?</Typography>}/>
-  
-                          </Stack>
-                </Grid>
-                <Grid item xs={2}></Grid>
+                        <FormControlLabel
+                          control={
+                            <IOSSwitch
+                              checked={hollow}
+                              onChange={() => {
+                                setHollow(!hollow);
+                              }}
+                              disabled={!dot}
+                            />
+                          }
+                          label={
+                            <Typography variant="caption">Hollow?</Typography>
+                          }
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={2}></Grid>
+                  </>
+                )}
               </Grid>
             </div>
             <div className="visual-option-bottom-handle">
@@ -381,7 +410,9 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
                     <ToggleButton value="horizontal" selected={!horizontal}>
                       <AlignVerticalBottomIcon
                         className={
-                          horizontal ? "layout-icon layout-horizontal" : "layout-icon layout-vertical"
+                          horizontal
+                            ? "layout-icon layout-horizontal"
+                            : "layout-icon layout-vertical"
                         }
                       />
                     </ToggleButton>
@@ -402,14 +433,13 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
       <Paper sx={{ overflow: "auto", height: "30vh" }}>
         {transformedData.length > 0 && (
           <RenderChart
-            type="line-chart"
+            type={type}
             data={transformedData}
             dataKey={targetColumn}
             horizontal={horizontal}
             colors={columnColors}
             showGrid={showGrid}
-            dot={dot}
-            hollow={hollow}
+            {...(type === "line-chart" && { dot: dot, hollow: hollow })}
           />
         )}
       </Paper>
