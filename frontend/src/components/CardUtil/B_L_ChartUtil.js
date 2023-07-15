@@ -317,6 +317,7 @@ export default function Bar_Line_ChartPreview({
                     flexWrap="wrap"
                     sx={{ p: 1 }}
                   >
+                 
                     {transformedData.length > 0 &&
                       Object.keys(transformedData[0])
                         .slice(1)
@@ -326,12 +327,13 @@ export default function Bar_Line_ChartPreview({
                             onClick={(e) => {
                               handleColorPickerOpen(e, key);
                             }}
-                            BGcolor={columnColors[key]}
+                            bgColor={columnColors[key]}
                             size="small"
                           >
                             {key}
                           </ColorPickerButton>
                         ))}
+                         
                   </Stack>
                 </Grid>
                 <Grid item xs={2}></Grid>
