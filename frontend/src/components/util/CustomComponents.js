@@ -140,8 +140,8 @@ export const StrictModeDroppable = ({ children, ...props }) => {
     },
   }));
 
-  export const ColorPickerButton = styled(Button)(({ theme,  BGcolor }) => {
-    const isDarkBackground = getContrastRatio( BGcolor || '#9e9e9e', '#000') <= 6;
+  export const ColorPickerButton = styled(Button)(({ theme,  bgColor }) => {
+    const isDarkBackground = getContrastRatio( bgColor || '#9e9e9e', '#000') <= 6;
     
     return{
     color: isDarkBackground ? 'white' : 'black',
@@ -150,9 +150,9 @@ export const StrictModeDroppable = ({ children, ...props }) => {
     borderRadius:10,
     m:0, 
     textTransform: "capitalize",
-    backgroundColor:  BGcolor || "#9e9e9e", 
+    backgroundColor:  bgColor || "#9e9e9e", 
     '&:hover': {
-      backgroundColor: darken( BGcolor || "#9e9e9e", 0.2),
+      backgroundColor: darken( bgColor || "#9e9e9e", 0.2),
     },
     paddingLeft:10,
     paddingRight: 10,

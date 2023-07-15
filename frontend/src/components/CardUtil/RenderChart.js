@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   BarChart,
   LineChart,
@@ -11,16 +11,18 @@ import {
   ResponsiveContainer,
   Line,
 } from "recharts";
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function RenderChart({ data, type, ...chartProps }) {
+  const [loading, setLoading] = useState(true);
   let chartComponent;
 
   switch (type) {
     case "bar-chart":
-      chartComponent = renderBarChart(data,chartProps);
+      chartComponent = renderBarChart(data, chartProps);
       break;
     case "line-chart":
-      chartComponent = renderLineChart(data,chartProps);
+      chartComponent = renderLineChart(data, chartProps);
       break;
     // Add more cases for other chart types if needed
     default:
@@ -28,15 +30,37 @@ export default function RenderChart({ data, type, ...chartProps }) {
       break;
   }
 
-  return <>{chartComponent}</>;
+  useEffect(() => {
+    setLoading(false); // Set loading to false once the rendering is done
+  }, [chartComponent]);
+
+  return (
+    <>
+      {loading ? (
+         <div
+         style={{
+           display: "flex",
+           justifyContent: "center",
+           alignItems: "center",
+           height: "100%",
+         }}
+       >
+        <CircularProgress/> 
+        </div>
+      ) : (
+        chartComponent
+      )}
+    </>
+  );
 }
 
 function renderBarChart(data, { dataKey, horizontal, colors, showGrid }) {
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data} 
-      layout={horizontal ? "horizontal" : "vertical"} 
-      margin={{ top: 30, right: 30, left: 0, bottom: 0 }}
+      <BarChart
+        data={data}
+        layout={horizontal ? "horizontal" : "vertical"}
+        margin={{ top: 30, right: 30, left: 0, bottom: 0 }}
       >
         {showGrid && <CartesianGrid strokeDasharray="3 3" />}
         {horizontal ? (
@@ -63,17 +87,17 @@ function renderBarChart(data, { dataKey, horizontal, colors, showGrid }) {
 }
 
 function renderLineChart(data, { dataKey, horizontal, colors, showGrid, dot, hollow }) {
-
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <LineChart data={data} 
-      layout={horizontal ? "horizontal" : "vertical"} 
-      margin={{ top: 30, right: 30, left: 0, bottom: 0 }}
+      <LineChart
+        data={data}
+        layout={horizontal ? "horizontal" : "vertical"}
+        margin={{ top: 30, right: 30, left: 0, bottom: 0 }}
       >
         {showGrid && <CartesianGrid strokeDasharray="5 5" />}
         {horizontal ? (
           <>
-            <XAxis dataKey={dataKey} type="category"/>
+            <XAxis dataKey={dataKey} type="category" />
             <YAxis />
           </>
         ) : (
@@ -94,13 +118,12 @@ function renderLineChart(data, { dataKey, horizontal, colors, showGrid, dot, hol
               dot={
                 dot
                   ? hollow
-                    ? { stroke: colors[key] } 
+                    ? { stroke: colors[key] }
                     : { stroke: colors[key], fill: colors[key] }
                   : false
               }
             />
           ))}
-        
       </LineChart>
     </ResponsiveContainer>
   );
