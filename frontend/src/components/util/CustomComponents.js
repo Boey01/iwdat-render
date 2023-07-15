@@ -7,6 +7,9 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import { Droppable } from "react-beautiful-dnd";
 import TableContainer from '@mui/material/TableContainer';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { Switch } from '@mui/material';
+import Button from '@mui/material/Button';
+import { darken, getContrastRatio} from '@mui/system';
 
 export const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -84,3 +87,75 @@ export const StrictModeDroppable = ({ children, ...props }) => {
       },
     },
   }));
+
+ export const IOSSwitch = styled((props) => (
+    <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+  ))(({ theme }) => ({
+    width: 36,
+    height: 20,
+    padding: 0,
+    marginRight: 10,
+    '& .MuiSwitch-switchBase': {
+      padding: 0,
+      margin: 2,
+      transitionDuration: '300ms',
+      '&.Mui-checked': {
+        transform: 'translateX(16px)',
+        color: '#fff',
+        '& + .MuiSwitch-track': {
+          backgroundColor: theme.palette.mode === 'dark' ? '#2ECA45' : '#7AD5F7',
+          opacity: 1,
+          border: 0,
+        },
+        '&.Mui-disabled + .MuiSwitch-track': {
+          opacity: 0.5,
+        },
+      },
+      '&.Mui-focusVisible .MuiSwitch-thumb': {
+        color: '#33cf4d',
+        border: '6px solid #fff',
+      },
+      '&.Mui-disabled .MuiSwitch-thumb': {
+        color:
+          theme.palette.mode === 'light'
+            ? theme.palette.grey[100]
+            : theme.palette.grey[600],
+      },
+      '&.Mui-disabled + .MuiSwitch-track': {
+        opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
+      },
+    },
+    '& .MuiSwitch-thumb': {
+      boxSizing: 'border-box',
+      width: 16,
+      height: 16,
+    },
+    '& .MuiSwitch-track': {
+      borderRadius: 26 / 2,
+      backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
+      opacity: 1,
+      transition: theme.transitions.create(['background-color'], {
+        duration: 500,
+      }),
+    },
+  }));
+
+  export const ColorPickerButton = styled(Button)(({ theme,  BGcolor }) => {
+    const isDarkBackground = getContrastRatio( BGcolor || '#9e9e9e', '#000') <= 6;
+    
+    return{
+    color: isDarkBackground ? 'white' : 'black',
+    boxShadow: '0 0 15px 0 rgba(0, 0, 0, 0.3)',
+    border:0.2,
+    borderRadius:10,
+    m:0, 
+    textTransform: "capitalize",
+    backgroundColor:  BGcolor || "#9e9e9e", 
+    '&:hover': {
+      backgroundColor: darken( BGcolor || "#9e9e9e", 0.2),
+    },
+    paddingLeft:10,
+    paddingRight: 10,
+    fontWeight:"bold",
+  };
+});

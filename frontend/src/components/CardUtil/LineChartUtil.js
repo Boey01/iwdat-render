@@ -4,6 +4,8 @@ import {
   AccordionDetails,
   AccordionSummary,
   StyledToggleButtonGroup,
+  IOSSwitch,
+  ColorPickerButton
 } from "../util/CustomComponents";
 import {
   Grid,
@@ -16,6 +18,7 @@ import {
   Chip,
   Popover,
   Tooltip,
+  FormControlLabel,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
@@ -34,11 +37,13 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
   const [transformedData, setTransformedData] = useState([]);
   const [isGrouped, setIsGrouped] = useState(true); // Initially set to grouped
   const [selectedBarKey, setSelectedBarKey] = useState("");
-  const [barColors, setBarColors] = useState({});
+  const [columnColors, setColumnColors] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
   const [horizontal, setHorizontal] = useState(true);
   const [showGrid, setShowGrid] = useState(false);
   const [toggleBtn, setToggleBtn] = useState(() => []);
+  const [dot, setDot] = useState(false);
+  const [hollow, setHollow] = useState(false);
 
   const handleToggleButtonClicked = (event, changes) => {
     if (changes.includes("group-by")) {
@@ -74,7 +79,7 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
   };
 
   function handleColorPickerOpen(event, key) {
-    setSelectedBarKey(key);
+      setSelectedBarKey(key);
     setAnchorEl(event.currentTarget);
   }
 
@@ -83,7 +88,7 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
   };
 
   const handleColorChange = (color) => {
-    setBarColors({ ...barColors, [selectedBarKey]: color.hex });
+      setColumnColors({ ...columnColors, [selectedBarKey]: color.hex });
   };
 
   const menuItems = Object.keys(data[0]).map((key) => (
@@ -165,25 +170,27 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
     const transformedData = transformData();
     console.log(transformedData);
     // Generate random colors for each bar
-    const newBarColors = {};
+    const newColumnColors = {};
     Object.keys(transformedData[0])
       .slice(1)
       .forEach((key) => {
-        newBarColors[key] =
-          barColors[key] ||
+        newColumnColors[key] =
+          columnColors[key] ||
           `#${Math.floor(Math.random() * 16777215).toString(16)}`;
       });
 
     setTransformedData(transformedData);
-    setBarColors(newBarColors); // Update barColors state with new colors
+    setColumnColors(newColumnColors); // Update columnColors state with new colors
 
     const compiledConfig = {
       data: transformedData,
       dataKey: targetColumn,
       horizontal: horizontal,
-      colors: newBarColors,
+      colors: newColumnColors,
       title: "",
       showGrid: showGrid,
+      dot:dot,
+      hollow:hollow,
     };
     defineVisualConfig("line-chart", compiledConfig);
   };
@@ -206,11 +213,12 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
                   overflow: "auto",
                   maxHeight: "20vh",
                 }}
+                alignItems="center"
               >
-                {/* Row 1 */}
+                {/* --- Row --- */}
                 <Grid item xs={3}>
                   <Typography
-                    sx={{ fontWeight: "bold", textAlign: "center", pt: 0.5 }}
+                    sx={{ fontWeight: "bold", textAlign: "left" }}
                     variant="subtitle2"
                   >
                     Define a Target Column:
@@ -228,10 +236,10 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
                   </Select>
                 </Grid>
                 <Grid item xs={2}></Grid>
-                {/* Row 2 */}
+                {/* --- Row --- */}
                 <Grid item xs={3}>
                   <Typography
-                    sx={{ fontWeight: "bold", textAlign: "center" }}
+                    sx={{ fontWeight: "bold", textAlign: "left" }}
                     variant="subtitle2"
                   >
                     Define Value Column:
@@ -290,41 +298,60 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
                   ))}
                 </Grid>
                 <Grid item xs={2}></Grid>
-                {/* Row 3 */}
+                {/* --- Row --- */}
                 <Grid item xs={3}>
                   <Typography
-                    sx={{ fontWeight: "bold", textAlign: "center" }}
+                    sx={{ fontWeight: "bold", textAlign: "left" }}
                     variant="subtitle2"
                   >
                     Line's Color:
                   </Typography>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={7} sx={{p:0}}>
                   <Stack
                     spacing={{ xs: 1, sm: 2 }}
                     direction="row"
                     useFlexGap
                     flexWrap="wrap"
-                    sx={{ overflowY: "auto" }}
+                    sx={{ p: 1 }}
                   >
                     {transformedData.length > 0 &&
                       Object.keys(transformedData[0])
                         .slice(1)
                         .map((key) => (
-                          <Chip
-                            key={key}
-                            label={key}
+                          <ColorPickerButton
+                          key={key}
                             onClick={(e) => {
-                              handleColorPickerOpen(e, key);
+                              handleColorPickerOpen(e,key);
                             }}
-                            sx={{
-                              backgroundColor: barColors[key] || "grey",
-                              color: "#FFF",
-                              boxShadow: 2,
-                            }}
-                          />
+                            BGcolor={columnColors[key]}
+                            size="small"
+                          >{key}</ColorPickerButton>
                         ))}
                   </Stack>
+                </Grid>
+                <Grid item xs={2}></Grid>
+                {/* --- Row --- */}
+                <Grid item xs={3}>
+                  <Typography
+                    sx={{ fontWeight: "bold", textAlign: "left" }}
+                    variant="subtitle2"
+                  >
+                    Dot:
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                <Stack direction="row">
+                <FormControlLabel control={
+                <IOSSwitch  checked={dot} onChange={()=>{setDot(!dot)}} />
+                } label={<Typography variant="caption">Enable Dot?</Typography>}/>
+
+
+                <FormControlLabel control={
+                <IOSSwitch  checked={hollow} onChange={()=>{setHollow(!hollow)}} disabled={!dot}/>
+                } label={<Typography variant="caption">Hollow?</Typography>}/>
+  
+                          </Stack>
                 </Grid>
                 <Grid item xs={2}></Grid>
               </Grid>
@@ -354,7 +381,7 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
                     <ToggleButton value="horizontal" selected={!horizontal}>
                       <AlignVerticalBottomIcon
                         className={
-                          horizontal ? "layout-rotate-icon " : "layout-rotate-icon layout-rotated" 
+                          horizontal ? "layout-icon layout-horizontal" : "layout-icon layout-vertical"
                         }
                       />
                     </ToggleButton>
@@ -379,8 +406,10 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
             data={transformedData}
             dataKey={targetColumn}
             horizontal={horizontal}
-            colors={barColors}
+            colors={columnColors}
             showGrid={showGrid}
+            dot={dot}
+            hollow={hollow}
           />
         )}
       </Paper>
@@ -400,7 +429,7 @@ export default function LineChartPreview({ data, defineVisualConfig }) {
         }}
       >
         <ChromePicker
-          color={barColors[selectedBarKey] || "#000"}
+          color={columnColors[selectedBarKey] || "#000"}
           onChange={handleColorChange}
         />
       </Popover>

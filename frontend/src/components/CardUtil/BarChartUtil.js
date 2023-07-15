@@ -207,7 +207,7 @@ export default function BarChartPreview({ data, defineVisualConfig }) {
                   maxHeight: "20vh",
                 }}
               >
-                {/* Row 1 */}
+                {/* --- Row --- */}
                 <Grid item xs={3}>
                   <Typography
                     sx={{ fontWeight: "bold", textAlign: "center", pt: 0.5 }}
@@ -228,7 +228,7 @@ export default function BarChartPreview({ data, defineVisualConfig }) {
                   </Select>
                 </Grid>
                 <Grid item xs={2}></Grid>
-                {/* Row 2 */}
+                {/* --- Row --- */}
                 <Grid item xs={3}>
                   <Typography
                     sx={{ fontWeight: "bold", textAlign: "center" }}
@@ -290,7 +290,7 @@ export default function BarChartPreview({ data, defineVisualConfig }) {
                   ))}
                 </Grid>
                 <Grid item xs={2}></Grid>
-                {/* Row 3 */}
+                {/* --- Row --- */}
                 <Grid item xs={3}>
                   <Typography
                     sx={{ fontWeight: "bold", textAlign: "center" }}
@@ -329,6 +329,7 @@ export default function BarChartPreview({ data, defineVisualConfig }) {
                 <Grid item xs={2}></Grid>
               </Grid>
             </div>
+
             <div className="visual-option-bottom-handle">
               <div className="controls-group">
                 <Button
@@ -354,7 +355,7 @@ export default function BarChartPreview({ data, defineVisualConfig }) {
                     <ToggleButton value="horizontal" selected={!horizontal}>
                       <AlignVerticalBottomIcon
                         className={
-                          horizontal ? "layout-rotate-icon " : "layout-rotate-icon layout-rotated" 
+                          horizontal ? "layout-icon layout-horizontal" : "layout-icon layout-vertical"
                         }
                       />
                     </ToggleButton>
@@ -367,6 +368,7 @@ export default function BarChartPreview({ data, defineVisualConfig }) {
                 </StyledToggleButtonGroup>
               </div>
             </div>
+            
           </AccordionDetails>
         </Accordion>
       </Stack>

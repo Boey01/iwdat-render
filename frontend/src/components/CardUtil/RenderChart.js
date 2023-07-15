@@ -62,8 +62,8 @@ function renderBarChart(data, { dataKey, horizontal, colors, showGrid }) {
   );
 }
 
-function renderLineChart(data, { dataKey, horizontal, colors, showGrid }) {
-  console.log(data, colors);
+function renderLineChart(data, { dataKey, horizontal, colors, showGrid, dot, hollow }) {
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={data} 
@@ -73,13 +73,13 @@ function renderLineChart(data, { dataKey, horizontal, colors, showGrid }) {
         {showGrid && <CartesianGrid strokeDasharray="5 5" />}
         {horizontal ? (
           <>
-            <XAxis dataKey={dataKey} type="category" />
+            <XAxis dataKey={dataKey} type="category"/>
             <YAxis />
           </>
         ) : (
           <>
             <XAxis type="number" />
-            <YAxis dataKey={dataKey} type="category" />
+            <YAxis dataKey={dataKey} type="category" label={data[0][0]} />
           </>
         )}
         <Tooltip />
@@ -87,8 +87,20 @@ function renderLineChart(data, { dataKey, horizontal, colors, showGrid }) {
         {Object.keys(data[0])
           .slice(1)
           .map((key) => (
-            <Line key={key} dataKey={key} stroke={colors[key]} />
+            <Line
+              key={key}
+              dataKey={key}
+              stroke={colors[key]}
+              dot={
+                dot
+                  ? hollow
+                    ? { stroke: colors[key] } 
+                    : { stroke: colors[key], fill: colors[key] }
+                  : false
+              }
+            />
           ))}
+        
       </LineChart>
     </ResponsiveContainer>
   );

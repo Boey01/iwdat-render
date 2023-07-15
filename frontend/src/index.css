@@ -239,6 +239,7 @@ padding: 20px;
 .visual-option-menu{
 width:100%; 
 padding-bottom: 5px;
+padding-left: 15px;
 }
 
 .visual-option-bottom-handle {
@@ -258,10 +259,24 @@ padding-bottom: 5px;
   padding-bottom: 5px;
 }
 
-.layout-rotate-icon {
-  transition: transform 0.3s ease;
+.layout-icon{
+  transform: rotate(0);
 }
 
-.layout-rotated {
-  transform: rotate(90deg);
+.layout-horizontal {
+  animation: rotateToHorizontal .2s forwards;
+}
+
+.layout-vertical {
+  animation: rotateToVertical .2s forwards;
+}
+
+@keyframes rotateToVertical {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(90deg); }
+}
+
+@keyframes rotateToHorizontal {
+  0% { transform: rotate(90deg); }
+  100% { transform: rotate(0deg); }
 }
