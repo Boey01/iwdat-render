@@ -376,12 +376,14 @@ async function updateTableData(target_table){
       />
 
       <Modal open={openModal} onClose={handleCloseModal}>
+        <>
         <DIModalContent
           upload = {false}
           uploadedFile={previousLocalData}
           handleCloseModal={handleCloseModal}
           addTablesToGlobalTableList={addTablesToGlobalTableList}
         />
+        </>
       </Modal>
     </GlobalTableContext.Provider>
   );

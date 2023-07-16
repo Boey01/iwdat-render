@@ -151,6 +151,7 @@ export default function TableManager() {
       {/* --------- end ------- */}
 
       <Modal open={openImportData} onClose={()=>(handleCloseModal(0))}>
+      <>
         <DIModalContent
           upload = {true}
           uploadedFile={uploadedFile}
@@ -158,6 +159,7 @@ export default function TableManager() {
           handleCloseModal={()=>(handleCloseModal(0))}
           addTablesToGlobalTableList={addTablesToGlobalTableList}
         />
+        </>
       </Modal>
 
       <Modal open={openBindTable} onClose={()=>(handleCloseModal(1))}>

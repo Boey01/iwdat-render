@@ -35,8 +35,13 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 
 export default function ScatterPlotPreview({ data, defineVisualConfig }) {
   const [scatterData, setScatterData] = useState([]);
+  const [scatterSetting, setScatterSetting] = useState([]);
   const [showGrid, setShowGrid] = useState(false);
   const [toggleBtn, setToggleBtn] = useState(() => []);
+
+  React.useEffect(() => {
+    console.log(scatterSetting);
+  }, [scatterSetting]);
 
   const handleToggleButtonClicked = (event, changes) => {
     if (changes.includes("grid")) {
@@ -51,18 +56,54 @@ export default function ScatterPlotPreview({ data, defineVisualConfig }) {
   ));
 
   const addNewScatterSet = () => {
-    setScatterData([...scatterData, { name: null, x: null, y: null }]);
-
-    console.log(scatterData);
+    setScatterSetting([
+      ...scatterSetting,
+      {
+        name: null,
+        x: { columnName: null, type: "Direct Use", based: null },
+        y: { columnName: null, type: "Direct Use", based: null },
+      },
+    ]);
   };
 
   const handleScatterNameChange = (e, index) => {
-    setScatterData((prevScatterData) => {
-      prevScatterData[index].name = e.currentTarget.value;
-      return prevScatterData;
+    setScatterSetting((prevScatterSetting) => {
+      prevScatterSetting[index].name = e.currentTarget.value;
+      return prevScatterSetting;
     });
   };
 
+  const handleAxisChange = (event, index, axis, type) => {
+    //axis: 0 = x column, 1= y column.
+    //type: 0 =  edit column Name, 1 = edit process type, 2 = edit based
+
+    setScatterSetting((prevScatterSetting) => {
+      const updatedScatterSetting = [...prevScatterSetting];
+      const selectedValue = event.target.value;
+
+      if (axis === 0) {
+        // X-axis
+        if (type === 0) {
+          updatedScatterSetting[index].x.columnName = selectedValue;
+        } else if (type === 1) {
+          updatedScatterSetting[index].x.type = selectedValue;
+        } else if (type === 2) {
+          updatedScatterSetting[index].x.based = selectedValue;
+        }
+      } else if (axis === 1) {
+        // Y-axis
+        if (type === 0) {
+          updatedScatterSetting[index].y.columnName = selectedValue;
+        } else if (type === 1) {
+          updatedScatterSetting[index].y.type = selectedValue;
+        } else if (type === 2) {
+          updatedScatterSetting[index].y.based = selectedValue;
+        }
+      }
+
+      return updatedScatterSetting;
+    });
+  };
   const handleApplyChanges = () => {};
 
   return (
@@ -84,7 +125,7 @@ export default function ScatterPlotPreview({ data, defineVisualConfig }) {
               }}
             >
               {/* --- Row --- */}
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <Typography
                   sx={{ fontWeight: "bold", textAlign: "left" }}
                   variant="subtitle2"
@@ -95,31 +136,180 @@ export default function ScatterPlotPreview({ data, defineVisualConfig }) {
                   </IconButton>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
-                {scatterData.length > 0 &&
-                <Box sx={{ backgroundColor: "#f4f4f8", p: 1, borderRadius: 2 }}>
-                  {scatterData.map((scatter, index) => (
-                    <Accordion key={index}>
-                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <IconButton><DeleteOutlineRoundedIcon /></IconButton>
-                        <InputBase
-                          sx={{ ml: 1, flex: 1 }}
-                          placeholder="Scatter Name"
-                          value={scatter.name}
-                          onChange={(e) => handleScatterNameChange(e, index)}
-                        />
-                        <Divider
-                          sx={{ height: 28, m: 0.5 }}
-                          orientation="vertical"
-                        />
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        {/* Add your details here */}
-                      </AccordionDetails>
-                    </Accordion>
-                  ))}
-                </Box>
-}
+              <Grid item xs={9}>
+                {scatterSetting.length > 0 && (
+                  <Box
+                    sx={{ backgroundColor: "#f4f4f8", p: 1, borderRadius: 2 }}
+                  >
+                    {scatterSetting.map((scatter, index) => (
+                      <Accordion key={index}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <IconButton>
+                            <DeleteOutlineRoundedIcon />
+                          </IconButton>
+                          <InputBase
+                            sx={{ ml: 1, flex: 1 }}
+                            placeholder="Scatter Name"
+                            value={scatter.name}
+                            onChange={(e) => handleScatterNameChange(e, index)}
+                          />
+                          <Divider
+                            sx={{ height: 28, m: 0.5 }}
+                            orientation="vertical"
+                          />
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Grid container spacing={1}>
+                            {/* - - - - X-axis - - - - */}
+                            <Grid item xs={1}>
+                              <Typography
+                                sx={{ fontWeight: "bold", textAlign: "left" }}
+                                variant="subtitle2"
+                              >
+                                X-Axis:
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                              <Select
+                                name="x-axis"
+                                value={scatter.x.columnName || ""}
+                                onChange={(event) =>
+                                  handleAxisChange(event, index, 0, 0)
+                                }
+                                displayEmpty
+                                fullWidth
+                                sx={{
+                                  mr: 1,
+                                  height: 35,
+                                  fontWeight: "bold",
+                                  textOverflow: "ellipsis",
+                                  overflow: "hidden",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {menuItems}
+                              </Select>
+                            </Grid>
+                            <Grid item xs={3}>
+                              <Select
+                                name="type"
+                                value={scatter.x.type}
+                                onChange={(event) =>
+                                  handleAxisChange(event, index, 0, 1)
+                                }
+                                displayEmpty
+                                fullWidth
+                                sx={{ height: 35 }}
+                              >
+                                <MenuItem value={"Direct Use"}>
+                                  Direct Use
+                                </MenuItem>
+                                <MenuItem value={"Sum"}>Sum</MenuItem>
+                                <MenuItem value={"Count"}>Count</MenuItem>
+                                <MenuItem value={"Categorical Count"}>
+                                  Categorical Count
+                                </MenuItem>
+                              </Select>
+                            </Grid>
+                            <Grid item xs={4}>
+                              <Select
+                                name="x-axis-based"
+                                value={scatter.x.based || ""}
+                                onChange={(event) =>
+                                  handleAxisChange(event, index, 0, 2)
+                                }
+                                displayEmpty
+                                fullWidth
+                                sx={{
+                                  mr: 1,
+                                  height: 35,
+                                  fontWeight: "bold",
+                                  textOverflow: "ellipsis",
+                                  overflow: "hidden",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {menuItems}
+                              </Select>
+                            </Grid>
+                            {/* - - - - Y-axis - - - - */}
+                            <Grid item xs={1}>
+                              <Typography
+                                sx={{ fontWeight: "bold", textAlign: "left" }}
+                                variant="subtitle2"
+                              >
+                                Y-Axis:
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                              <Select
+                                name="y-axis"
+                                value={scatter.y.columnName || ""}
+                                onChange={(event) =>
+                                  handleAxisChange(event, index, 1, 0)
+                                }
+                                displayEmpty
+                                fullWidth
+                                sx={{
+                                  mr: 1,
+                                  height: 35,
+                                  fontWeight: "bold",
+                                  textOverflow: "ellipsis",
+                                  overflow: "hidden",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {menuItems}
+                              </Select>
+                            </Grid>
+                            <Grid item xs={3}>
+                              <Select
+                                name="type"
+                                value={scatter.y.type}
+                                onChange={(event) =>
+                                  handleAxisChange(event, index, 1, 1)
+                                }
+                                displayEmpty
+                                fullWidth
+                                sx={{ height: 35 }}
+                              >
+                                <MenuItem value={"Direct Use"}>
+                                  Direct Use
+                                </MenuItem>
+                                <MenuItem value={"Sum"}>Sum</MenuItem>
+                                <MenuItem value={"Count"}>Count</MenuItem>
+                                <MenuItem value={"Categorical Count"}>
+                                  Categorical Count
+                                </MenuItem>
+                              </Select>
+                            </Grid>
+                            <Grid item xs={4}>
+                              <Select
+                                name="y-axis-based"
+                                value={scatter.y.based || ""}
+                                onChange={(event) =>
+                                  handleAxisChange(event, index, 1, 2)
+                                }
+                                displayEmpty
+                                fullWidth
+                                sx={{
+                                  mr: 1,
+                                  height: 35,
+                                  fontWeight: "bold",
+                                  textOverflow: "ellipsis",
+                                  overflow: "hidden",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {menuItems}
+                              </Select>
+                            </Grid>
+                          </Grid>
+                        </AccordionDetails>
+                      </Accordion>
+                    ))}
+                  </Box>
+                )}
               </Grid>
               <Grid item xs={1}></Grid>
             </Grid>

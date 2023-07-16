@@ -61,6 +61,7 @@ export const Dashboard = () => {
       <div className="card-render-location make-center">
         {globalCards.map((card, index) => (
           <MakeDraggable
+            key={index}
             type={"card"}
             index={index}
             position={{ x: card.position_x, y: card.position_y }}
@@ -76,6 +77,7 @@ export const Dashboard = () => {
                 updateCardSize(index, size.width, size.height)
               }
             >
+              <>
               <i className="card-popup-controls card-delete-button">
                 <IconButton onClick={() => deleteCard(index)}>
                   <CloseRoundedIcon />
@@ -115,16 +117,19 @@ export const Dashboard = () => {
                   </>
                 )}
               </div>
+              </>
             </ResizableBox>
           </MakeDraggable>
         ))}
       </div>
 
       <Modal open={openModal} onClose={handleCloseModal}>
+<> 
         <DVModalContent
           index={focusedCard}
           handleCloseModal={handleCloseModal}
         />
+</>
       </Modal>
 
       <Dialog open={isEditingTitle} onClose={() => handleTitleDialog(false)}>
