@@ -18,9 +18,10 @@ import {
   Popover,
   Tooltip,
   FormControlLabel,
+  IconButton,
+  Box,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import IconButton from "@mui/material/IconButton";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { ChromePicker } from "react-color";
 import AlignVerticalBottomIcon from "@mui/icons-material/AlignVerticalBottom";
@@ -30,7 +31,7 @@ import GridOffIcon from "@mui/icons-material/GridOff";
 import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
 import ToggleButton from "@mui/material/ToggleButton";
 
-export default function Bar_Line_ChartPreview({
+export default function BarLineChartPreview({
   data,
   defineVisualConfig,
   type,
@@ -81,7 +82,7 @@ export default function Bar_Line_ChartPreview({
     setValueColumns(newColumns);
   };
 
-  function handleColorPickerOpen(event, key) {
+  const handleColorPickerOpen = (event, key) => {
     setSelectedBarKey(key);
     setAnchorEl(event.currentTarget);
   }
@@ -215,18 +216,17 @@ export default function Bar_Line_ChartPreview({
                   overflow: "auto",
                   maxHeight: "20vh",
                 }}
-                alignItems="center"
               >
                 {/* --- Row --- */}
                 <Grid item xs={3}>
                   <Typography
-                    sx={{ fontWeight: "bold", textAlign: "left" }}
+                    sx={{ fontWeight: "bold", textAlign: "left"}}
                     variant="subtitle2"
                   >
                     Define a Target Column:
                   </Typography>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={8}>
                   <Select
                     value={targetColumn}
                     onChange={handleChange}
@@ -237,7 +237,7 @@ export default function Bar_Line_ChartPreview({
                     {menuItems}
                   </Select>
                 </Grid>
-                <Grid item xs={2}></Grid>
+                <Grid item xs={1}></Grid>
                 {/* --- Row --- */}
                 <Grid item xs={3}>
                   <Typography
@@ -250,7 +250,8 @@ export default function Bar_Line_ChartPreview({
                     </IconButton>
                   </Typography>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={8}>
+                  <Box sx={{backgroundColor:'#f4f4f8', p:1, borderRadius:2}}>
                   {valueColumns.map((column, index) => (
                     <React.Fragment key={index}>
                       <Stack direction="row">
@@ -262,7 +263,11 @@ export default function Bar_Line_ChartPreview({
                           }
                           displayEmpty
                           fullWidth
-                          sx={{ mr: 1, height: 35, fontWeight: "bold" }}
+                          sx={{ mr: 1, height: 35, fontWeight: "bold",
+                          textOverflow: "ellipsis",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          }}
                         >
                           {Object.keys(data[0])
                             .filter((key) => key !== targetColumn)
@@ -295,21 +300,23 @@ export default function Bar_Line_ChartPreview({
                           <DeleteOutlineRoundedIcon />
                         </IconButton>
                       </Stack>
-                      <Grid item xs={3}></Grid>
+                      
+                      <Grid item xs={1}></Grid>
                     </React.Fragment>
                   ))}
+                  </Box>
                 </Grid>
-                <Grid item xs={2}></Grid>
+                <Grid item xs={1}></Grid>
                 {/* --- Row --- */}
                 <Grid item xs={3}>
                   <Typography
-                    sx={{ fontWeight: "bold", textAlign: "left" }}
+                    sx={{ fontWeight: "bold", textAlign: "left",pt:1.2 }}
                     variant="subtitle2"
                   >
-                    {type === "bar-chart" ? "Bars' Color" : "Line's Color:"}
+                    {type === "bar-chart" ? "Bars' Color:" : "Line's Color:"}
                   </Typography>
                 </Grid>
-                <Grid item xs={7} sx={{ p: 0 }}>
+                <Grid item xs={8} sx={{ p: 0 }}>
                   <Stack
                     spacing={{ xs: 1, sm: 2 }}
                     direction="row"
@@ -336,7 +343,7 @@ export default function Bar_Line_ChartPreview({
                          
                   </Stack>
                 </Grid>
-                <Grid item xs={2}></Grid>
+                <Grid item xs={1}></Grid>
                 {/* --- Row --- */}
                 {type === "line-chart" && (
                   <>
@@ -348,8 +355,8 @@ export default function Bar_Line_ChartPreview({
                         Dot:
                       </Typography>
                     </Grid>
-                    <Grid item xs={7}>
-                      <Stack direction="row">
+                    <Grid item xs={8}>
+                      <Stack direction="row" sx={{pl:2}}>
                         <FormControlLabel
                           control={
                             <IOSSwitch
@@ -382,7 +389,7 @@ export default function Bar_Line_ChartPreview({
                         />
                       </Stack>
                     </Grid>
-                    <Grid item xs={2}></Grid>
+                    <Grid item xs={1}></Grid>
                   </>
                 )}
               </Grid>

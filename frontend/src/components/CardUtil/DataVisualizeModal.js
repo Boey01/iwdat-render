@@ -26,7 +26,7 @@ import LineChartIcon from "../../static/line-chart.svg";
 import PieChartIcon from "../../static/pie-chart.svg";
 import ScatterPlotIcon from "../../static/scatter-plot.svg";
 
-import Bar_Line_ChartPreview from "./B_L_ChartUtil";
+import BarLineChartPreview from "./BLChartUtil";
 import PieChartPreview from "./PieChartUtil";
 import ScatterChartPreview from "./ScatterPlotUtil";
 
@@ -34,7 +34,7 @@ const ModalContent = styled("div")({
   position: "absolute",
   backgroundColor: "white",
   padding: "16px",
-  width: "60vw",
+  width: "65vw",
 });
 
 export default function DVModalContent({index, handleCloseModal }) {
@@ -90,9 +90,8 @@ export default function DVModalContent({index, handleCloseModal }) {
   const renderPreview = () => {
     switch (selectedVO) {
       case 'bar-chart':
-        return <Bar_Line_ChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig} type={selectedVO}/>;
       case 'line-chart':
-        return <Bar_Line_ChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig} type={selectedVO}/>;
+        return <BarLineChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig} type={selectedVO}/>;
       case 'pie-chart':
         return <PieChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig}/>;
       case 'scatter-plot':
