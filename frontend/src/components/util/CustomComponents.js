@@ -150,7 +150,7 @@ export const StrictModeDroppable = ({ children, ...props }) => {
     border:0.2,
     borderRadius:10,
     m:0, 
-    textTransform: "capitalize",
+    textTransform: "none",
     backgroundColor:  bgColor || "#9e9e9e", 
     '&:hover': {
       backgroundColor: darken( bgColor || "#9e9e9e", 0.2),
