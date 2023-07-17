@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import Button from "@mui/material/Button";
 import MakeDraggable from "../util/Draggable";
 import Modal from "@mui/material/Modal";
@@ -13,6 +13,15 @@ import IconButton from "@mui/material/IconButton";
 import { GlobalTableContext } from "../contexts/TableContext";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import DIModalContent from "./DataImportModal";
 import TBModalContent from "./TableBindModal";
@@ -24,6 +33,7 @@ export default function TableManager() {
     deleteGlobalTable,
     toggleTableVisibility,
     updateTableDataEdit,
+    updateTableName,
   } = useContext(GlobalTableContext);
 
   const [openImportData, setOpenImportData] = useState(false);
@@ -32,9 +42,21 @@ export default function TableManager() {
   const [uploadedFile, setUploadedFile] = useState(null);
   // const [uploadedFiles, setUploadedFiles] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [focusedTable, setFocusedTable] = useState(null);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [focusedName, setFocusedName] = useState("");
 
+  const nameRef = useRef(null);
   let tableIndex;
   const indexFormat = "tb";
+
+  const handleNameDialog = (update) => {
+    if (update) {
+      const newName = nameRef.current.value;
+      updateTableName(focusedTable, newName);
+    }
+    setIsEditingName(false);
+  };
 
   const handleOpenModal = (type) => {
     //0 = open data import page, 1 = open table binding page
@@ -73,6 +95,12 @@ export default function TableManager() {
   const handleHideTable = (index) => {
     toggleTableVisibility(index);
   };
+
+  const handleEditName = (index,name) =>{
+    setIsEditingName(true);
+    setFocusedName(name);
+    setFocusedTable(index);
+  }
 
   return (
     <>
@@ -129,6 +157,12 @@ export default function TableManager() {
                   {data["table_name"]}
                 </div>
                 <div>
+                <IconButton
+                     onClick={() => handleEditName(index,data.table_name)}
+                    aria-label="name"
+                  >
+                <EditRoundedIcon/>
+                </IconButton>
                   <IconButton
                     onClick={() => handleHideTable(index)}
                     aria-label="hide"
@@ -192,12 +226,32 @@ export default function TableManager() {
                   hidefunction={() => handleHideTable(index)}
                   closefunction={() => handleDeleteTable(index)}
                   updatefunction={updateTableDataEdit}
+                  updateName={()=> handleEditName(index, data.table_name)}
                 />
               </MakeDraggable>
             </div>
           );
         })}
       </div>
+      <Dialog open={isEditingName} onClose={() => handleNameDialog(false)}>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="edit-table-nname"
+            label="Table Name"
+            type="table name"
+            fullWidth
+            variant="standard"
+            inputRef={nameRef}
+            defaultValue={focusedName}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleNameDialog(false)}>Cancel</Button>
+          <Button onClick={() => handleNameDialog(true)}>Confirm</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

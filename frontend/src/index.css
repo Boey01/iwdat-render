@@ -71,10 +71,11 @@ code {
   color: white; 
   border-radius: 5px 5px 0 0 ;
   padding: 10px;
-  
 }
-.table-title-bar button{
-margin-left: 50px;
+
+.table-title{
+margin-left: 10px;
+cursor: pointer;
 }
 
 /* File uploading section --------------------------------------- */

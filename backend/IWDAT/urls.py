@@ -30,6 +30,8 @@ urlpatterns = [
     path('tables/update/visible/', table_views .updateTableVisibility, name='update_table_visible'),
     path('tables/update/position/', table_views .updateTablePosition, name='update_table_position'),
     path('tables/update/data/', table_views .updateTableData, name='update_table_data'),
+    path('tables/update/name/', table_views .updateTableName, name='update_table_name'),
+
     # Card api
     path('cards/create/', card_views.createCard, name='create_card'),
     path('cards/retrieve/', card_views.getCards, name='get_cards'),

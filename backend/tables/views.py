@@ -94,3 +94,21 @@ def updateTableData(request):
         else:
             return Response({'error': 'Unauthorized'}, status=403)
 
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateTableName(request):
+    edited_table = request.data
+    for key, value in edited_table.items():
+        try:
+            table = TableData.objects.get(table_id=key)
+        except TableData.DoesNotExist:
+            return Response({'error': 'Table not found'}, status=404)
+
+        # Check if the authenticated user is the author of the table
+        if table.user_id_id == request.user.user_id:
+            table.table_name = value
+            table.save()
+            return Response({'success': 'Table edited'}, status=204)
+        else:
+            return Response({'error': 'Unauthorized'}, status=403)

@@ -12,8 +12,8 @@ import EditableTableCell from "./EditableTableCell";
 import TablePaginationActions from "./TablePaginationActions";
 import ColumnsManager from "./ColumnsManager";
 import CloseIcon from "@mui/icons-material/Close";
-import MinimizeIcon from "@mui/icons-material/Minimize";
-import { IconButton } from "@mui/material";
+import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
+import { IconButton, Stack } from "@mui/material";
 
 const CustomTableContainer = styled(TableContainer)({
   maxHeight: "60vh",
@@ -28,6 +28,7 @@ export default function TableRenderer({
   hidefunction,
   closefunction,
   updatefunction,
+  updateName,
 }) {
   // process sheet data ---------------
   const firstRow = sheetData[0];
@@ -100,8 +101,8 @@ export default function TableRenderer({
     <>
       <div className="table-wrapper">
         <div className="table-title-bar spread-items">
-          <span>{tableName}</span>
-          
+          <span className="table-title" onDoubleClick={updateName}>{tableName}</span>
+          <Stack direction="row" spacing={3} sx={{pr:2}}>
             <ColumnsManager
               columns={columns}
               selectedColumns={selectedColumns}
@@ -110,12 +111,12 @@ export default function TableRenderer({
               handleDeleteColumn ={handleDeleteColumn}
             />
             <IconButton onClick={hidefunction} aria-label="hide">
-              <MinimizeIcon />
+              <RemoveRoundedIcon  />
             </IconButton>
             <IconButton onClick={closefunction} aria-label="delete">
               <CloseIcon />
             </IconButton>
-          
+            </Stack>
         </div>
         <CustomTableContainer
           component={Paper}
