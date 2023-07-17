@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   BarChart,
   LineChart,
+  ScatterChart,
   Bar,
   XAxis,
   YAxis,
@@ -10,6 +11,7 @@ import {
   Legend,
   ResponsiveContainer,
   Line,
+  Scatter,
 } from "recharts";
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -23,6 +25,9 @@ export default function RenderChart({ data, type, ...chartProps }) {
       break;
     case "line-chart":
       chartComponent = renderLineChart(data, chartProps);
+      break;
+    case "scatter-plot":
+    chartComponent =  renderScatterPlot(data, chartProps);
       break;
     // Add more cases for other chart types if needed
     default:
@@ -60,7 +65,7 @@ function renderBarChart(data, { dataKey, horizontal, colors, showGrid }) {
       <BarChart
         data={data}
         layout={horizontal ? "horizontal" : "vertical"}
-        margin={{ top: 30, right: 30, left: 0, bottom: 0 }}
+        margin={{ top: 50, right: 50, left: 20, bottom: 20 }}
       >
         {showGrid && <CartesianGrid strokeDasharray="3 3" />}
         {horizontal ? (
@@ -92,7 +97,7 @@ function renderLineChart(data, { dataKey, horizontal, colors, showGrid, dot, hol
       <LineChart
         data={data}
         layout={horizontal ? "horizontal" : "vertical"}
-        margin={{ top: 30, right: 30, left: 0, bottom: 0 }}
+        margin={{ top: 50, right: 50, left: 20, bottom: 20 }}
       >
         {showGrid && <CartesianGrid strokeDasharray="5 5" />}
         {horizontal ? (
@@ -125,6 +130,46 @@ function renderLineChart(data, { dataKey, horizontal, colors, showGrid, dot, hol
             />
           ))}
       </LineChart>
+    </ResponsiveContainer>
+  );
+}
+
+
+function renderScatterPlot(data, { scatterConfig, showGrid, axisName, axisUnit }) {
+  let unNamedScatter = 1;
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <ScatterChart
+        margin={{ top: 50, right: 50, left: 20, bottom: 20 }}
+      >
+        {showGrid && <CartesianGrid strokeDasharray="3 3" />}
+        <XAxis
+          dataKey="x"
+          type="number"
+          name={axisName.x}
+          unit={axisUnit.x}
+        />
+        <YAxis
+          dataKey="y"
+          type="number"
+          name={axisName.y}
+          unit={axisUnit.y}
+        />
+        <Tooltip labelFormatter={() => { return ''; }} />
+        <Legend/>
+        {scatterConfig.map((scatter, index) => (
+          <Scatter
+            key={index}
+            name={
+              scatter.name.trim() === ""
+                ? `Scatter${unNamedScatter++}`
+                : scatter.name
+            }
+            data={data[index]}
+            fill={scatter.color}
+          />
+        ))}
+      </ScatterChart>
     </ResponsiveContainer>
   );
 }

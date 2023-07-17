@@ -93,9 +93,9 @@ export default function DVModalContent({index, handleCloseModal }) {
       case 'line-chart':
         return <BarLineChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig} type={selectedVO}/>;
       case 'pie-chart':
-        return <PieChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig}/>;
+        return <PieChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig} type={selectedVO}/>;
       case 'scatter-plot':
-        return <ScatterChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig}/>;
+        return <ScatterChartPreview data={globalTables[tableIndex].data} defineVisualConfig={defineVisualConfig} type={selectedVO}/>;
       default:
         return null;
     }

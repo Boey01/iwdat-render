@@ -104,10 +104,10 @@ export default function BarLineChartPreview({
 
 
   const handleApplyChanges = () => {
-    const transformedData = transformingData(data,isGrouped,targetColumn,valueColumns);
+    const newTransformedData = transformingData(data,isGrouped,targetColumn,valueColumns);
     // Generate random colors for each bar
     const newColumnColors = {};
-    Object.keys(transformedData[0])
+    Object.keys(newTransformedData[0])
       .slice(1)
       .forEach((key) => {
         newColumnColors[key] =
@@ -115,11 +115,11 @@ export default function BarLineChartPreview({
           `#${Math.floor(Math.random() * 16777215).toString(16)}`;
       });
 
-    setTransformedData(transformedData);
+    setTransformedData(newTransformedData);
     setColumnColors(newColumnColors); // Update columnColors state with new colors
 
     const compiledConfig = {
-      data: transformedData,
+      data: newTransformedData,
       dataKey: targetColumn,
       horizontal: horizontal,
       colors: newColumnColors,

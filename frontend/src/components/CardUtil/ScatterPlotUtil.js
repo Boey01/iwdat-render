@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Accordion as CustomAccordion,
   AccordionDetails as CustomAccordionDetails,
@@ -13,10 +13,8 @@ import {
   Stack,
   Typography,
   Button,
-  Paper,
   Popover,
   Tooltip,
-  FormControlLabel,
   ToggleButton,
   IconButton,
   InputBase,
@@ -24,7 +22,7 @@ import {
   Divider,
   Input,
   FormControl,
-  InputAdornment,
+  Paper,
 } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -39,7 +37,7 @@ import { ChromePicker } from "react-color";
 import transformingData from "./transformData";
 import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
 
-export default function ScatterPlotPreview({ data, defineVisualConfig }) {
+export default function ScatterPlotPreview({ data, defineVisualConfig, type }) {
   const [scatterData, setScatterData] = useState([]);
   const [scatterSetting, setScatterSetting] = useState([]);
   const [showGrid, setShowGrid] = useState(false);
@@ -49,9 +47,19 @@ export default function ScatterPlotPreview({ data, defineVisualConfig }) {
   const [axisName, setAxisName] = useState({ x: "", y: "" });
   const [axisUnit, setAxisUnit] = useState({ x: "", y: "" });
 
-  React.useEffect(() => {
-    console.log(scatterSetting);
-  }, [scatterSetting]);
+  useEffect(() => {
+    if (scatterData.length > 0) {
+      const compiledConfig = {
+        data: scatterData,
+        scatterConfig: scatterSetting,
+        showGrid: showGrid,
+        axisName: axisName,
+        axisUnit: axisUnit,
+      };
+
+      defineVisualConfig(type, compiledConfig);
+    }
+  }, [scatterData]);
 
   const handleToggleButtonClicked = (event, changes) => {
     if (changes.includes("grid")) {
@@ -191,7 +199,7 @@ export default function ScatterPlotPreview({ data, defineVisualConfig }) {
   const renderAxisSection = (index, axis) => {
     const scatter = scatterSetting[index];
     return (
-      <> 
+      <>
         <Grid item xs={1.5}>
           <Typography
             sx={{ fontWeight: "bold", textAlign: "left" }}
@@ -272,7 +280,7 @@ export default function ScatterPlotPreview({ data, defineVisualConfig }) {
                         ...prev,
                         [axis]: e.target.value,
                       }))
-                    } // Add this line to update the state on input change
+                    }
                   />
                 </FormControl>
               </Grid>
@@ -290,13 +298,13 @@ export default function ScatterPlotPreview({ data, defineVisualConfig }) {
               <Grid item xs={2}>
                 <FormControl variant="standard">
                   <Input
-                    value={axisUnit[axis]} // Add this line to bind the input value to state
+                    value={axisUnit[axis]}
                     onChange={(e) =>
                       setAxisUnit((prev) => ({
                         ...prev,
                         [axis]: e.target.value,
                       }))
-                    } // Add this line to update the state on input change
+                    }
                   />
                 </FormControl>
               </Grid>
@@ -318,39 +326,59 @@ export default function ScatterPlotPreview({ data, defineVisualConfig }) {
   };
 
   const handleApplyChanges = () => {
-    scatterSetting.map((scatter) => {
-      let { columnName, type } = scatter.x;
-      const valueColumnX = [{ columnName, type }];
-      ({ columnName, type } = scatter.y);
-      const valueColumnY = [{ columnName, type }];
+    setScatterData([]);
+    try {
+      scatterSetting.forEach((scatter, index) => {
+        let { columnName, type } = scatter.x;
+        const valueColumnX = [{ columnName, type }];
+        ({ columnName, type } = scatter.y);
+        const valueColumnY = [{ columnName, type }];
 
-      const targetColumnX = scatter.x.based;
-      const targetColumnY = scatter.y.based;
+        const transformedDataX = transformingData(
+          data,
+          scatter.x.isGrouped,
+          scatter.x.based,
+          valueColumnX
+        );
 
-      const isGroupedX = scatter.x.isGrouped;
-      const isGroupedY = scatter.y.isGrouped;
+        const transformedDataY = transformingData(
+          data,
+          scatter.y.isGrouped,
+          scatter.y.based,
+          valueColumnY
+        );
 
-      let transformedDataX, transformedDataY;
+        if (Object.keys(transformedDataX[0]).length > 1) {
+          transformedDataX.forEach((item) => {
+            delete item[Object.keys(item)[0]];
+          });
+        }
 
-      transformedDataX = transformingData(
-        data,
-        isGroupedX,
-        targetColumnX,
-        valueColumnX
-      );
+        if (Object.keys(transformedDataY[0]).length > 1) {
+          transformedDataY.forEach((item) => {
+            delete item[Object.keys(item)[0]];
+          });
+        }
 
-      // transformedDataX = data.map(rows => ({ [valueColumnX[0].columnName]: rows[valueColumnX[0].columnName] }));
+        const combined = [];
 
-      transformedDataY = transformingData(
-        data,
-        isGroupedY,
-        targetColumnY,
-        valueColumnY
-      );
+        for (let i = 0; i < transformedDataX.length; i++) {
+          const newObj = {
+            x: Object.values(transformedDataX[i])[0],
+            y: Object.values(transformedDataY[i])[0],
+          };
+          combined.push(newObj);
+        }
 
-      console.log("X DATA", transformedDataX);
-      console.log("Y DATA", transformedDataY);
-    });
+        setScatterData((prevScatterData) => {
+          const newScatter = [...prevScatterData];
+          newScatter[index] = combined;
+          return newScatter;
+        });
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -415,26 +443,35 @@ export default function ScatterPlotPreview({ data, defineVisualConfig }) {
                           </AccordionSummary>
                           <AccordionDetails>
                             <Grid container spacing={0.5} alignItems={"center"}>
-                              <Grid item xs={1.5 }></Grid>
-                              <Grid item xs={4 }>     <Typography
+                              <Grid item xs={1.5}></Grid>
+                              <Grid item xs={4}>
+                                {" "}
+                                <Typography
                                   sx={{ fontWeight: "bold", textAlign: "left" }}
                                   variant="subtitle2"
                                 >
                                   Column:
-                                </Typography></Grid>
-                              <Grid item xs={2.5 }>     <Typography
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={2.5}>
+                                {" "}
+                                <Typography
                                   sx={{ fontWeight: "bold", textAlign: "left" }}
                                   variant="subtitle2"
                                 >
                                   Type:
-                                </Typography></Grid>
-                              <Grid item xs={3 }>     <Typography
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={3}>
+                                {" "}
+                                <Typography
                                   sx={{ fontWeight: "bold", textAlign: "left" }}
                                   variant="subtitle2"
                                 >
                                   Group Based Column:
-                                </Typography></Grid>
-                              <Grid item xs={1 }></Grid>
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={1}></Grid>
                               {/* - - - - X-axis - - - - - - - - - - - - */}
                               {renderAxisSection(index, "x")}
 
@@ -524,6 +561,20 @@ export default function ScatterPlotPreview({ data, defineVisualConfig }) {
           </CustomAccordionDetails>
         </CustomAccordion>
       </Stack>
+
+      <Paper sx={{ overflow: "auto", height: "30vh" }}>
+        {scatterData.length > 0 && (
+          <RenderChart
+            type={type}
+            data={scatterData}
+            scatterConfig={scatterSetting}
+            showGrid={showGrid}
+            axisName={axisName}
+            axisUnit={axisUnit}
+          />
+        )}
+      </Paper>
+
       {focusedScatterIndex !== null && (
         <Popover
           open={Boolean(anchorEl)}
