@@ -177,7 +177,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   const updateTableDataEdit = (index, newData) =>{
     if(isAuthenticated){
       const edited_table = {[globalTables[index].table_id]:newData}
-      updateTableData(edited_table);
+      updateTableDataDB(edited_table);
     }else{
       setTableSaveState(1);
     }
@@ -188,6 +188,20 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
       return updatedTables;
     });
   } 
+
+  const updateTableName = (index, newName) =>{
+if (isAuthenticated){
+  const edited_table = {[globalTables[index].table_id]:newName}
+  updateTableNameDB(edited_table)
+}else{
+  setTableSaveState(1);
+}
+setGlobalTables((prevTables) =>{
+  const updatedTables = [...prevTables];
+  updatedTables[index].table_name = newName;
+  return updatedTables;
+});
+  }
 
   const saveTableListIntoLocal = async () => {
     if (tableSaveState === 1) {
@@ -326,7 +340,7 @@ async function updateTablesPositionDB(refMovedTable) {
   }
 }
 
-async function updateTableData(target_table){
+async function updateTableDataDB(target_table){
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
@@ -351,6 +365,31 @@ async function updateTableData(target_table){
   }
   }
 
+  async function updateTableNameDB(edited_table){
+    if (localStorage.getItem("access")) {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${localStorage.getItem("access")}`,
+        },
+      };
+  
+      const body = JSON.stringify(edited_table);
+  
+      axios
+        .put(
+          `${process.env.REACT_APP_BACKEND_API_URL}/tables/update/name/`,
+          body,
+          config
+        )
+        .then(function (response) {
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    }
+    }
+
   return (
     <GlobalTableContext.Provider 
       value={{
@@ -363,7 +402,8 @@ async function updateTableData(target_table){
         tableSaveState,
         saveTableListIntoLocal,
         updateTableDataEdit,
-        updateTableData,
+        updateTableData: updateTableDataDB,
+        updateTableName,
       }}
     >
       {children}
