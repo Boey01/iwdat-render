@@ -383,7 +383,6 @@ export default function ScatterPlotPreview({ data, defineVisualConfig, type }) {
 
   return (
     <>
-      <Stack>
         <CustomAccordion>
           <CustomAccordionSummary sx={{ m: 0 }}>
             <Typography>Expand option</Typography>
@@ -560,7 +559,6 @@ export default function ScatterPlotPreview({ data, defineVisualConfig, type }) {
             </div>
           </CustomAccordionDetails>
         </CustomAccordion>
-      </Stack>
 
       <Paper sx={{ overflow: "auto", height: "30vh" }}>
         {scatterData.length > 0 && (

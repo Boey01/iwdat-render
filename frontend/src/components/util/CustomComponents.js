@@ -33,6 +33,8 @@ export const AccordionSummary = styled((props) => (
 ))(({ theme }) => ({
   backgroundColor: 'transparent',
   flexDirection: 'row-reverse',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  borderRadius: '10px',
   '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
     transform: 'rotate(90deg)',
   },
