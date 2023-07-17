@@ -12,6 +12,9 @@ import {
   ResponsiveContainer,
   Line,
   Scatter,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -28,6 +31,9 @@ export default function RenderChart({ data, type, ...chartProps }) {
       break;
     case "scatter-plot":
     chartComponent =  renderScatterPlot(data, chartProps);
+    break;
+    case "pie-chart":
+      chartComponent =  renderPieChart(data, chartProps);
       break;
     // Add more cases for other chart types if needed
     default:
@@ -130,6 +136,31 @@ function renderLineChart(data, { dataKey, horizontal, colors, showGrid, dot, hol
             />
           ))}
       </LineChart>
+    </ResponsiveContainer>
+  );
+}
+
+function renderPieChart(data, { dataKey, colors, hollow, label, legendRight}) {
+
+  const secondRow = Object.keys(data[0]).slice(1)[0];
+
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <PieChart>
+        <Tooltip />
+        {legendRight ? <Legend layout="vertical" align="right" verticalAlign="middle" wrapperStyle={{fontSize:"80%"}}/>:<Legend wrapperStyle={{fontSize:"80%"}}/>}
+
+            <Pie dataKey={secondRow} 
+             isAnimationActive={true}
+            nameKey={dataKey} 
+            data={data} 
+             innerRadius={hollow ? "45%" : "0%"}
+             label={label}>
+              {Object.entries(colors).map(([key, value]) => (
+            <Cell key={key} fill={value} />
+          ))}
+              </Pie>
+      </PieChart>
     </ResponsiveContainer>
   );
 }

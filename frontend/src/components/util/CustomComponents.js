@@ -7,7 +7,7 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import { Droppable } from "react-beautiful-dnd";
 import TableContainer from '@mui/material/TableContainer';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { Switch } from '@mui/material';
+import { Switch, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { darken, getContrastRatio} from '@mui/system';
 
@@ -162,3 +162,9 @@ export const StrictModeDroppable = ({ children, ...props }) => {
     fontWeight:"bold",
   };
 });
+
+export const dvMenuStandardTypo = ({ children }) =>(
+  <Typography sx={{ fontWeight: "bold", textAlign: "left" }} variant="subtitle2">
+    {children}
+  </Typography>
+);

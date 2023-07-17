@@ -106,16 +106,18 @@ export const Dashboard = () => {
                     <Typography variant="h6">
                       {card.visual_config.title}
                     </Typography>
-                    {card.chart_type === 'bar-chart' || card.chart_type === 'line-chart'? (
-                      <RenderChart
-                        type={card.chart_type}
-                        data={card.visual_config.data}
-                        dataKey={card.visual_config.dataKey}
-                        horizontal={card.visual_config.horizontal}
-                        colors={card.visual_config.colors}
-                        showGrid={card.visual_config.showGrid}
-                      />
-                    ):null}
+                    {card.chart_type !== 'scatter-plot' &&(
+                       <RenderChart
+                       type={card.chart_type}
+                       data={card.visual_config.data}
+                       dataKey={card.visual_config.dataKey}
+                       horizontal={card.visual_config.horizontal}
+                       colors={card.visual_config.colors}
+                       showGrid={card.visual_config.showGrid}
+                       {...(card.chart_type === "line-chart" && { dot: card.visual_config.dot, hollow: card.visual_config.hollow })}
+                       {...(card.chart_type === "pie-chart" && { label: card.visual_config.label, hollow: card.visual_config.hollow, legendRight: card.visual_config.legendRight })}
+                     />
+                    )}
 
                     {card.chart_type === 'scatter-plot' && (
                       <RenderChart
