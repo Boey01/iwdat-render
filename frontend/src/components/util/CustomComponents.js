@@ -16,7 +16,6 @@ export const Accordion = styled((props) => (
 ))(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   borderRadius: '10px',
-  opacity: '0.8', // Opacity of the border
   '&:not(:last-child)': {
     borderBottom: 0,
   },

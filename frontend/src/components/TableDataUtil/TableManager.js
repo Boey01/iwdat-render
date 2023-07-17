@@ -18,13 +18,14 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import Accordion from '@mui/material/Accordion';
+import {Accordion}from '../util/CustomComponents';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import DIModalContent from "./DataImportModal";
 import TBModalContent from "./TableBindModal";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 
 export default function TableManager() {
   const {
@@ -105,34 +106,28 @@ export default function TableManager() {
   return (
     <>
       <MakeDraggable type="tm">
-        <Button variant="contained" onClick={handleOpenPopover} sx={{left: "8vw"}}>
+    <Accordion className="table-manager-btn">
+      <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          sx={{ backgroundColor:"#fcfcfc", borderRadius: '10px', boxShadow:"0 4px 5px -5px"}}
+        >
+          <Typography sx={{fontWeight:"bold"}}>
           Table Manager
-        </Button>
-      </MakeDraggable>
-
-      <Popover
-        anchorEl={anchorEl}
-        open={popoverOpen}
-        onClose={handleClosePopover}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-      >
+          </Typography>
+          </AccordionSummary>
+      <AccordionDetails>
         {/* --------- The content of table manager ------- */}
         <List>
           <ListItem>
+            <Box sx={{display:"flex", alignItems:"center", width:"100%"}}>
             <Button
               variant="contained"
               onClick={()=>(handleOpenModal(0))}
-              sx={{ px: 2, width: "100%" }}
+              sx={{ px: 2}}
             >
               Add new table
             </Button>
+            </Box>
           </ListItem>
           <ListItem>
             <Button
@@ -152,36 +147,44 @@ export default function TableManager() {
                   alignItems: "center",
                 }}
               >
-                <div>
-                  <Checkbox />
-                  {data["table_name"]}
-                </div>
-                <div>
-                <IconButton
+                                <IconButton
                      onClick={() => handleEditName(index,data.table_name)}
                     aria-label="name"
                   >
                 <EditRoundedIcon/>
                 </IconButton>
+                <Box sx={{px:2}}>
+                  {data["table_name"]}
+                </Box>
+                <div>
+                  <Stack direction={"row"}>
+                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+
                   <IconButton
                     onClick={() => handleHideTable(index)}
                     aria-label="hide"
                   >
                     {data.hidden ? <VisibilityOffIcon /> : <VisibilityIcon />}
                   </IconButton>
+
+
                   <IconButton
                     onClick={() => handleDeleteTable(index)}
                     aria-label="delete"
                   >
                     <DeleteIcon />
                   </IconButton>
+                  <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+
+                  </Stack>
                 </div>
               </ListItemButton>
             </ListItem>
           ))}
         </List>
-      </Popover>
-
+        </AccordionDetails>
+        </Accordion>
+      </MakeDraggable>
       {/* --------- end ------- */}
 
       <Modal open={openImportData} onClose={()=>(handleCloseModal(0))}>
