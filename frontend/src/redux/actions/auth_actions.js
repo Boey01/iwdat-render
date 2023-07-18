@@ -90,6 +90,7 @@ export const redux_login = (email, password) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
+      Accept: "application/json",
     },
   };
 
