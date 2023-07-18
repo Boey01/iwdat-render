@@ -37,21 +37,19 @@ export default function BarLinePieChartPreview({
   defineVisualConfig,
   type,
 }) {
-  const [targetColumn, setTargetColumn] = useState("");
-  const [valueColumns, setValueColumns] = useState([
-    { columnName: "", type: "" },
-  ]);
-  const [transformedData, setTransformedData] = useState([]);
-  const [isGrouped, setIsGrouped] = useState(true); // Initially set to grouped
-  const [selectedBarKey, setSelectedBarKey] = useState("");
-  const [columnColors, setColumnColors] = useState({});
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [horizontal, setHorizontal] = useState(true);
-  const [showGrid, setShowGrid] = useState(false);
-  const [toggleBtn, setToggleBtn] = useState(() => []);
-  const [dot, setDot] = useState(false);
-  const [hollow, setHollow] = useState(false);
-  const [legendRight, setLegendRight] = useState(true);
+  const [targetColumn, setTargetColumn] = useState(""); //target columnn
+  const [valueColumns, setValueColumns] = useState([{ columnName: "", type: "" },]); //value columnns
+  const [transformedData, setTransformedData] = useState([]); //processed data to favor Rechart libarary
+  const [isGrouped, setIsGrouped] = useState(true);            //categorized target column?
+  const [selectedBarKey, setSelectedBarKey] = useState("");   //to determine which element's color to show in color picker
+  const [columnColors, setColumnColors] = useState({});       //record each element's color
+  const [anchorEl, setAnchorEl] = useState(null);             //to make color picker appear under the buttonn
+  const [horizontal, setHorizontal] = useState(true);         //to determie the layout alignment
+  const [showGrid, setShowGrid] = useState(false);            //enable grid?
+  const [toggleBtn, setToggleBtn] = useState(() => []);       // to determine which toggle btn is toggled in the toggle btn group
+  const [dot, setDot] = useState(false);                      // to enable dot for line chart, label for pie
+  const [hollow, setHollow] = useState(false);                //to make the dot/pie hollow
+  const [legendRight, setLegendRight] = useState(true);       // to align the legend for pie right side
 
   const handleToggleButtonClicked = (event, changes) => {
     if (changes.includes("group-by")) {
@@ -148,13 +146,13 @@ export default function BarLinePieChartPreview({
 
     defineVisualConfig(type, compiledConfig);
   };
+  
   return (
     <>
       <Accordion>
         <AccordionSummary sx={{ m: 0 }}>
           <Typography>Expand option</Typography>
         </AccordionSummary>
-
         <AccordionDetails>
           <div className="visual-option-menu">
             <Grid
@@ -235,8 +233,7 @@ export default function BarLinePieChartPreview({
                               textOverflow: "ellipsis",
                               overflow: "hidden",
                               whiteSpace: "nowrap",
-                            }}
-                          >
+                            }}>
                             {Object.keys(data[0])
                               .filter((key) => key !== targetColumn)
                               .map((key) => (
@@ -245,7 +242,6 @@ export default function BarLinePieChartPreview({
                                 </MenuItem>
                               ))}
                           </Select>
-
                           <Select
                             name="type"
                             value={column.type}
@@ -274,7 +270,6 @@ export default function BarLinePieChartPreview({
                             </IconButton>
                           )}
                         </Stack>
-
                         <Grid item xs={1}></Grid>
                       </React.Fragment>
                     ))}
@@ -448,7 +443,7 @@ export default function BarLinePieChartPreview({
         </AccordionDetails>
       </Accordion>
 
-      {/* Render the Bar Chart */}
+      {/* Render the Chart */}
       <Paper sx={{ overflow: "auto", height: "30vh" }}>
         {transformedData.length > 0 && (
           <RenderChart

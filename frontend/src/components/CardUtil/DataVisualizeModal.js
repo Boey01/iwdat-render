@@ -139,6 +139,7 @@ export default function DVModalContent({index, handleCloseModal }) {
             </Paper>
           </Grid>
 
+        {/* Right section ----------------- */}
           <Grid item xs={9}>
             <Stack spacing={2}>
               <div>

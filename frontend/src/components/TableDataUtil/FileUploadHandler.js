@@ -44,7 +44,7 @@ export default function FileImport (props) {
         </Grid>
       </Grid>
 
-    {/* The labelk for displaying file name */}
+    {/* The label for displaying file name */}
     <Grid xs={12}>
         <Grid item>
           {fileName ? (
