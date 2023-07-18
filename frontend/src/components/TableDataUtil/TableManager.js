@@ -115,21 +115,19 @@ export default function TableManager() {
           Table Manager
           </Typography>
           </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails sx={{boxShadow:2, borderBottomLeftRadius:"10px", borderBottomRightRadius:"10px"}}>
         {/* --------- The content of table manager ------- */}
         <List>
-          <ListItem>
-            <Box sx={{display:"flex", alignItems:"center", width:"100%"}}>
+          <ListItem style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
               variant="contained"
               onClick={()=>(handleOpenModal(0))}
-              sx={{ px: 2}}
+              sx={{ px: 2, width: "100%"}}
             >
               Add new table
             </Button>
-            </Box>
           </ListItem>
-          <ListItem>
+          <ListItem style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
               variant="contained"
               onClick={()=>(handleOpenModal(1))}
