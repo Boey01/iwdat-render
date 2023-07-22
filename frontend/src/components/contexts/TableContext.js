@@ -39,7 +39,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   );
 
   useEffect(() => {
-    if(isAuthenticated){ loadAccountTables();}
+    if(isAuthenticated){ loadAccountTablesDB();}
     
     let localTableList = localStorage.getItem('globalTables')
     if (localTableList) {
@@ -90,7 +90,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
         const x = 0;
         const y = 0;
     
-        addNewTableToAccount(name, x, y, hidden, data);
+        addNewTableToAccountDB(name, x, y, hidden, data);
       });
   //if not logged in, save locally
     }else{
@@ -114,7 +114,7 @@ export function GlobalTablesProvider({ children, isAuthenticated }) {
   const deleteGlobalTable = (index) => {
   if(isAuthenticated){
     const targetTableID = globalTables[index].table_id;
-     deleteTableFromAccount(targetTableID, index);
+     deleteTableFromAccountDB(targetTableID, index);
   }else{
     deleteFromTableListUseState (index);
     setTableSaveState(1);
@@ -215,7 +215,7 @@ setGlobalTables((prevTables) =>{
   };
   
 //--- BACKEND INVOVLED CRUD OPERATIONS ---------------------
-async function addNewTableToAccount(table_name, position_x, position_y, hidden, data) {
+async function addNewTableToAccountDB(table_name, position_x, position_y, hidden, data) {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
@@ -242,7 +242,7 @@ async function addNewTableToAccount(table_name, position_x, position_y, hidden, 
   }
 }
 
-async function loadAccountTables() {
+async function loadAccountTablesDB() {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
@@ -263,7 +263,7 @@ async function loadAccountTables() {
   }
 }
 
-async function deleteTableFromAccount(table_id, indexToDelete) {
+async function deleteTableFromAccountDB(table_id, indexToDelete) {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {

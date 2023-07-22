@@ -36,7 +36,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
     },[globalCards])
     
     useEffect(() => {
-      if(isAuthenticated){loadAccountCards()};
+      if(isAuthenticated){loadAccountCardsDB()};
       let localCardList = localStorage.getItem('globalCards')
         if (localCardList) {
             localCardList  = JSON.parse(localCardList );
@@ -71,7 +71,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
         };
 
         if(isAuthenticated){
-          addNewCardToAccount(newCard);
+          addNewCardToAccountDB(newCard);
         }else{
         setGlobalCards((prevCards) => [...prevCards, newCard]); 
 
@@ -82,7 +82,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
       const deleteCard = (index) => {
         if(isAuthenticated){
           const targetCardID = globalCards[index].card_id;
-           deleteCardfromAccount(targetCardID, index);
+           deleteCardfromAccountDB(targetCardID, index);
         }else{
           deleteFromCardListUseState(index);
           setCardSaveState(1);
@@ -146,27 +146,39 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
 
       //Visualization operations ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-      const insertNewVisualization = (index, chart_type, visual_config ) => {
+      const insertNewVisualization = (index, table_id, chart_type, visual_config ) => {
         setGlobalCards((prevCards) => {
-          prevCards[index].chart_type = chart_type;
-          prevCards[index].visual_config = visual_config;
-          prevCards[index].visualized = true;
-          return prevCards;
+          const updatedCards = [...prevCards];
+          updatedCards[index].chart_type = chart_type;
+          updatedCards[index].visual_config = visual_config;
+          updatedCards[index].visualized = true;
+          return updatedCards;
         });
+        if(isAuthenticated){
+         const targetCard = {[globalCards[index].card_id]:globalCards[index].visual_config};
+         addNewVisualizeDB(table_id,chart_type,targetCard)
+        }else{
         setCardSaveState(1);
+        }
       }
 
       const updateCardTitle = (index, title) => {
         setGlobalCards((prevCards) => {
-          prevCards[index].visual_config.title = title;
-          return prevCards;
+          const updatedCards = [...prevCards];
+          updatedCards[index].visual_config.title = title;
+          return updatedCards;
         });
-        setCardSaveState(1);
+        if(isAuthenticated){
+          const targetCard = {[globalCards[index].card_id]:globalCards[index].visual_config};
+           updateCardsTitleDB(targetCard)
+         }else{
+         setCardSaveState(1);
+         }
       }
 
 //Below are api opertions ------------------------------------------------------------
 
- async function addNewCardToAccount(newCard){
+ async function addNewCardToAccountDB(newCard){
         if (localStorage.getItem("access")) {
           const config = {
             headers: {
@@ -200,7 +212,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
         }
       }
 
-      async function loadAccountCards() {
+      async function loadAccountCardsDB() {
         if (localStorage.getItem("access")) {
           const config = {
             headers: {
@@ -222,7 +234,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
         }
       }
 
-      async function deleteCardfromAccount (card_id, indexToDelete) {
+      async function deleteCardfromAccountDB (card_id, indexToDelete) {
         if (localStorage.getItem("access")) {
           const config = {
             headers: {
@@ -296,6 +308,57 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
         }
       }
 
+      async function addNewVisualizeDB(table_id,chart_type,targetCard) {
+        if (localStorage.getItem("access")) {
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `JWT ${localStorage.getItem("access")}`,
+            },  
+          };
+      
+          const body = JSON.stringify({table_id,chart_type,targetCard});
+      
+          axios
+            .put(
+              `${process.env.REACT_APP_BACKEND_API_URL}/cards/update/visualconf/`,
+              body,
+              config
+            )
+            .then(function (response) {
+            })
+            .catch(function (err) {
+              console.log(err);
+            });
+        }
+      }
+
+      async function updateCardsTitleDB(targetCard) {
+        if (localStorage.getItem("access")) {
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `JWT ${localStorage.getItem("access")}`,
+            },  
+          };
+      
+          const body = JSON.stringify(targetCard);
+      
+          axios
+            .put(
+              `${process.env.REACT_APP_BACKEND_API_URL}/cards/update/title/`,
+              body,
+              config
+            )
+            .then(function (response) {
+            })
+            .catch(function (err) {
+              console.log(err);
+            });
+        }
+      }
+      
+
     return (
         <GlobalCardContext.Provider 
           value={{
@@ -308,7 +371,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
             updateCardSize,
             insertNewVisualization,
             updateCardTitle,
-          }}
+          }}  
         >
           {children}
 
