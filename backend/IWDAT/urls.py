@@ -38,5 +38,7 @@ urlpatterns = [
     path('cards/delete/<int:card_id>/', card_views.deleteCard, name='delete_cards'),
     path('cards/update/position/', card_views.updateCardPosition, name='update_card_position'),
     path('cards/update/size/', card_views.updateCardSize, name='update_card_size'),
+    path('cards/update/visualconf/', card_views.insertVisualization, name='isnert_card_visual'),
+    path('cards/update/title/', card_views.updateCardTitle, name='update_card_title'),
 
 ]

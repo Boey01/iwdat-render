@@ -3,7 +3,6 @@ import Button from "@mui/material/Button";
 import MakeDraggable from "../util/Draggable";
 import Modal from "@mui/material/Modal";
 import TableRenderer from "../Table/TableRenderer";
-import Popover from "@mui/material/Popover";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -39,10 +38,7 @@ export default function TableManager() {
 
   const [openImportData, setOpenImportData] = useState(false);
   const [openBindTable, setOpenBindTable] = useState(false);
-  const [popoverOpen, setPopoverOpen] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
-  // const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [focusedTable, setFocusedTable] = useState(null);
   const [isEditingName, setIsEditingName] = useState(false);
   const [focusedName, setFocusedName] = useState("");
@@ -78,15 +74,6 @@ export default function TableManager() {
       if(type === 1){
         setOpenBindTable(false);
         }
-  };
-
-  const handleOpenPopover = (event) => {
-    setAnchorEl(event.currentTarget);
-    setPopoverOpen(true);
-  };
-
-  const handleClosePopover = () => {
-    setPopoverOpen(false);
   };
 
   const handleDeleteTable = (index) => {
@@ -136,8 +123,20 @@ export default function TableManager() {
               Bind Table
             </Button>
           </ListItem>
+          <ListItem style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              variant="contained"
+
+              sx={{ px: 2, width: "100%" }}
+            >
+              Export Tables
+            </Button>
+          </ListItem>
           {globalTables.map((data, index) => (
             <ListItem key={index} disablePadding>
+              <Checkbox>
+
+              </Checkbox>
               <ListItemButton
                 sx={{
                   display: "flex",
@@ -145,17 +144,18 @@ export default function TableManager() {
                   alignItems: "center",
                 }}
               >
-                                <IconButton
+                              
+                <Box sx={{pr:2}}>
+                  {data["table_name"]}
+                </Box>
+                <div>
+                  <Stack direction={"row"}>
+                  <IconButton
                      onClick={() => handleEditName(index,data.table_name)}
                     aria-label="name"
                   >
                 <EditRoundedIcon/>
                 </IconButton>
-                <Box sx={{px:2}}>
-                  {data["table_name"]}
-                </Box>
-                <div>
-                  <Stack direction={"row"}>
                 <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
 
                   <IconButton
@@ -197,7 +197,7 @@ export default function TableManager() {
         </>
       </Modal>
 
-      <Modal open={openBindTable} onClose={()=>(handleCloseModal(1))}>
+      <Modal open={openBindTable} onClose={()=>(handleCloseModal(1))} className="make-center">
         <>
         <TBModalContent
           handleCloseModal={()=>(handleCloseModal(1))}

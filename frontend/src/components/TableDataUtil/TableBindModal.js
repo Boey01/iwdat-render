@@ -129,7 +129,6 @@ export default function TBModalContent({
     handleCloseModal(1);
   };
   return (
-    <div className="make-center">
       <ModalContent>
         <Button
           onClick={() => handleCloseModal(1)}
@@ -281,6 +280,5 @@ export default function TBModalContent({
           </Grid>
         </Grid>
       </ModalContent>
-    </div>
   );
 }

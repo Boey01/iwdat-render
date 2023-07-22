@@ -31,6 +31,9 @@ import ScatterChartPreview from "./ScatterPlotUtil";
 
 const ModalContent = styled("div")({
   position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   backgroundColor: "white",
   padding: "16px",
   width: "65vw",
@@ -82,7 +85,8 @@ export default function DVModalContent({index, handleCloseModal }) {
 
   const handleInsertNewVisual = () =>{
     const [key, value] = Object.entries(visualConfig)[0];
-    insertNewVisualization(index, key, value);
+    const table_id = globalTables[index].table_id;
+    insertNewVisualization(index, table_id, key, value);
     handleCloseModal();
   }
 
@@ -100,7 +104,6 @@ export default function DVModalContent({index, handleCloseModal }) {
   };
 
   return (
-    <div className="make-center">
       <ModalContent>
         <Button
           onClick={handleCloseModal}
@@ -157,6 +160,5 @@ export default function DVModalContent({index, handleCloseModal }) {
           </Grid>
         </Grid>
       </ModalContent>
-    </div>
   );
 }

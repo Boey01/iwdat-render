@@ -77,3 +77,42 @@ def updateCardSize(request):
                 pass
 
     return Response(status=204)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateCardTitle(request):
+    target_card = request.data
+    for key, value in target_card.items():
+        try:
+            card = Cards.objects.get(card_id=key)
+            card.visual_config = value
+            card.save()
+        except Cards.DoesNotExist:
+                print("card not found")
+                pass
+
+    return Response(status=204)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def insertVisualization(request):
+    data = request.data
+    
+    for key, value in data['targetCard'].items(): 
+        try:
+            card = Cards.objects.get(card_id=key)
+            card.table_id_id = data['table_id'] 
+            card.chart_type = data['chart_type']  
+            card.visual_config = value
+            card.visualized = True
+        except Cards.DoesNotExist:
+            print("card not found")
+            pass
+
+    if card.user_id_id == request.user.user_id:
+        card.save()
+        return Response({'success': 'Card inserted a new visualization'}, status=204)
+    else:
+        return Response({'error': 'Unauthorized'}, status=403)
