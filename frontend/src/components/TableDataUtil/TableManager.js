@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Button from "@mui/material/Button";
 import MakeDraggable from "../util/Draggable";
 import Modal from "@mui/material/Modal";
@@ -21,6 +21,7 @@ import {Accordion}from '../util/CustomComponents';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import  {exportTablesToFile}  from "./ExportTables"
 
 import DIModalContent from "./DataImportModal";
 import TBModalContent from "./TableBindModal";
@@ -42,10 +43,22 @@ export default function TableManager() {
   const [focusedTable, setFocusedTable] = useState(null);
   const [isEditingName, setIsEditingName] = useState(false);
   const [focusedName, setFocusedName] = useState("");
+  const [selectedTables, setSelectedTables] = useState([]);
 
   const nameRef = useRef(null);
   let tableIndex;
   const indexFormat = "tb";
+
+  
+  useEffect(() => {
+    // Add event listener when the component mounts
+    window.addEventListener("keydown", handleCloseModal);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("keydown", handleCloseModal);
+    };
+  }, [openImportData,openBindTable]);
 
   const handleNameDialog = (update) => {
     if (update) {
@@ -65,13 +78,13 @@ export default function TableManager() {
       }
   };
 
-  const handleCloseModal = (type) => {
-     //0 = open data import page, 1 = open table binding page
-     if(type === 0){
+  function handleCloseModal(){
+    console.log("A")
+     if(openImportData){
       setOpenImportData(false);
     setUploadedFile(null);
       }
-      if(type === 1){
+      if(openBindTable ){
         setOpenBindTable(false);
         }
   };
@@ -126,7 +139,7 @@ export default function TableManager() {
           <ListItem style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
               variant="contained"
-
+              onClick={()=>exportTablesToFile(selectedTables,globalTables)}
               sx={{ px: 2, width: "100%" }}
             >
               Export Tables
@@ -134,9 +147,16 @@ export default function TableManager() {
           </ListItem>
           {globalTables.map((data, index) => (
             <ListItem key={index} disablePadding>
-              <Checkbox>
-
-              </Checkbox>
+              <Checkbox
+            checked={selectedTables.includes(index)}
+            onChange={() =>
+              setSelectedTables((prevState) =>
+                prevState.includes(index)
+                  ? prevState.filter((item) => item !== index)
+                  : [...prevState, index]
+              )
+            }
+          />
               <ListItemButton
                 sx={{
                   display: "flex",
@@ -185,22 +205,22 @@ export default function TableManager() {
       </MakeDraggable>
       {/* --------- end ------- */}
 
-      <Modal open={openImportData} onClose={()=>(handleCloseModal(0))}>
+      <Modal open={openImportData} onClose={handleCloseModal}>
       <>
         <DIModalContent
           upload = {true}
           uploadedFile={uploadedFile}
           setUploadedFile={setUploadedFile}
-          handleCloseModal={()=>(handleCloseModal(0))}
+          handleCloseModal={handleCloseModal}
           addTablesToGlobalTableList={addTablesToGlobalTableList}
         />
         </>
       </Modal>
 
-      <Modal open={openBindTable} onClose={()=>(handleCloseModal(1))} className="make-center">
+      <Modal open={openBindTable} onClose={handleCloseModal} className="make-center">
         <>
         <TBModalContent
-          handleCloseModal={()=>(handleCloseModal(1))}
+          handleCloseModal={handleCloseModal}
           globalTables={globalTables}
           addTablesToGlobalTableList={addTablesToGlobalTableList}
         />

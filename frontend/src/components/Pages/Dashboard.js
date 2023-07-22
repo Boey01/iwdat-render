@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, forwardRef } from "react";
+import React, { useState, useEffect,useRef, useContext, forwardRef } from "react";
 import { IconButton, Typography } from "@mui/material";
 import { GlobalCardContext } from "../contexts/CardContext";
 import { ResizableBox } from "react-resizable";
@@ -38,6 +38,16 @@ export const Dashboard = () => {
   const [focusedTitle, setFocusedTitle] = useState("");
 
   const titleRef = useRef(null);
+
+    useEffect(() => {
+      // Add event listener when the component mounts
+      window.addEventListener("keydown", handleCloseModal);
+
+      // Clean up the event listener when the component unmounts
+      return () => {
+        window.removeEventListener("keydown", handleCloseModal);
+      };
+    }, [openModal]);
 
   const handleOpenModal = (index) => {
     setOpenModal(true);
