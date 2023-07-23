@@ -150,6 +150,7 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
         setGlobalCards((prevCards) => {
           const updatedCards = [...prevCards];
           updatedCards[index].chart_type = chart_type;
+          updatedCards[index].table_id = table_id;
           updatedCards[index].visual_config = visual_config;
           updatedCards[index].visualized = true;
           return updatedCards;
