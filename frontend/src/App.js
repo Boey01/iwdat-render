@@ -18,6 +18,15 @@ import ActivateAccount  from "./components/pages/Activate";
 import ResetPassReq from "./components/pages/ResetPassReq";
 import ChangePassword from "./components/pages/ChangePass";
 import { Dashboard } from "./components/pages/Dashboard";
+import { createTheme, ThemeProvider } from '@mui/material';
+
+const theme = createTheme({
+  typography: {
+    fontFamily: [
+      'Montserrat',
+      'sans-serif',
+    ].join(','),
+  },});
 
 const ContextAndSidebarProvider = ({ children }) => {
   return (
@@ -34,6 +43,7 @@ const ContextAndSidebarProvider = ({ children }) => {
 export default function App() {
   return (
     <Provider store={store}>
+      <ThemeProvider theme={theme}>
       <Initialization>
     <Router>
         <Routes>        
@@ -62,6 +72,7 @@ export default function App() {
         </Routes>
     </Router>
     </Initialization>
+    </ThemeProvider>
    </Provider>
   );
 }

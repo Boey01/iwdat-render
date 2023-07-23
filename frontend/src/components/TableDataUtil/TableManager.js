@@ -22,10 +22,14 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import  {exportTablesToFile}  from "./ExportTables"
+import RightClickIcon from "../../static/right-click.svg";
+import AddToPhotosRoundedIcon from '@mui/icons-material/AddToPhotosRounded';  
+import CompareArrowsRoundedIcon from '@mui/icons-material/CompareArrowsRounded';
+import IosShareRoundedIcon from '@mui/icons-material/IosShareRounded';
 
 import DIModalContent from "./DataImportModal";
 import TBModalContent from "./TableBindModal";
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Divider, ListItemIcon, MenuItem, MenuList, Paper, Popover, Stack, Typography } from "@mui/material";
 
 export default function TableManager() {
   const {
@@ -44,12 +48,13 @@ export default function TableManager() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [focusedName, setFocusedName] = useState("");
   const [selectedTables, setSelectedTables] = useState([]);
+  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
+  const [showContextMenu, setShowContextMenu] = useState(false);
 
   const nameRef = useRef(null);
   let tableIndex;
   const indexFormat = "tb";
 
-  
   useEffect(() => {
     // Add event listener when the component mounts
     window.addEventListener("keydown", handleCloseModal);
@@ -60,6 +65,39 @@ export default function TableManager() {
     };
   }, [openImportData,openBindTable]);
 
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    setContextMenuPosition({ x: e.pageX, y: e.pageY });
+    setShowContextMenu(true);
+  };
+
+  const handleHideContextMenu = () => {
+    setShowContextMenu(false);
+  };
+
+  const handleContextMenuAction = (action) => {
+    switch (action) {
+      case "add":
+        handleOpenModal(0);
+        break;
+      case "bind":
+        handleOpenModal(1)
+        break;        
+      case "export":
+        exportTablesToFile(selectedTables, globalTables);
+        break;
+      case "hide":
+        selectedTables.forEach((index) => handleHideTable(index));
+        break;
+      case "delete":
+        selectedTables.forEach((index) => handleDeleteTable(index));
+        break;
+      default:
+        break;
+    }
+    handleHideContextMenu();
+  };
+  
   const handleNameDialog = (update) => {
     if (update) {
       const newName = nameRef.current.value;
@@ -90,6 +128,9 @@ export default function TableManager() {
   };
 
   const handleDeleteTable = (index) => {
+    setSelectedTables((prevState) =>
+    prevState.filter((item) => item !== index)
+  );
     deleteGlobalTable(index);
   };
 
@@ -106,16 +147,19 @@ export default function TableManager() {
   return (
     <>
       <MakeDraggable type="tm">
-    <Accordion className="table-manager-btn">
+    <Accordion className="table-manager-btn" onContextMenu={handleContextMenu}>
       <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           sx={{ backgroundColor:"#fcfcfc", borderRadius: '10px', boxShadow:"0 4px 5px -5px"}}
         >
+          <Box sx={{width:"100%"}} className="spread-items">
           <Typography sx={{fontWeight:"bold"}}>
           Table Manager
           </Typography>
+          {selectedTables.length > 0 && <Avatar sx ={{width:20, height:20, opacity:0.9, mb:0.4}} src={RightClickIcon} />}
+          </Box>
           </AccordionSummary>
-      <AccordionDetails sx={{boxShadow:2, borderBottomLeftRadius:"10px", borderBottomRightRadius:"10px"}}>
+      <AccordionDetails sx={{boxShadow:2, borderBottomLeftRadius:"10px", borderBottomRightRadius:"10px", p:0.2}}>
         {/* --------- The content of table manager ------- */}
         <List>
           <ListItem style={{ display: 'flex', justifyContent: 'center' }}>
@@ -134,15 +178,6 @@ export default function TableManager() {
               sx={{ px: 2, width: "100%" }}
             >
               Bind Table
-            </Button>
-          </ListItem>
-          <ListItem style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-              variant="contained"
-              onClick={()=>exportTablesToFile(selectedTables,globalTables)}
-              sx={{ px: 2, width: "100%" }}
-            >
-              Export Tables
             </Button>
           </ListItem>
           {globalTables.map((data, index) => (
@@ -273,6 +308,53 @@ export default function TableManager() {
           <Button onClick={() => handleNameDialog(true)}>Confirm</Button>
         </DialogActions>
       </Dialog>
+
+      {showContextMenu && (
+        <Popover
+        open={showContextMenu}
+        onClose={handleHideContextMenu}
+        anchorReference="anchorPosition"
+        anchorPosition={{
+          top: contextMenuPosition.y,
+          left: contextMenuPosition.x,
+        }}
+      >
+          <MenuList autoFocus={true}>
+            <MenuItem onClick={() => handleContextMenuAction("add")}>
+            <ListItemIcon>
+            <AddToPhotosRoundedIcon fontSize="small"/>
+          </ListItemIcon>
+              Add table
+              </MenuItem>
+            <MenuItem onClick={() => handleContextMenuAction("bind")}>
+            <ListItemIcon>
+            <CompareArrowsRoundedIcon fontSize="small"/>
+          </ListItemIcon>
+              Bind table
+              </MenuItem>
+            <Divider />
+            <MenuItem onClick={() => handleContextMenuAction("export")} disabled={selectedTables.length < 1}>
+             <ListItemIcon>
+            <IosShareRoundedIcon fontSize="small"/>
+          </ListItemIcon>
+              Export Selected(s)
+            </MenuItem>
+            <MenuItem onClick={() => handleContextMenuAction("hide")} disabled={selectedTables.length < 1}>
+            <ListItemIcon>
+            <VisibilityIcon fontSize="small"/>
+          </ListItemIcon>
+              Toggle Selected(s) Visibility
+            </MenuItem>
+            <MenuItem onClick={() => handleContextMenuAction("delete")} disabled={selectedTables.length < 1}>
+            <ListItemIcon>
+            <DeleteIcon fontSize="small"/>
+          </ListItemIcon>
+              Delete Selected(s)
+            </MenuItem>
+          </MenuList>
+        </Popover>
+      )}
+
     </>
   );
 }
