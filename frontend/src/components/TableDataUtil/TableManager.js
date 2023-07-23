@@ -153,7 +153,7 @@ export default function TableManager() {
           sx={{ backgroundColor:"#fcfcfc", borderRadius: '10px', boxShadow:"0 4px 5px -5px"}}
         >
           <Box sx={{width:"100%"}} className="spread-items">
-          <Typography sx={{fontWeight:"bold"}}>
+          <Typography sx={{fontWeight:500}}>
           Table Manager
           </Typography>
           {selectedTables.length > 0 && <Avatar sx ={{width:20, height:20, opacity:0.9, mb:0.4}} src={RightClickIcon} />}
