@@ -20,7 +20,11 @@ import ChangePassword from "./components/pages/ChangePass";
 import Dashboard from "./components/pages/Dashboard";
 import { createTheme, ThemeProvider } from '@mui/material';
 import { AlertProvider } from "./components/contexts/AlertContext";
-import SimpleAlert from "./components/util/CustomAlert";
+import GlobalAlert from "./components/util/CustomAlert";
+import { DialogProvider } from "./components/contexts/DialogContext";
+import GlobalDialog from "./components/util/CustomDialog";
+
+const createColor = (mainColor) => ({ main: mainColor });
 
 const theme = createTheme({
   typography: {
@@ -28,19 +32,27 @@ const theme = createTheme({
       'Montserrat',
       'sans-serif',
     ].join(','),
-  },});
+  },
+  palette: {
+    cancel: createColor("#efeff9"),
+    confirm: createColor("#6350f2"),
+  }
+});
 
 const ContextAndSidebarProvider = ({ children }) => {
   return (
     <AlertProvider>
+      <DialogProvider>
     <GlobalTablesProvider>
       <GlobalCardsProvider>
       <ZIndexProvider>
         <SideBarWrap>{children}</SideBarWrap>
-        <SimpleAlert/>
+        <GlobalAlert/>
+        <GlobalDialog/>
       </ZIndexProvider>
       </GlobalCardsProvider>
     </GlobalTablesProvider>
+    </DialogProvider>
     </AlertProvider>
   );
 };

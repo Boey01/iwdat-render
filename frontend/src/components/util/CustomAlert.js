@@ -2,7 +2,7 @@ import React from "react";
 import {Slide, Paper,Alert, Box} from "@mui/material";
 import { useAlert } from "../contexts/AlertContext";
 
-export default function SimpleAlert() {
+export default function GlobalAlert() {
   const { showAlert, message, severity, handleCloseAlert } = useAlert();
 
   return (
