@@ -31,6 +31,7 @@ import GridOffIcon from "@mui/icons-material/GridOff";
 import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
 import ToggleButton from "@mui/material/ToggleButton";
 import transformingData from "./transformData";
+import { useAlert } from "../contexts/AlertContext";
 
 export default function BarLinePieChartPreview({
   data,
@@ -50,6 +51,9 @@ export default function BarLinePieChartPreview({
   const [dot, setDot] = useState(false);                      // to enable dot for line chart, label for pie
   const [hollow, setHollow] = useState(false);                //to make the dot/pie hollow
   const [legendRight, setLegendRight] = useState(true);       // to align the legend for pie right side
+  const [dataConfig, setDataConfig] = useState({});  
+
+  const { callAlert } = useAlert();
 
   const handleToggleButtonClicked = (event, changes) => {
     if (changes.includes("group-by")) {
@@ -104,12 +108,14 @@ export default function BarLinePieChartPreview({
   ));
 
   const handleApplyChanges = () => {
+    try{
     const newTransformedData = transformingData(
       data,
       isGrouped,
       targetColumn,
       valueColumns
     );
+
     // Generate random colors for each bar
     const newColumnColors = {};
 
@@ -132,9 +138,14 @@ export default function BarLinePieChartPreview({
 
     setTransformedData(newTransformedData);
     setColumnColors(newColumnColors); // Update columnColors state with new colors
+    setDataConfig({
+      isGrouped,
+      targetColumn,
+      valueColumns
+    })
 
     const compiledConfig = {
-      data: newTransformedData,
+      dataconfig: dataConfig,
       dataKey: targetColumn,
       horizontal: horizontal,
       colors: newColumnColors,
@@ -145,6 +156,9 @@ export default function BarLinePieChartPreview({
     };
 
     defineVisualConfig(type, compiledConfig);
+  }catch(err){
+    callAlert("There is something wrong with the column selection.", "error");
+  }
   };
   
   return (
@@ -448,7 +462,8 @@ export default function BarLinePieChartPreview({
         {transformedData.length > 0 && (
           <RenderChart
             type={type}
-            data={transformedData}
+            preview={true}
+            tableData={transformedData}
             dataKey={targetColumn}
             horizontal={horizontal}
             colors={columnColors}

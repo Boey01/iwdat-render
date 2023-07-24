@@ -17,10 +17,71 @@ import {
   Cell,
 } from "recharts";
 import CircularProgress from '@mui/material/CircularProgress';
+import transformingData from "./transformData";
 
-export default function RenderChart({ data, type, ...chartProps }) {
+export default function RenderChart({ preview, tableData, dataConfig, type, ...chartProps }) {
   const [loading, setLoading] = useState(true);
   let chartComponent;
+  let data;
+  if(preview){
+    data = tableData;
+  }
+  else
+  {
+    if(type === "scatter-plot"){
+      data = [];
+      try{
+        chartProps.scatterConfig.forEach((scatter,index) => {
+        let { columnName, type } = scatter.x;
+        const valueColumnX = [{ columnName, type }];
+        ({ columnName, type } = scatter.y);
+        const valueColumnY = [{ columnName, type }];
+
+        const transformedDataX = transformingData(
+          tableData,
+          scatter.x.isGrouped,
+          scatter.x.based,
+          valueColumnX
+        );
+
+        const transformedDataY = transformingData(
+          tableData,
+          scatter.y.isGrouped,
+          scatter.y.based,
+          valueColumnY
+        );
+
+        if (Object.keys(transformedDataX[0]).length > 1) {
+          transformedDataX.forEach((item) => {
+            delete item[Object.keys(item)[0]];
+          });
+        }
+
+        if (Object.keys(transformedDataY[0]).length > 1) {
+          transformedDataY.forEach((item) => {
+            delete item[Object.keys(item)[0]];
+          });
+        }
+
+        const combined = [];
+
+        for (let i = 0; i < transformedDataX.length; i++) {
+          const newObj = {
+            x: Object.values(transformedDataX[i])[0],
+            y: Object.values(transformedDataY[i])[0],
+          };
+          combined.push(newObj);
+        }
+
+        data[index] = combined;
+      });
+    }catch(err){
+      console.log(err);
+    }
+    }else{
+    data = transformingData(tableData, dataConfig.isGrouped,dataConfig.targetColumn,dataConfig.valueColumns);
+    }
+  }
 
   switch (type) {
     case "bar-chart":

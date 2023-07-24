@@ -50,7 +50,6 @@ export default function ScatterPlotPreview({ data, defineVisualConfig, type }) {
   useEffect(() => {
     if (scatterData.length > 0) {
       const compiledConfig = {
-        data: scatterData,
         scatterConfig: scatterSetting,
         showGrid: showGrid,
         axisName: axisName,
@@ -58,6 +57,8 @@ export default function ScatterPlotPreview({ data, defineVisualConfig, type }) {
       };
 
       defineVisualConfig(type, compiledConfig);
+
+      console.log(scatterData);
     }
   }, [scatterData]);
 
@@ -564,7 +565,8 @@ export default function ScatterPlotPreview({ data, defineVisualConfig, type }) {
         {scatterData.length > 0 && (
           <RenderChart
             type={type}
-            data={scatterData}
+            preview={true}
+            tableData={scatterData}
             scatterConfig={scatterSetting}
             showGrid={showGrid}
             axisName={axisName}
