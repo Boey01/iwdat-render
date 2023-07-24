@@ -8,6 +8,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 export default function FileImport (props) {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState(null);
+  const [mode, setMode] = useState (null);
 
   const fileRef = useRef();
 
@@ -38,26 +39,24 @@ export default function FileImport (props) {
   return (
     <>
     {/* Title */}
-    <Grid xs={12}>
-        <Grid item>
-          <h2>Import Data</h2>
-        </Grid>
+    <Grid item xs={12}>
+          <Typography variant="h4" sx={{fontWeight:"500"}}>Import Data</Typography>
       </Grid>
 
     {/* The label for displaying file name */}
-    <Grid xs={12}>
-        <Grid item>
+    <Grid item xs={12}>
+
           {fileName ? (
             <Typography>{fileName}</Typography>
           ) : (
-            <Typography variant="caption">Please Upload a File</Typography>
+            <Typography variant="body2">Please Upload a File</Typography>
           )}
-         </Grid>
+
       </Grid>
 
     {/* Place for uploading file(input) */}
-    <Grid xs={12}>
-        <Grid item>
+    <Grid item xs={2}></Grid>
+    <Grid item xs={10}>
           <input    
             type="file"
             accept="xlsx, xls, csv, json, xml"
@@ -80,7 +79,6 @@ export default function FileImport (props) {
                   color="primary">Read File Data</Button>
                 </div>
           )}
-         </Grid>
       </Grid>
     </>
   );
