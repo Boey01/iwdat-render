@@ -310,3 +310,8 @@ padding-left: 15px;
 .resize-handle:hover {
   background-color: #ddd;
 }
+
+.alert-wrapper{
+  position: absolute;
+  z-index: 9999;
+}

@@ -17,7 +17,9 @@ const ModalContent = styled("div")({
   transform: "translate(-50%, -50%)",
   backgroundColor: "white",
   padding: "16px",
-  width: "60vw",
+  width: "50vw",
+  height:"80vh",
+  borderRadius:"10px"
 });
 
 export default function DIModalContent({
@@ -140,7 +142,7 @@ export default function DIModalContent({
             </Grid>
             <Grid item xs={12} sx={{ height: "100%" }}>
               {Object.keys(uploadedFile).map((key, index) => (
-                <TabPanel value={currentTab} index={index} key={index}>
+                <TabPanel value={currentTab} index={index}  key={index}>
                   <Grid container alignItems="center" spacing={2}>
                     <Grid item>
                       <Checkbox

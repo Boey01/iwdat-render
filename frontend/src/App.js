@@ -19,6 +19,8 @@ import ResetPassReq from "./components/pages/ResetPassReq";
 import ChangePassword from "./components/pages/ChangePass";
 import { Dashboard } from "./components/pages/Dashboard";
 import { createTheme, ThemeProvider } from '@mui/material';
+import { AlertProvider } from "./components/contexts/AlertContext";
+import SimpleAlert from "./components/util/CustomAlert";
 
 const theme = createTheme({
   typography: {
@@ -30,13 +32,16 @@ const theme = createTheme({
 
 const ContextAndSidebarProvider = ({ children }) => {
   return (
+    <AlertProvider>
     <GlobalTablesProvider>
       <GlobalCardsProvider>
       <ZIndexProvider>
         <SideBarWrap>{children}</SideBarWrap>
+        <SimpleAlert/>
       </ZIndexProvider>
       </GlobalCardsProvider>
     </GlobalTablesProvider>
+    </AlertProvider>
   );
 };
 

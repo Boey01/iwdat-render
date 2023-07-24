@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { styled } from '@mui/material/styles';
+import { styled, makeStyles } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
@@ -10,6 +10,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { Switch, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { darken, getContrastRatio} from '@mui/system';
+import { Slide, Paper, Alert } from '@mui/material';
 
 export const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />

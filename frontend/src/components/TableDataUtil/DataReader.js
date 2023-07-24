@@ -1,5 +1,4 @@
 import XLSX from "xlsx";
-import Papa from "papaparse";
 import xml2js from 'xml2js';
 
 
@@ -11,7 +10,7 @@ const checkFileName = (name) => {
     case "xls":
     case "xlsm":
     case "csv":
-      return readXLSXData;
+      return readExcelData;
     case "json":
       return readJSONData;
     case "xml": 
@@ -21,7 +20,7 @@ const checkFileName = (name) => {
   }
 };
 
-const readXLSXData = (file) => {
+const readExcelData = (file) => {
   return new Promise((resolve, reject) => {
     file.arrayBuffer()
       .then((data) => {
@@ -38,28 +37,36 @@ const readXLSXData = (file) => {
         resolve(sheetData);
       })
       .catch((error) => {
-        // Handle any errors that occur during file reading
         console.error('Error reading XLSX file:', error);
-        reject(error); // Reject the promise with the error
+        reject(error); 
       });
   });
 };
 
-// const readCSVData = (file) => {
-//     return new Promise((resolve, reject) => {
-//         var jsonData = {};
-//       Papa.parse(file, {
-//         header: true,
-//         complete: function(results) {
-//          jsonData["Data"] = results.data;
-//           resolve(jsonData);
-//         },
-//         error: function(error) {
-//           reject(error);
-//         }
-//       });
-//     });
-//   };
+const readXLSXDataFromURL = (url) => {
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then(response => response.arrayBuffer())
+      .then(data => {
+        const wb = XLSX.read(data);
+        const sheetNames = wb.SheetNames;
+        const sheetData = {};
+
+        sheetNames.forEach((sheet_name) => {
+          const worksheet = wb.Sheets[sheet_name];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          sheetData[sheet_name] = jsonData;
+        });
+
+        resolve(sheetData);
+      })
+      .catch(error => {
+        console.error('Error reading XLSX file from URL:', error);
+        reject(error);
+      });
+  });
+};
+
 
 const readJSONData = (data) => {
   return new Promise((resolve, reject) => {
@@ -138,19 +145,23 @@ const removeAndReplaceKey = (entries) => {
   return {modifiedEntries };
 };
 
-const loadFileData = (file) => {
-  if (!file) return null;
+const loadFileData = (fileOrURL) => {
+  if (!fileOrURL) return null;
 
-  const fileTypeChecker = checkFileName(file.name);
+  if (typeof fileOrURL === "string" && fileOrURL.startsWith("http")) {
+    // It's a URL, use the readXLSXDataFromURL function
+    return readXLSXDataFromURL(fileOrURL);
+  }
+
+  // Otherwise, treat it as a File object and proceed as before
+  const fileTypeChecker = checkFileName(fileOrURL.name);
   if (!fileTypeChecker) {
     alert("Invalid File Type");
     return null;
   }
 
   try {
-
-    const sheetData = fileTypeChecker(file);
-
+    const sheetData = fileTypeChecker(fileOrURL);
     return sheetData;
   } catch (error) {
     console.error(error);
@@ -160,3 +171,4 @@ const loadFileData = (file) => {
 };
 
 export default loadFileData;
+
