@@ -17,19 +17,10 @@ import {
   Cell,
 } from "recharts";
 import CircularProgress from '@mui/material/CircularProgress';
-import transformingData from "./transformData";
 
-export default function RenderChart({ table_data, data_config, type, ...chartProps }) {
+export default function RenderChart({ data, type, ...chartProps }) {
   const [loading, setLoading] = useState(true);
   let chartComponent;
- let data;
-
-data = transformingData(
-  table_data,
-  data_config.isGrouped,
-  data_config.targetColumn,
-  data_config.valueColumns
-);
 
   switch (type) {
     case "bar-chart":

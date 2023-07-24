@@ -40,12 +40,15 @@ export const Dashboard = () => {
   const titleRef = useRef(null);
 
     useEffect(() => {
-      // Add event listener when the component mounts
-      window.addEventListener("keydown", handleCloseModal);
-
-      // Clean up the event listener when the component unmounts
+      const modalEscClose = (event) => {
+        if (event.keyCode === 27) {
+          handleCloseModal();
+        }
+      }
+      window.addEventListener("keydown", modalEscClose);
+  
       return () => {
-        window.removeEventListener("keydown", handleCloseModal);
+        window.removeEventListener("keydown", modalEscClose);
       };
     }, [openModal]);
 

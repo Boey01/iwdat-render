@@ -56,12 +56,15 @@ export default function TableManager() {
   const indexFormat = "tb";
 
   useEffect(() => {
-    // Add event listener when the component mounts
-    window.addEventListener("keydown", handleCloseModal);
+    const modalEscClose = (event) => {
+      if (event.keyCode === 27) {
+        handleCloseModal();
+      }
+    }
+    window.addEventListener("keydown", modalEscClose);
 
-    // Clean up the event listener when the component unmounts
     return () => {
-      window.removeEventListener("keydown", handleCloseModal);
+      window.removeEventListener("keydown", modalEscClose);
     };
   }, [openImportData,openBindTable]);
 
@@ -117,7 +120,6 @@ export default function TableManager() {
   };
 
   function handleCloseModal(){
-    console.log("A")
      if(openImportData){
       setOpenImportData(false);
     setUploadedFile(null);
