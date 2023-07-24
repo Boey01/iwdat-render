@@ -1,6 +1,7 @@
 import React, { useState, useEffect,useRef, useContext, forwardRef } from "react";
-import { IconButton, Typography } from "@mui/material";
+import { CircularProgress, IconButton, Typography } from "@mui/material";
 import { GlobalCardContext } from "../contexts/CardContext";
+import { GlobalTableContext } from "../contexts/TableContext";
 import { ResizableBox } from "react-resizable";
 import MakeDraggable from "../util/Draggable";
 import OpenInFullRoundedIcon from "@mui/icons-material/OpenInFullRounded";
@@ -15,6 +16,7 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import { connect } from "react-redux";
 
 const ResizeHandle = forwardRef((props, ref) => {
   const { handleAxis, ...restProps } = props;
@@ -29,9 +31,12 @@ const ResizeHandle = forwardRef((props, ref) => {
   );
 });
 
-export const Dashboard = () => {
+export const Dashboard = ({isAuthenticated}) => {
   const { globalCards, deleteCard, updateCardSize, updateCardTitle } =
     useContext(GlobalCardContext);
+  
+  const { globalTables } = useContext(GlobalTableContext);
+  
   const [openModal, setOpenModal] = useState(false);
   const [focusedCard, setFocusedCard] = useState(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -68,6 +73,21 @@ export const Dashboard = () => {
     }
     setIsEditingTitle(false);
   };
+
+  function getTableData(tableID) {
+    let tableData;
+    if(isAuthenticated){
+     for (const table of globalTables) {
+      if (table.table_id === tableID) {
+        tableData = table.data;
+        break;
+      }
+    }
+    }else{
+      tableData = globalTables[tableID].data;
+    }
+    return tableData;
+  }
 
   return (
     <div className="dashboard-render">
@@ -114,36 +134,57 @@ export const Dashboard = () => {
                   <IconButton onClick={() => handleOpenModal(index)}>
                     <AddRoundedIcon fontSize="large" />
                   </IconButton>
-                ) : (
+                 ) : (
                   <>
                     <Typography variant="h6">
                       {card.visual_config.title}
                     </Typography>
-                    {card.chart_type !== 'scatter-plot' &&(
-                       <RenderChart
-                       type={card.chart_type}
-                       data={card.visual_config.data}
-                       dataKey={card.visual_config.dataKey}
-                       horizontal={card.visual_config.horizontal}
-                       colors={card.visual_config.colors}
-                       showGrid={card.visual_config.showGrid}
-                       {...(card.chart_type === "line-chart" && { dot: card.visual_config.dot, hollow: card.visual_config.hollow })}
-                       {...(card.chart_type === "pie-chart" && { label: card.visual_config.label, hollow: card.visual_config.hollow, legendRight: card.visual_config.legendRight })}
-                     />
-                    )}
-
-                    {card.chart_type === 'scatter-plot' && (
-                      <RenderChart
-                        type={card.chart_type}
-                        data={card.visual_config.data}
-                        scatterConfig={card.visual_config.scatterConfig}
-                        showGrid={card.visual_config.showGrid}
-                        axisName={card.visual_config.axisName}
-                        axisUnit={card.visual_config.axisUnit}
-                      />
+                    {globalTables.length > 0 ? (
+                    <>
+                    <Typography variant="h6">
+                      {card.visual_config.title}
+                    </Typography>
+                    {/* Check if globalTables has data before rendering the chart */}
+                    {globalTables.length > 0 ? (
+                      <>
+                        {/* Render the chart */}
+                        {card.chart_type !== 'scatter-plot' &&(
+                           <RenderChart
+                             type={card.chart_type}
+                             preview={false}
+                             tableData={getTableData(card.table_id)}
+                             dataConfig={card.visual_config.dataConfig}
+                             dataKey={card.visual_config.dataKey}
+                             horizontal={card.visual_config.horizontal}
+                             colors={card.visual_config.colors}
+                             showGrid={card.visual_config.showGrid}
+                             {...(card.chart_type === "line-chart" && { dot: card.visual_config.dot, hollow: card.visual_config.hollow })}
+                             {...(card.chart_type === "pie-chart" && { label: card.visual_config.label, hollow: card.visual_config.hollow, legendRight: card.visual_config.legendRight })}
+                           />
+                        )}
+  
+                        {card.chart_type === 'scatter-plot' && (
+                          <RenderChart
+                            type={card.chart_type}
+                            preview={false}
+                            tableData={getTableData(card.table_id)}
+                            scatterConfig={card.visual_config.scatterConfig}
+                            showGrid={card.visual_config.showGrid}
+                            axisName={card.visual_config.axisName}
+                            axisUnit={card.visual_config.axisUnit}
+                          />
+                        )}
+                      </>
+                    ) : (
+  
+                      <CircularProgress/>
                     )}
                   </>
-                )}
+                  ) : (
+                    <CircularProgress/> 
+                  )}
+                </>
+                )} 
               </div>
               </>
             </ResizableBox>
@@ -182,3 +223,9 @@ export const Dashboard = () => {
     </div>
   );
 };
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.authReducer.isAuthenticated,
+});
+
+export default connect(mapStateToProps, {})(Dashboard);

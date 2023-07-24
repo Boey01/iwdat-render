@@ -51,7 +51,6 @@ export default function BarLinePieChartPreview({
   const [dot, setDot] = useState(false);                      // to enable dot for line chart, label for pie
   const [hollow, setHollow] = useState(false);                //to make the dot/pie hollow
   const [legendRight, setLegendRight] = useState(true);       // to align the legend for pie right side
-  const [dataConfig, setDataConfig] = useState({});  
 
   const { callAlert } = useAlert();
 
@@ -138,14 +137,14 @@ export default function BarLinePieChartPreview({
 
     setTransformedData(newTransformedData);
     setColumnColors(newColumnColors); // Update columnColors state with new colors
-    setDataConfig({
+    const dataConfig = {
       isGrouped,
       targetColumn,
       valueColumns
-    })
-
+    };
+    
     const compiledConfig = {
-      dataconfig: dataConfig,
+      dataConfig: dataConfig,
       dataKey: targetColumn,
       horizontal: horizontal,
       colors: newColumnColors,

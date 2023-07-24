@@ -227,7 +227,6 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
             .get(`${process.env.REACT_APP_BACKEND_API_URL}/cards/retrieve/`, config)
             .then(function (response) {
               setGlobalCards(response.data);
-              console.log(response.data["width"]);
             })
             .catch(function (err) {
               console.log(err);

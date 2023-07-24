@@ -17,7 +17,7 @@ import Signup  from "./components/pages/Signup";
 import ActivateAccount  from "./components/pages/Activate";
 import ResetPassReq from "./components/pages/ResetPassReq";
 import ChangePassword from "./components/pages/ChangePass";
-import { Dashboard } from "./components/pages/Dashboard";
+import Dashboard from "./components/pages/Dashboard";
 import { createTheme, ThemeProvider } from '@mui/material';
 import { AlertProvider } from "./components/contexts/AlertContext";
 import SimpleAlert from "./components/util/CustomAlert";

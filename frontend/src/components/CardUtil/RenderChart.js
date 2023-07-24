@@ -23,6 +23,7 @@ export default function RenderChart({ preview, tableData, dataConfig, type, ...c
   const [loading, setLoading] = useState(true);
   let chartComponent;
   let data;
+  
   if(preview){
     data = tableData;
   }

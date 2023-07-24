@@ -28,6 +28,7 @@ import ScatterPlotIcon from "../../static/scatter-plot.svg";
 
 import BarLinePieChartPreview from "./BLPChartUtil";
 import ScatterChartPreview from "./ScatterPlotUtil";
+import { connect } from "react-redux";
 
 const ModalContent = styled("div")({
   position: "absolute",
@@ -39,7 +40,7 @@ const ModalContent = styled("div")({
   width: "65vw",
 });
 
-export default function DVModalContent({index, handleCloseModal }) {
+export function DVModalContent({index, handleCloseModal, isAuthenticated }) {
   const { globalTables} = useContext(GlobalTableContext);
   const { insertNewVisualization } = useContext(GlobalCardContext);
 
@@ -85,7 +86,12 @@ export default function DVModalContent({index, handleCloseModal }) {
 
   const handleInsertNewVisual = () =>{
     const [key, value] = Object.entries(visualConfig)[0];
-    const table_id = globalTables[index].table_id;
+    let table_id;
+    if(isAuthenticated){
+      table_id = globalTables[tableIndex].table_id;
+    }else{
+      table_id = tableIndex;
+    }
     insertNewVisualization(index, table_id, key, value);
     handleCloseModal();
   }
@@ -162,3 +168,9 @@ export default function DVModalContent({index, handleCloseModal }) {
       </ModalContent>
   );
 }
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.authReducer.isAuthenticated,
+});
+
+export default connect(mapStateToProps, {})(DVModalContent);
