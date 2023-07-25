@@ -1,18 +1,19 @@
 import React, { useState, useRef } from "react";
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import loadFileData from "./DataReader";
 import { AiFillDelete } from "react-icons/ai";
-import Grid from '@mui/material/Grid'; 
+import Grid from "@mui/material/Grid";
 import { StyledToggleButtonGroup } from "../util/CustomComponents";
 import { Box, TextField, ToggleButton } from "@mui/material";
-import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded';
-import InsertLinkRoundedIcon from '@mui/icons-material/InsertLinkRounded';
+import UploadFileRoundedIcon from "@mui/icons-material/UploadFileRounded";
+import InsertLinkRoundedIcon from "@mui/icons-material/InsertLinkRounded";
 
-export default function FileImport (props) {
+export default function FileImport(props) {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState(null);
-  const [mode, setMode] = useState ("file");
+  const [fileURL, setfileURL] = useState("");
+  const [mode, setMode] = useState("file");
 
   const fileRef = useRef();
 
@@ -22,15 +23,13 @@ export default function FileImport (props) {
 
     setFile(myFile);
     setFileName(myFile.name);
-
   };
 
-  const handleToggleButtonClicked =(event, modeChange) =>{
-      if (modeChange !== null) {
-        setMode(modeChange);
-      }
-  
-  }
+  const handleToggleButtonClicked = (event, modeChange) => {
+    if (modeChange !== null) {
+      setMode(modeChange);
+    }
+  };
   const handleRemove = () => {
     setFile(null);
     setFileName(null);
@@ -50,24 +49,52 @@ export default function FileImport (props) {
     <>
       {/* Title */}
       <Grid item xs={12}>
-        <Typography variant="h4" sx={{ fontWeight: "500", mb:1 }}>
+        <Typography variant="h4" sx={{ fontWeight: "500", mb: 1 }}>
           Import Data
         </Typography>
       </Grid>
 
       {/* The label for displaying file name */}
-      <Grid item xs={12} sx={{mb:0.5}}>
-        {fileName ? (
-          <Typography>{fileName}</Typography>
+      <Grid item xs={12} sx={{ mb: 0.5, minHeight: "1vh" }}>
+        {mode === "file" ? (
+          fileName ? (
+            <Typography>{fileName}</Typography>
+          ) : (
+            <Typography variant="body2">Please Upload a File</Typography>
+          )
         ) : (
-          <Typography variant="body2">Please Upload a File</Typography>
+          <Typography> </Typography>
         )}
       </Grid>
 
       {/* Place for uploading file(input) */}
       <Grid item xs={12}>
-        <Box  sx={{display:"flex", alignContent:"center", justifyContent:"center"}}>
-      <StyledToggleButtonGroup
+        <Box
+          sx={{
+            display: "flex",
+            alignContent: "center",
+            justifyContent: "center",
+          }}
+        >
+          {mode === "file" ? (
+            <input
+              type="file"
+              accept="xlsx, xls, csv, json, xml"
+              multiple={false}
+              onChange={(e) => handleFile(e)}
+              ref={fileRef}
+            />
+          ) : (
+            <TextField label="Excel File URL" variant="outlined" size="small" sx={{width:"50%"}} value={fileURL} onChange={(e) => setfileURL(e.target.value)} color="four"/>
+          )}
+          {/* The 'remove file' button */}
+          {mode === "file" && file && (
+            <i onClick={handleRemove} className="icon">
+              <AiFillDelete />
+            </i>
+          )}
+        </Box>
+        <StyledToggleButtonGroup
           size="small"
           value={mode}
           onChange={handleToggleButtonClicked}
@@ -80,28 +107,17 @@ export default function FileImport (props) {
             <InsertLinkRoundedIcon />
           </ToggleButton>
         </StyledToggleButtonGroup>
-        {mode === "file" ? (
-        <input
-          type="file"
-          accept="xlsx, xls, csv, json, xml"
-          multiple={false}
-          onChange={(e) => handleFile(e)}
-          ref={fileRef}
-        />
-        ):(
-          <TextField label="Excel File URL" variant="outlined"/>
-        )}
-        {/* The 'remove file' button */}
-        {fileName && (
-          <i onClick={handleRemove} className="icon">
-            <AiFillDelete />
-          </i>
-        )}
-</Box>
         {/* Read data button */}
-        {file && (
-          <div>
-            <Button onClick={handleReadData} color="primary">
+        {mode === "file" && file && (
+          <div>   
+            <Button onClick={handleReadData} variant="outlined" color="two">
+              Read File Data
+            </Button>
+          </div>
+        )}
+        {mode !== "file" && fileURL !== ""  && (
+          <div>   
+            <Button onClick={handleReadData} variant="contained" color="two">
               Read File Data
             </Button>
           </div>
@@ -109,4 +125,4 @@ export default function FileImport (props) {
       </Grid>
     </>
   );
-};
+}

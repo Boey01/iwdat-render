@@ -34,8 +34,12 @@ const theme = createTheme({
     ].join(','),
   },
   palette: {
-    cancel: createColor("#efeff9"),
-    confirm: createColor("#6350f2"),
+    one: {main: "#6350f2",contrastText: '#ffffff'},
+    two: {main: "#2124ee", contrastText: '#ffffff'},
+    three: createColor("#efeff9"),
+    four: createColor("#74708f"),
+    five: createColor("#DFF250"),
+
   }
 });
 

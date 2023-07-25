@@ -21,10 +21,10 @@ export default function SimpleDialog() {
           <DialogContentText sx={{fontWeight:500}}>{dialogMessage}</DialogContentText>
         </DialogContent>
         <DialogActions sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <Button onClick={handleClose} variant="contained" color="cancel" sx={{ width: "40%", mr: 4, py:1, borderRadius:2, color:"#74708f", fontWeight:600}}>
+          <Button onClick={handleClose} variant="contained" color="three" sx={{ width: "40%", mr: 4, py:1, borderRadius:2, color:"#74708f", fontWeight:600}}>
             Close
           </Button>
-          <Button onClick={handleConfirm} variant="contained" color="confirm" sx={{ width: "40%", py:1, borderRadius:2, color:'white'}}>
+          <Button onClick={handleConfirm} variant="contained" color="one" sx={{ width: "40%", py:1, borderRadius:2, color:'white'}}>
             Confirm
           </Button>
         </DialogActions>

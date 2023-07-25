@@ -1,7 +1,6 @@
 import XLSX from "xlsx";
 import xml2js from 'xml2js';
 
-
 const checkFileName = (name) => {
   const fileExtension = name.split(".").pop().toLowerCase();
 
@@ -156,7 +155,7 @@ const loadFileData = (fileOrURL) => {
   // Otherwise, treat it as a File object and proceed as before
   const fileTypeChecker = checkFileName(fileOrURL.name);
   if (!fileTypeChecker) {
-    alert("Invalid File Type");
+    
     return null;
   }
 
