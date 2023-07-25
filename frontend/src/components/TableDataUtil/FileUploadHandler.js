@@ -8,6 +8,8 @@ import { StyledToggleButtonGroup } from "../util/CustomComponents";
 import { Box, TextField, ToggleButton } from "@mui/material";
 import UploadFileRoundedIcon from "@mui/icons-material/UploadFileRounded";
 import InsertLinkRoundedIcon from "@mui/icons-material/InsertLinkRounded";
+import InfoIcon from '@mui/icons-material/Info';
+import {Tooltip} from "@mui/material";
 
 export default function FileImport(props) {
   const [file, setFile] = useState(null);
@@ -38,7 +40,12 @@ export default function FileImport(props) {
   };
 
   const handleReadData = async () => {
-    const sheetData = await loadFileData(file);
+    let sheetData;
+    if(mode === "file"){
+      sheetData = await loadFileData(file);
+    }else{
+      sheetData = await loadFileData(fileURL);
+    }
 
     if (sheetData) {
       props.onFileUploaded(sheetData);
@@ -50,7 +57,10 @@ export default function FileImport(props) {
       {/* Title */}
       <Grid item xs={12}>
         <Typography variant="h4" sx={{ fontWeight: "500", mb: 1 }}>
-          Import Data
+          Import Data 
+          <Tooltip title="supported file type: xlsx, xls, xlsm, csv, json, xml">
+          <InfoIcon sx={{ml:1}}/>
+          </Tooltip>
         </Typography>
       </Grid>
 
@@ -69,13 +79,7 @@ export default function FileImport(props) {
 
       {/* Place for uploading file(input) */}
       <Grid item xs={12}>
-        <Box
-          sx={{
-            display: "flex",
-            alignContent: "center",
-            justifyContent: "center",
-          }}
-        >
+        <Box className="center-item">
           {mode === "file" ? (
             <input
               type="file"
@@ -108,20 +112,18 @@ export default function FileImport(props) {
           </ToggleButton>
         </StyledToggleButtonGroup>
         {/* Read data button */}
+        <Box sx={{height:50}} className="center-item">
         {mode === "file" && file && (
-          <div>   
-            <Button onClick={handleReadData} variant="outlined" color="two">
-              Read File Data
-            </Button>
-          </div>
-        )}
-        {mode !== "file" && fileURL !== ""  && (
-          <div>   
             <Button onClick={handleReadData} variant="contained" color="two">
               Read File Data
             </Button>
-          </div>
         )}
+        {mode !== "file" && fileURL !== ""  && (
+            <Button onClick={handleReadData} variant="contained" color="two">
+              Read File Data
+            </Button>
+        )}
+        </Box>
       </Grid>
     </>
   );

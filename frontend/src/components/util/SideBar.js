@@ -24,6 +24,7 @@ import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import { GlobalTableContext } from "../contexts/TableContext";
 import { useLocation } from "react-router-dom";
 import { GlobalCardContext } from "../contexts/CardContext";
+import { callDialog } from "./CustomDialog";
 
 export function MiniDrawer({
   saveLocalFunction,
@@ -34,8 +35,19 @@ export function MiniDrawer({
   const { cardSaveState, addCards } = useContext(GlobalCardContext);
   const { tableSaveState, setGlobalTables } = useContext(GlobalTableContext);
   const [open, setOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("");
+
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    // Update the active tab whenever the pathname changes
+    if (location.pathname === "/") {
+      setActiveTab("Workspace");
+    } else if (location.pathname === "/dashboard") {
+      setActiveTab("Dashboard");
+    }
+  }, [location.pathname]);
 
   const handleAddCard = () => {
     addCards();
@@ -47,12 +59,7 @@ export function MiniDrawer({
 
   const handleHeaderTextClick = () => {
     if (tableSaveState !== 0) {
-      const leavePage = window.confirm(
-        "Are you sure you want to leave this page, something not saved yet?"
-      );
-      if (leavePage) {
-        navigate("/login");
-      }
+      callDialog("Unsaved progress", "You have unsaved progress to save, leaving now will lost the progress.", ()=>navigate("/login"))
     } else {
       navigate("/login");
     }
@@ -71,14 +78,18 @@ export function MiniDrawer({
     navigate("/dashboard");
   };
 
-  const renderSideBarItem = ({ text, icon, onClickFunction }) => {
+   const renderSideBarItem = ({ text, icon, onClickFunction }) => {
+    const isActiveTab = activeTab === text;
+
     return (
-      <ListItem key={text} disablePadding sx={{ display: "block" }}>
+      <ListItem key={text} disablePadding sx={{ display: "block"}}>
         <ListItemButton
           sx={{
             minHeight: 48,
             justifyContent: open ? "initial" : "center",
             px: 2.5,
+            bgcolor: isActiveTab ? "#6350f2" : "transparent",
+            color: isActiveTab ? "#ffffff" : "inherit", 
           }}
           onClick={onClickFunction}
         >
@@ -87,6 +98,7 @@ export function MiniDrawer({
               minWidth: 0,
               mr: open ? 3 : "auto",
               justifyContent: "center",
+              color: isActiveTab ? "#ffffff" : "inherit", 
             }}
           >
             {icon}
@@ -129,7 +141,7 @@ export function MiniDrawer({
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar open={open}>
+      <AppBar open={open} color="one">
         <Toolbar>
           <Grid
             container
@@ -149,7 +161,7 @@ export function MiniDrawer({
            { location.pathname === "/dashboard" &&
            <Button
                 variant="contained"
-                color="secondary"
+                color="five"
                 onClick={handleAddCard}
               >
                 Add New Card
@@ -169,14 +181,14 @@ export function MiniDrawer({
 
               <Button
                 variant="contained"
-                color="secondary"
+                color="five"
                 disabled={(location.pathname === "/" && tableSaveState !== 1) ||
                 (location.pathname === "/dashboard" && cardSaveState !== 1)}
                 onClick={location.pathname === "/" ?() =>saveLocalFunction(0) : () =>saveLocalFunction(1)}
-                sx={{ mx: 3 }}
+                sx={{ mx: 3, borderRadius:2 }}
               >
                 Save
-                <SaveRoundedIcon />
+                <SaveRoundedIcon sx={{ml:0.5}} />
               </Button>
             </Grid>
           </Grid>
@@ -184,9 +196,9 @@ export function MiniDrawer({
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <button className="menu-icon" onClick={handleDrawerOpen}>
+          <IconButton onClick={handleDrawerOpen} color="two" sx={{mr:1, ml:0.6}}>
             <MenuIcon fontSize="small" />
-          </button>
+          </IconButton>
           {isAuthenticated ? (
             user && user.name ? (
               <ListItemText

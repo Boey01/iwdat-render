@@ -31,7 +31,7 @@ import GridOffIcon from "@mui/icons-material/GridOff";
 import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
 import ToggleButton from "@mui/material/ToggleButton";
 import transformingData from "./transformData";
-import { useAlert } from "../contexts/AlertContext";
+import { callAlert } from "../util/CustomAlert";
 
 export default function BarLinePieChartPreview({
   data,
@@ -52,7 +52,6 @@ export default function BarLinePieChartPreview({
   const [hollow, setHollow] = useState(false);                //to make the dot/pie hollow
   const [legendRight, setLegendRight] = useState(true);       // to align the legend for pie right side
 
-  const { callAlert } = useAlert();
 
   const handleToggleButtonClicked = (event, changes) => {
     if (changes.includes("group-by")) {

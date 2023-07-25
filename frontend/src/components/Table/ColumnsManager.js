@@ -25,7 +25,7 @@ export default function ColumnsManager({
 
   return (
     <>
-      <Button variant="contained" onClick={handlePopoverOpen} disableElevation>
+      <Button variant="contained" onClick={handlePopoverOpen} disableElevation color="five" sx={{borderRadius:2}}>
         Select Columns
       </Button>
       <Popover

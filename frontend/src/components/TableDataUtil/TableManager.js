@@ -149,7 +149,7 @@ export default function TableManager() {
   return (
     <>
       <MakeDraggable type="tm">
-    <Accordion className="table-manager-btn" onContextMenu={handleContextMenu}>
+    <Accordion onContextMenu={handleContextMenu} sx={{position:"static"}}>
       <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           sx={{ backgroundColor:"#fcfcfc", borderRadius: '10px', boxShadow:"0 4px 5px -5px"}}
@@ -169,6 +169,7 @@ export default function TableManager() {
               variant="contained"
               onClick={()=>(handleOpenModal(0))}
               sx={{ px: 2, width: "100%"}}
+              color="six"
             >
               Add new table
             </Button>
@@ -178,6 +179,7 @@ export default function TableManager() {
               variant="contained"
               onClick={()=>(handleOpenModal(1))}
               sx={{ px: 2, width: "100%" }}
+              color="six"
             >
               Bind Table
             </Button>
@@ -193,6 +195,7 @@ export default function TableManager() {
                   : [...prevState, index]
               )
             }
+            color="six"
           />
               <ListItemButton
                 sx={{

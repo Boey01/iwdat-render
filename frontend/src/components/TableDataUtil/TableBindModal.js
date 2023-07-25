@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Grid from "@mui/material/Grid";
 import {
   Box,
@@ -11,8 +11,7 @@ import {
   ListItemText,
   Chip,
   TextField,
-  Alert,
-  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -26,7 +25,9 @@ import {
   AccordionSummary,
   StrictModeDroppable,
 } from "../util/CustomComponents";
-import CloseIcon from "@mui/icons-material/Close";
+
+import { callAlert } from "../util/CustomAlert";
+import InfoIcon from "@mui/icons-material/Info";
 
 const ModalContent = styled("div")({
   position: "absolute",
@@ -44,8 +45,8 @@ export default function TBModalContent({
   const [expanded, setExpanded] = useState(null);
   const [selectedRowCount, setSelectedRowCount] = useState(null);
   const [selectedColumns, setSelectedColumns] = useState([]);
-  const [tableName, setTableName] = useState(null);
-  const [showAlert, setShowAlert] = useState(false);
+
+  const tableNameRef = useRef(null);
 
   useEffect(() => {
     if (selectedColumns.length === 0) {
@@ -118,81 +119,96 @@ export default function TBModalContent({
   };
 
   const createNewMergeTable = () => {
+    const tableName = tableNameRef.current.value;
     if (!tableName) {
-      setShowAlert(true);
+      callAlert("Table name can't be empty!", "error");
       return;
     }
 
-    const newTable ={};
+    const newTable = {};
     newTable[tableName] = mergedData;
     addTablesToGlobalTableList(newTable);
     handleCloseModal(1);
   };
+
   return (
-      <ModalContent>
-        <Button
-          onClick={() => handleCloseModal(1)}
-          style={{ position: "absolute", top: "8px", right: "8px" }}
-          >
-          X
-        </Button>
+    <ModalContent>
+      <Button
+        onClick={() => handleCloseModal(1)}
+        style={{ position: "absolute", top: "8px", right: "8px" }}
+      >
+        X
+      </Button>
 
-        <Grid container spacing={1}>
-          <Grid item xs={3}>
-            <Paper variant="outlined" sx={{ height: "55vh" }}>
-              <Card sx={{ p: 2, height: "auto", textAlign: "center" }}>
-                <Typography>Exported Tables</Typography>
-              </Card>
-              <Box sx={{ overflow: "auto", height: "89%" }}>
-                {globalTables.map((data, index) => (
-                  <Accordion
-                    expanded={expanded === index}
-                    onChange={handleChange(index)}
-                    key={index}
-                    disabled={
-                      selectedRowCount !== null &&
-                      data.data.length !== selectedRowCount
-                    }
-                  >
-                    <AccordionSummary>
-                      <Typography>
-                        {data.table_name} ({data.data.length} rows)
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <List disablePadding>
-                        {Object.keys(data["data"][0]).map((key) => (
-                          <>
-                            <ListItem disablePadding key={key}>
-                              <ListItemButton sx={{ p: 0 }}>
-                                <Checkbox
-                                  onChange={handleColumnSelected(index, key)}
-                                />
-                                <ListItemText primary={key} p />
-                              </ListItemButton>
-                            </ListItem>
-                            <Divider />
-                          </>
-                        ))}
-                      </List>
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
+      <Grid container spacing={1}>
+        <Grid item xs={3}>
+          <Paper variant="outlined" sx={{ height: "55vh" }}>
+            <Card sx={{ p: 2, height: "auto", textAlign: "center" }}>
+              <Typography>Exported Tables</Typography>
+            </Card>
+            <Box sx={{ overflow: "auto", height: "89%" }}>
+              {globalTables.map((data, index) => (
+                <Accordion
+                  expanded={expanded === index}
+                  onChange={handleChange(index)}
+                  key={index}
+                  disabled={
+                    selectedRowCount !== null &&
+                    data.data.length !== selectedRowCount
+                  }
+                >
+                  <AccordionSummary>
+                    <Typography>
+                      {data.table_name} ({data.data.length} rows)
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <List disablePadding>
+                      {Object.keys(data["data"][0]).map((key) => (
+                        <>
+                          <ListItem disablePadding key={key}>
+                            <ListItemButton sx={{ p: 0 }}>
+                              <Checkbox
+                                onChange={handleColumnSelected(index, key)}
+                                color="six"
+                              />
+                              <ListItemText primary={key} p />
+                            </ListItemButton>
+                          </ListItem>
+                          <Divider />
+                        </>
+                      ))}
+                    </List>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </Box>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={9}>
+          <div className="tb-title-holder">
+            <Typography variant="h4">Table Binding</Typography>
+          </div>
+          {mergedData.length > 0 && (  
+            <>
+              <Box>
+                <Typography variant="body1" className="center-item-up-down">
+                  Selected Columns:
+                  <Tooltip title="Drag & Drop to sort">
+                    <InfoIcon sx={{ ml: 1 }} />
+                  </Tooltip>
+                </Typography>
               </Box>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={9}>
-            <div className="tb-title-holder">
-              <Typography variant="h4">Table Binding</Typography>
-            </div>
-            <Typography variant="body1">
-              {mergedData.length > 0
-                ? "Selected Columns:"
-                : "No Column Selected."}
-            </Typography>
-            <Card sx={{ display: "flex", overflow: "auto" }}>
-              {mergedData.length > 0 && (
+              <Box
+                sx={{
+                  display: "flex",
+                  overflow: "auto",
+                  border: "1.5px solid #999999",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                }}
+              >
                 <DragDropContext onDragEnd={sortColumns}>
                   <StrictModeDroppable
                     droppableId="columns"
@@ -229,56 +245,39 @@ export default function TBModalContent({
                     )}
                   </StrictModeDroppable>
                 </DragDropContext>
-              )}
-            </Card>
-            {mergedData.length > 0 && (
-              <>
-                <Typography variant="caption">
-                  {" "}
-                  Drag n Drop to sort.{" "}
-                </Typography>
+              </Box>
+
+              <Box sx={{ p: 2, backgroundColor: "#f9f9f9" }}>
                 <div>
                   <TextField
+                    inputRef={tableNameRef}
                     id="outlined-controlled"
                     label="Table Name"
-                    value={tableName}
-                    onChange={(event) => {
-                      setTableName(event.target.value);
-                    }}
-                    variant="standard"
                     size="small"
-                    sx={{ m: 1 }}
+                    sx={{
+                      m: 1,
+                      backgroundColor: "white",
+                      borderColor: "white",
+                    }}
                   />
                   <PreviewTable data={mergedData} />
                 </div>
                 <div className="tb-title-holder">
-                  <Button variant="contained" onClick={createNewMergeTable}>
+                  <Button
+                    variant="contained"
+                    onClick={createNewMergeTable}
+                    color="six"
+                    sx={{ borderRadius: 2 }}
+                  >
                     Create New Table
                   </Button>
                 </div>
-                {showAlert && (
-                  <Alert
-                    severity="error"
-                    action={
-                      <IconButton
-                        aria-label="close"
-                        color="inherit"
-                        size="small"
-                        onClick={() => {
-                          setShowAlert(false);
-                        }}
-                      >
-                        <CloseIcon fontSize="inherit" />
-                      </IconButton>
-                    }
-                  >
-                    Table Name cannot be empty!
-                  </Alert>
-                )}
-              </>
-            )}
-          </Grid>
+              </Box>
+            </>
+          )
+          }
         </Grid>
-      </ModalContent>
+      </Grid>
+    </ModalContent>
   );
 }

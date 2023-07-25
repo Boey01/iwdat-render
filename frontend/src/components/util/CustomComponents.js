@@ -10,7 +10,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { Switch, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { darken, getContrastRatio} from '@mui/system';
-import { Slide, Paper, Alert } from '@mui/material';
+import {Chip} from '@mui/material';
 
 export const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -168,3 +168,16 @@ export const dvMenuStandardTypo = ({ children }) =>(
     {children}
   </Typography>
 );
+
+export const StyledChip = styled(Chip)(({ theme, selected }) => ({
+  backgroundColor: selected ? theme.palette.six.main : "white",
+  color: selected ? "white" : theme.palette.six.main,
+  border:  `1px solid ${theme.palette.six.main}`,
+  borderRadius: "5px",
+  width:100,
+  "&:hover": {
+    backgroundColor: selected
+      ? theme.palette.six.main
+      : theme.palette.six.light,
+  },
+}));

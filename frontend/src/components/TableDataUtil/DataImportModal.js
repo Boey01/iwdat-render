@@ -3,12 +3,12 @@ import FileImport from "./FileUploadHandler";
 import Grid from "@mui/material/Unstable_Grid2";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Paper, Typography } from "@mui/material";
+import { Box,InputBase,Typography } from "@mui/material";
 import PreviewTable from "./TablePreview";
-import Input from "@mui/material/Input";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
+import { StyledChip } from "../util/CustomComponents";
+import { callDialog } from "../util/CustomDialog";
 
 const ModalContent = styled("div")({
   position: "absolute",
@@ -17,8 +17,9 @@ const ModalContent = styled("div")({
   transform: "translate(-50%, -50%)",
   backgroundColor: "white",
   padding: "16px",
+  paddingLeft:"40px",
+  paddingRight:"40px",
   width: "50vw",
-  height:"80vh",
   borderRadius:"10px"
 });
 
@@ -46,11 +47,10 @@ export default function DIModalContent({
   };
 
   const handleCheckboxChange = (event) => {
-    const { id, checked } = event.target;
-    const index = id;
+    const { id } = event.target;
     setCheckedTables((prevcheckedTables) => ({
       ...prevcheckedTables,
-      [index]: checked,
+      [id]: !prevcheckedTables[id],
     }));
   };
 
@@ -64,13 +64,13 @@ export default function DIModalContent({
 
   const handleConfirmTables = () => {
     if (!upload) {
-      const confirmDialog = window.confirm(
-        "Are you sure? Any unselected data will lost FOREVER."
-      );
-      if (!confirmDialog) {
-        return;
-      }
+      callDialog("Before you proceed...", "Are you sure to proceed? Any unselected data will lost FOREVER.", handleImportTables)
+    }else{
+      handleImportTables();
     }
+  };
+
+  function handleImportTables(){
     const selectedTables = Object.keys(checkedTables).reduce(
       (selected, key) => {
         if (checkedTables[key]) {
@@ -94,13 +94,13 @@ export default function DIModalContent({
       localStorage.removeItem('globalTables');
     }
     handleCloseModal();
-  };
+  }
 
   function TabPanel(props) {
     const { children, value, index } = props;
     return (
       <div role="tabpanel" hidden={value !== index}>
-        {value === index && <Paper sx={{ p: 2 }}>{children}</Paper>}
+        {value === index && <Box sx={{ p: 2, backgroundColor:"#f9f9f9" }}>{children}</Box>}
       </div>
     );
   }
@@ -128,36 +128,38 @@ export default function DIModalContent({
         </Grid>
         {uploadedFile && (
           <>
-            <Grid item xs={12}>
+            <Grid item xs={12}  sx={{pb:0}}>
               <Tabs
                 value={currentTab}
                 onChange={handleChange}
-                textColor="secondary"
-                indicatorColor="primary"
               >
                 {Object.keys(uploadedFile).map((key, index) => (
-                  <Tab label={key} index={index} key={key} />
+                  <Tab label={key} index={index} key={key}                 sx={{
+                    fontWeight: currentTab === index ? "bold" : "normal", 
+                    color: currentTab === index ? "blue" : "black", 
+                  }} />
                 ))}
               </Tabs>
             </Grid>
-            <Grid item xs={12} sx={{ height: "100%" }}>
+            <Grid item xs={12} sx={{ height: "100%", pt:0 }}>
               {Object.keys(uploadedFile).map((key, index) => (
                 <TabPanel value={currentTab} index={index}  key={index}>
-                  <Grid container alignItems="center" spacing={2}>
+                  <Grid container alignItems="center" spacing={1} sx={{mb:2}}>
                     <Grid item>
-                      <Checkbox
-                        id={index}
-                        checked={checkedTables[index] || false}
-                        onChange={handleCheckboxChange}
-                      />
+                    <StyledChip
+                      label={ checkedTables[index] || false ? "Selected" : "Select"}
+                      onClick={() => handleCheckboxChange({ target: { id: index } })}
+                      selected={ checkedTables[index] || false}
+                    />
                     </Grid>
                     <Grid item>
-                      <Input
+                      <InputBase
                         defaultValue={tableNames[index] || key}
                         onBlur={(event) =>
                           handleTableNameChange(index, event.target.value)
                         }
                         inputProps={{ "aria-label": "Table name" }}
+                        sx={{backgroundColor:"white", p:1, borderRadius:2}}
                       />
                     </Grid>
                   </Grid>
@@ -165,8 +167,8 @@ export default function DIModalContent({
                 </TabPanel>
               ))}
             </Grid>
-            <Grid item xs={12}>
-              <Button variant="outlined" onClick={handleConfirmTables}>
+            <Grid item xs={12} className="center-item">
+              <Button variant="contained" color="six" onClick={handleConfirmTables}>
                 Confirm Tables
               </Button>
             </Grid>

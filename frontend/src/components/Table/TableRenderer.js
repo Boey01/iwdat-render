@@ -110,10 +110,10 @@ export default function TableRenderer({
               setSelectedColumns={setSelectedColumns}
               handleDeleteColumn ={handleDeleteColumn}
             />
-            <IconButton onClick={hidefunction} aria-label="hide">
-              <RemoveRoundedIcon  />
+            <IconButton onClick={hidefunction} aria-label="hide" sx={{color:"white"}}>
+              <RemoveRoundedIcon/>
             </IconButton>
-            <IconButton onClick={closefunction} aria-label="delete">
+            <IconButton onClick={closefunction} aria-label="delete" sx={{color:"white"}}>
               <CloseIcon />
             </IconButton>
             </Stack>
@@ -125,12 +125,12 @@ export default function TableRenderer({
           square
         >
           <Table stickyHeader>
-            <TableHead>
+            <TableHead >
               <TableRow>
                 {columns
                   .filter((column) => selectedColumns.includes(column.field))
                   .map((column) => (
-                    <TableCell key={column.field}>
+                    <TableCell key={column.field} sx={{ fontWeight: 'bold' }}>
                       {column.headerName}
                     </TableCell>
                   ))}

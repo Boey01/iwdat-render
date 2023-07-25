@@ -1,5 +1,6 @@
 import XLSX from "xlsx";
 import xml2js from 'xml2js';
+import { callAlert } from "../util/CustomAlert";
 
 const checkFileName = (name) => {
   const fileExtension = name.split(".").pop().toLowerCase();
@@ -45,7 +46,12 @@ const readExcelData = (file) => {
 const readXLSXDataFromURL = (url) => {
   return new Promise((resolve, reject) => {
     fetch(url)
-      .then(response => response.arrayBuffer())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Fetch failed with status ${response.status}`);
+        }
+        return response.arrayBuffer();
+      })
       .then(data => {
         const wb = XLSX.read(data);
         const sheetNames = wb.SheetNames;
@@ -60,30 +66,32 @@ const readXLSXDataFromURL = (url) => {
         resolve(sheetData);
       })
       .catch(error => {
-        console.error('Error reading XLSX file from URL:', error);
-        reject(error);
+        console.error('Error reading Excel file from URL:', error);
+        callAlert("Failed to fetch data", "error"); // Show custom alert
+        reject(error); // Reject the Promise with the actual error
       });
   });
 };
 
 
+
 const readJSONData = (data) => {
   return new Promise((resolve, reject) => {
-  var reader = new FileReader();
-  reader.onload = (event) => {
-    try{
-      const parsedResult = JSON.parse(event.target.result);
-      let jsonData = {};
-      jsonData["data"] = parsedResult;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const parsedResult = JSON.parse(event.target.result);
+        let jsonData = {};
+        jsonData["data"] = parsedResult;
 
-      resolve(jsonData);
-    }catch(err){
-      console.log(err);
-    }
-  }
-  reader.readAsText(data);
-
-  })
+        resolve(jsonData);
+      } catch (err) {
+        console.log(err);
+        reject(err);
+      }
+    };
+    reader.readAsText(data);
+  });
 };
 
 const readXMLData = (file) => {
@@ -112,7 +120,7 @@ const readXMLData = (file) => {
 
         let jsonData = {};
         jsonData["Data"] = entries;
-        console.log(jsonData)
+        console.log(jsonData);
 
         resolve(jsonData);
       });
@@ -141,33 +149,33 @@ const removeAndReplaceKey = (entries) => {
 
     return modifiedObj;
   });
-  return {modifiedEntries };
+  return { modifiedEntries };
 };
 
 const loadFileData = (fileOrURL) => {
   if (!fileOrURL) return null;
-
-  if (typeof fileOrURL === "string" && fileOrURL.startsWith("http")) {
-    // It's a URL, use the readXLSXDataFromURL function
-    return readXLSXDataFromURL(fileOrURL);
-  }
-
-  // Otherwise, treat it as a File object and proceed as before
-  const fileTypeChecker = checkFileName(fileOrURL.name);
-  if (!fileTypeChecker) {
-    
-    return null;
-  }
-
   try {
+    if (typeof fileOrURL === "string") {
+      if (fileOrURL.startsWith("http")) {
+        return readXLSXDataFromURL(fileOrURL);
+      }
+      callAlert("Something wrong in reading the URL :(", "info");
+      return null;
+    }
+
+    const fileTypeChecker = checkFileName(fileOrURL.name);
+    if (!fileTypeChecker) {
+      callAlert("Invalid file Type!", "warning");
+      return null;
+    }
+
     const sheetData = fileTypeChecker(fileOrURL);
     return sheetData;
   } catch (error) {
     console.error(error);
-    alert("Error reading file");
+    callAlert("Error reading data");
     return null;
   }
 };
 
 export default loadFileData;
-

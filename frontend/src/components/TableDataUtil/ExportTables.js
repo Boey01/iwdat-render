@@ -1,14 +1,15 @@
+import XLSX from "xlsx";
+import { callAlert } from "../util/CustomAlert";
+
 export function exportTablesToFile(selectedTables, globalTables) {
 
   if (selectedTables.length === 0) {
-    // You can show an error message or notification if no tables are selected.
+    callAlert("No tables selected", "info");
     return;
   }
 
   const tablesToExport = selectedTables.map((index) => globalTables[index]);
 
-  // Create an XLSX workbook with multiple sheets, one for each selected table
-  const XLSX = require("xlsx");
   const workbook = XLSX.utils.book_new();
 
   tablesToExport.forEach((tableData, index) => {

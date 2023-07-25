@@ -18,11 +18,7 @@ import ActivateAccount  from "./components/pages/Activate";
 import ResetPassReq from "./components/pages/ResetPassReq";
 import ChangePassword from "./components/pages/ChangePass";
 import Dashboard from "./components/pages/Dashboard";
-import { createTheme, ThemeProvider } from '@mui/material';
-import { AlertProvider } from "./components/contexts/AlertContext";
-import GlobalAlert from "./components/util/CustomAlert";
-import { DialogProvider } from "./components/contexts/DialogContext";
-import GlobalDialog from "./components/util/CustomDialog";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const createColor = (mainColor) => ({ main: mainColor });
 
@@ -38,26 +34,20 @@ const theme = createTheme({
     two: {main: "#2124ee", contrastText: '#ffffff'},
     three: createColor("#efeff9"),
     four: createColor("#74708f"),
-    five: createColor("#DFF250"),
-
+    five: {main: "#DFF250", contrastText: '#050D16'},
+    six: {main: "#0062ff", contrastText: '#ffffff'},
   }
 });
 
 const ContextAndSidebarProvider = ({ children }) => {
   return (
-    <AlertProvider>
-      <DialogProvider>
     <GlobalTablesProvider>
       <GlobalCardsProvider>
       <ZIndexProvider>
         <SideBarWrap>{children}</SideBarWrap>
-        <GlobalAlert/>
-        <GlobalDialog/>
       </ZIndexProvider>
       </GlobalCardsProvider>
     </GlobalTablesProvider>
-    </DialogProvider>
-    </AlertProvider>
   );
 };
 
