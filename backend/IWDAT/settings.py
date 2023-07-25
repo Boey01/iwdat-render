@@ -91,15 +91,15 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql',
 
-        'NAME': 'IWDAT',
+        'NAME': 'defaultdb',
 
-        'USER': 'postgres',
+        'USER': 'avnadmin',
 
-        'PASSWORD': 'admin',
+        'PASSWORD': 'AVNS_wCZpL9jfiJZeRfB_ln1',
 
-        'HOST': 'localhost',
+        'HOST': 'for-fyp-iwdat-boeyshuwei-tp053979-fyp.aivencloud.com',
 
-        'PORT': '5432',
+        'PORT': '24504',
 
     }
 }

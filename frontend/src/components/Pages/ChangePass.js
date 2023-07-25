@@ -91,6 +91,7 @@ export const ChangePassword = ({reset_password}) =>{
               ),
             }}
             onKeyDown={handleKeyDown}
+            color="one"
           />
           <TextField
             margin="normal"
@@ -118,6 +119,7 @@ export const ChangePassword = ({reset_password}) =>{
               ),
             }}
             onKeyDown={handleKeyDown}
+            color="one"
           />
 
           <Button
@@ -126,6 +128,7 @@ export const ChangePassword = ({reset_password}) =>{
             align="center"
             sx={{ mt:1}}
             disabled= {!passwordMatch}
+            color="one"
           >
            Confirm Reset Password
           </Button>

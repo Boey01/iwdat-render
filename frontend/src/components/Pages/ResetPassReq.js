@@ -41,12 +41,14 @@ export const ResetPassReq = ({reset_password_req}) =>{
             autoComplete="email"
             autoFocus
             sx ={{width: '50%'}}
+            color="one"
           />
           <Button
             type="submit"
             variant="contained"
             align="center"
             sx={{ mx: 0, ml: 1, height: 52, mt:1}}
+            color="one"
           >
             Verify
           </Button>

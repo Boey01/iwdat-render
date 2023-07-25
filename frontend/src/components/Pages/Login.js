@@ -65,6 +65,7 @@ const Login = ({ redux_login, isAuthenticated }) => {
               name="email"
               autoComplete="email"
               autoFocus
+              color="one"
             />
             <TextField
               margin="normal"
@@ -86,12 +87,14 @@ const Login = ({ redux_login, isAuthenticated }) => {
                 ),
               }}
               onKeyDown={handleKeyDown}
+              color="one"
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              color="one"
             >
               Sign In
             </Button>

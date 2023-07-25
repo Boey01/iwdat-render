@@ -36,6 +36,7 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { ChromePicker } from "react-color";
 import transformingData from "./transformData";
 import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
+import { callAlert } from "../util/CustomAlert";
 
 export default function ScatterPlotPreview({ data, defineVisualConfig, type }) {
   const [scatterData, setScatterData] = useState([]);
@@ -57,8 +58,6 @@ export default function ScatterPlotPreview({ data, defineVisualConfig, type }) {
       };
 
       defineVisualConfig(type, compiledConfig);
-
-      console.log(scatterData);
     }
   }, [scatterData]);
 
@@ -379,6 +378,7 @@ export default function ScatterPlotPreview({ data, defineVisualConfig, type }) {
       });
     } catch (err) {
       console.log(err);
+      callAlert("There is something wrong with the column selection.", "error");
     }
   };
 
@@ -541,6 +541,7 @@ export default function ScatterPlotPreview({ data, defineVisualConfig, type }) {
                   variant="contained"
                   onClick={handleApplyChanges}
                   sx={{ m: 0 }}
+                  color="six"
                 >
                   Apply Changes
                 </Button>

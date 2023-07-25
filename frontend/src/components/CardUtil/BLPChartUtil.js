@@ -414,6 +414,7 @@ export default function BarLinePieChartPreview({
                 variant="contained"
                 onClick={handleApplyChanges}
                 sx={{ m: 0 }}
+              
               >
                 Apply Changes
               </Button>

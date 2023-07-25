@@ -31,10 +31,6 @@ export function GlobalCardsProvider({ children, isAuthenticated }) {
       [ updateCardsSizeDB]
     );
 
-    useEffect(()=>{
-      console.log(globalCards); 
-    },[globalCards])
-    
     useEffect(() => {
       if(isAuthenticated){loadAccountCardsDB()};
       let localCardList = localStorage.getItem('globalCards')

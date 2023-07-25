@@ -78,6 +78,7 @@ export const Signup = ({redux_signup}) => {
             name="name"
             autoComplete="name"
             autoFocus
+            color="one"
           />
           <TextField
             margin="normal"
@@ -87,6 +88,7 @@ export const Signup = ({redux_signup}) => {
             label="Email Address"
             name="email"
             autoComplete="email"
+            color="one"
           />
           <TextField
             margin="normal"
@@ -109,6 +111,7 @@ export const Signup = ({redux_signup}) => {
               ),
             }}
             onKeyDown={handleKeyDown}
+            color="one"
           />
           <TextField
             margin="normal"
@@ -136,6 +139,7 @@ export const Signup = ({redux_signup}) => {
               ),
             }}
             onKeyDown={handleKeyDown}
+            color="one"
           />
           <Button
             type="submit"
@@ -143,6 +147,7 @@ export const Signup = ({redux_signup}) => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             disabled= {!passwordMatch}
+            color="one"
           >
             Sign Up
           </Button>

@@ -89,12 +89,6 @@ export default function TableManager() {
       case "export":
         exportTablesToFile(selectedTables, globalTables);
         break;
-      case "hide":
-        selectedTables.forEach((index) => handleHideTable(index));
-        break;
-      case "delete":
-        selectedTables.forEach((index) => handleDeleteTable(index));
-        break;
       default:
         break;
     }
@@ -343,18 +337,6 @@ export default function TableManager() {
             <IosShareRoundedIcon fontSize="small"/>
           </ListItemIcon>
               Export Selected(s)
-            </MenuItem>
-            <MenuItem onClick={() => handleContextMenuAction("hide")} disabled={selectedTables.length < 1}>
-            <ListItemIcon>
-            <VisibilityIcon fontSize="small"/>
-          </ListItemIcon>
-              Toggle Selected(s) Visibility
-            </MenuItem>
-            <MenuItem onClick={() => handleContextMenuAction("delete")} disabled={selectedTables.length < 1}>
-            <ListItemIcon>
-            <DeleteIcon fontSize="small"/>
-          </ListItemIcon>
-              Delete Selected(s)
             </MenuItem>
           </MenuList>
         </Popover>

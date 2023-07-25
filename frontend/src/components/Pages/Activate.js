@@ -38,6 +38,7 @@ export const ActivateAccount = ({ activateAcc }) => {
               type="submit"
               variant="contained"
               align="center"
+              color="one"
               sx={{ mt: 3, mb: 2, width: "34%" }}
             >
               Verify
