@@ -29,7 +29,7 @@ import IosShareRoundedIcon from '@mui/icons-material/IosShareRounded';
 
 import DIModalContent from "./DataImportModal";
 import TBModalContent from "./TableBindModal";
-import { Avatar, Box, Divider, ListItemIcon, MenuItem, MenuList, Paper, Popover, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Divider, ListItemIcon, MenuItem, MenuList, Popover, Stack, Typography } from "@mui/material";
 
 export default function TableManager() {
   const {
