@@ -7,28 +7,33 @@ function EditableTableCell({
   rowIndex,
   field,
   onCellValueChange,
-  page ,
+  page,
   rowsPerPage,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [cellValue, setCellValue] = useState(value);
 
   useEffect(() => {
-    setCellValue(value);
+    setCellValue(value);  
   }, [value]);
 
   const handleDoubleClick = () => {
     setIsEditing(true);
   };
 
- const handleBlur = () => {
-  setIsEditing(false);
-  if (cellValue !== value) {
-    const actualRowIndex = page * rowsPerPage + rowIndex;
-    onCellValueChange(cellValue, actualRowIndex, field);
-  }
-};
+  const handleBlur = () => {
+    setIsEditing(false);
 
+    if (cellValue !== value) {
+      const actualRowIndex = page * rowsPerPage + rowIndex;
+      let convertedValue = Number(cellValue);
+      if (isNaN(convertedValue)) {
+        convertedValue = cellValue;
+      }
+
+      onCellValueChange(convertedValue, actualRowIndex, field);
+    }
+  };
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -64,7 +69,7 @@ EditableTableCell.propTypes = {
   field: PropTypes.string.isRequired,
   onCellValueChange: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired
+  rowsPerPage: PropTypes.number.isRequired,
 };
 
 export default React.memo(EditableTableCell);
