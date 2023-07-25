@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import { Grid, Toolbar } from "@mui/material";
+import { Avatar, Grid, Toolbar } from "@mui/material";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
@@ -25,6 +25,7 @@ import { GlobalTableContext } from "../contexts/TableContext";
 import { useLocation } from "react-router-dom";
 import { GlobalCardContext } from "../contexts/CardContext";
 import { callDialog } from "./CustomDialog";
+import AppLogo from "../../static/favicon.ico";
 
 export function MiniDrawer({
   saveLocalFunction,
@@ -196,8 +197,8 @@ export function MiniDrawer({
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <IconButton onClick={handleDrawerOpen} color="two" sx={{mr:1, ml:0.6}}>
-            <MenuIcon fontSize="small" />
+          <IconButton onClick={handleDrawerOpen} color="two" sx={{mr:1}}>
+            <Avatar src={AppLogo} sx={{width:30, height:30}}/>
           </IconButton>
           {isAuthenticated ? (
             user && user.name ? (
